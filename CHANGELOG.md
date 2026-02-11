@@ -26,3 +26,4 @@
 - Tuning performance slightly
 - Fixing a minor bug in edge case
 - Refactoring component structure
+- Minor UI tweaks
