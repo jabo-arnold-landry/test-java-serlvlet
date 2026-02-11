@@ -34,3 +34,4 @@
 - Formatting code
 - Optimizing imports
 - Removing unused variables
+- Updating minor dependencies
