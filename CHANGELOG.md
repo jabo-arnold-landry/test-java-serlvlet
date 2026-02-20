@@ -40,3 +40,4 @@
 - Refactoring component structure
 - Minor UI tweaks
 - Refactoring utility classes
+- Cleaning up whitespace
