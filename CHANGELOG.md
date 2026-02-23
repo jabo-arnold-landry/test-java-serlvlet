@@ -54,3 +54,4 @@
 - Refactoring utility classes
 - Cleaning up whitespace
 - Fixing a minor typo
+- Updating comments
