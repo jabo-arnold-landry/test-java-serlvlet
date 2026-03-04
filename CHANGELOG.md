@@ -71,3 +71,4 @@
 - Optimizing imports
 - Removing unused variables
 - Updating minor dependencies
+- Tuning performance slightly
