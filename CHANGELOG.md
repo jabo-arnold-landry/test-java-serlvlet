@@ -75,3 +75,4 @@
 - Fixing a minor bug in edge case
 - Refactoring component structure
 - Minor UI tweaks
+- Refactoring utility classes
