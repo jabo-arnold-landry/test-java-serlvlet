@@ -5,6 +5,7 @@ import com.spcms.models.ActivityLog;
 import com.spcms.repositories.UserRepository;
 import com.spcms.repositories.ActivityLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +23,31 @@ public class UserService {
     @Autowired
     private ActivityLogRepository activityLogRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // ==================== CRUD ====================
 
     public User createUser(User user) {
+        // Hash the password before saving; only hash if not already hashed
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         User saved = userRepository.save(user);
         logActivity(saved.getUserId(), "CREATE_USER", "User", saved.getUserId(),
                 "Created user: " + saved.getUsername());
         return saved;
+    }
+
+    public User updateUser(User user) {
+        // Only re-hash if the password field was changed (doesn't look like a bcrypt hash)
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        User updated = userRepository.save(user);
+        logActivity(updated.getUserId(), "UPDATE_USER", "User", updated.getUserId(),
+                "Updated user: " + updated.getUsername());
+        return updated;
     }
 
     public Optional<User> getUserById(Long id) {
@@ -51,12 +70,6 @@ public class UserService {
         return userRepository.findByIsActiveTrue();
     }
 
-    public User updateUser(User user) {
-        User updated = userRepository.save(user);
-        logActivity(updated.getUserId(), "UPDATE_USER", "User", updated.getUserId(),
-                "Updated user: " + updated.getUsername());
-        return updated;
-    }
 
     public void deactivateUser(Long userId) {
         userRepository.findById(userId).ifPresent(user -> {

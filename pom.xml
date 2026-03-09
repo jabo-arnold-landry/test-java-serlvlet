@@ -40,6 +40,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+        </dependency>
 
         <!-- MySQL -->
         <dependency>
@@ -52,7 +60,6 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet.jsp.jstl</groupId>
@@ -79,7 +86,7 @@
     </dependencies>
 
     <build>
-        <finalName>spcms</finalName>
+        <finalName>test-java-serlvlet</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
