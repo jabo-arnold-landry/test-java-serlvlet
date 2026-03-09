@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * Report Service.
- * 
+ * YES 
  * Generates Daily Load Averages, Downtime Trends, MTTR (Mean Time To Repair),
  * and MTBF (Mean Time Between Failures) as required for Shift Reports
  * and the Manager Executive Summary Dashboard.
