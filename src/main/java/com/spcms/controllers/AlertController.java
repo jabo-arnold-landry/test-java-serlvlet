@@ -4,6 +4,10 @@ import com.spcms.models.Alert;
 import com.spcms.models.User;
 import com.spcms.services.AlertService;
 import com.spcms.services.UserService;
+import com.spcms.services.UpsService;
+import com.spcms.services.MaintenanceService;
+import com.spcms.models.UpsBattery;
+import com.spcms.models.UpsMaintenance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -12,6 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.util.Map;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Controller
 @RequestMapping("/alerts")
@@ -23,11 +32,46 @@ public class AlertController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UpsService upsService;
+
+    @Autowired
+    private MaintenanceService maintenanceService;
+
+    private final List<SseEmitter> alertEmitters = new CopyOnWriteArrayList<>();
+
     @GetMapping
     public String list(Model model) {
         model.addAttribute("alerts", alertService.getAllAlerts());
-        model.addAttribute("unacknowledgedAlerts", alertService.getUnacknowledgedAlerts().size());
+        model.addAttribute("unacknowledgedAlerts", alertService.countUnacknowledgedAlerts());
         return "alerts/list";
+    }
+
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter streamAlerts() {
+        SseEmitter emitter = new SseEmitter(300_000L); // 5 minute timeout; client will reconnect
+        alertEmitters.add(emitter);
+        emitter.onCompletion(() -> alertEmitters.remove(emitter));
+        emitter.onTimeout(() -> alertEmitters.remove(emitter));
+        emitter.onError(e -> alertEmitters.remove(emitter));
+        try {
+            emitter.send(SseEmitter.event().name("ping").data("connected"));
+        } catch (Exception ignore) {}
+        return emitter;
+    }
+
+    @GetMapping(value = "/latest", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Map<String, Object> latestAlert(@RequestParam(required = false) Long sinceId) {
+        return alertService.getLatestAlertAfter(sinceId)
+                .map(alert -> Map.<String, Object>of(
+                        "id", alert.getAlertId(),
+                        "type", alert.getAlertType(),
+                        "message", alert.getMessage(),
+                        "equipmentType", alert.getEquipmentType(),
+                        "equipmentId", alert.getEquipmentId(),
+                        "createdAt", alert.getCreatedAt()))
+                .orElseGet(Map::of);
     }
 
     @GetMapping("/view/{id}")
@@ -56,6 +100,28 @@ public class AlertController {
         model.addAttribute("maxGaugeValue", maxGaugeValue);
         
         return "alerts/view";
+    }
+
+    private void pushAlert(Alert alert) {
+        List<SseEmitter> dead = new java.util.ArrayList<>();
+        for (SseEmitter emitter : alertEmitters) {
+            try {
+                Map<String, Object> payload = Map.of(
+                        "id", alert.getAlertId(),
+                        "type", alert.getAlertType(),
+                        "message", alert.getMessage(),
+                        "equipmentType", alert.getEquipmentType(),
+                        "equipmentId", alert.getEquipmentId(),
+                        "createdAt", alert.getCreatedAt()
+                );
+                emitter.send(SseEmitter.event()
+                        .name("alert")
+                        .data(payload, MediaType.APPLICATION_JSON));
+            } catch (Exception e) {
+                dead.add(emitter);
+            }
+        }
+        alertEmitters.removeAll(dead);
     }
 
     @PostMapping("/acknowledge/{id}")
@@ -96,6 +162,7 @@ public class AlertController {
             @RequestParam(required = false) BigDecimal humidityLowThreshold,
             @RequestParam(required = false) BigDecimal upsOverloadThreshold,
             @RequestParam(required = false) BigDecimal lowBatteryThreshold,
+            @RequestParam(required = false) Integer batteryReplacementWarningDays,
             @RequestParam(required = false) Boolean autoSendEmail,
             @RequestParam(required = false) String emailRecipients,
             RedirectAttributes redirectAttributes) {
@@ -108,6 +175,7 @@ public class AlertController {
                 humidityLowThreshold != null ? humidityLowThreshold : new BigDecimal("30"),
                 upsOverloadThreshold != null ? upsOverloadThreshold : new BigDecimal("80"),
                 lowBatteryThreshold != null ? lowBatteryThreshold : new BigDecimal("20"),
+                batteryReplacementWarningDays != null ? batteryReplacementWarningDays : 30,
                 autoSendEmail != null && autoSendEmail,
                 emailRecipients
             );
@@ -123,6 +191,10 @@ public class AlertController {
     @GetMapping("/test")
     public String testAlertsPage(Model model) {
         model.addAttribute("thresholds", alertService.getAlertThresholds());
+        model.addAttribute("upsList", upsService.getAllUps());
+        model.addAttribute("dueUpsMaintenance", maintenanceService.getOverdueUpsMaintenance());
+        model.addAttribute("dueBatteries", upsService.getBatteriesDueForReplacement());
+        model.addAttribute("allUsers", userService.getAllUsers());
         return "alerts/test";
     }
 
@@ -132,6 +204,7 @@ public class AlertController {
             @RequestParam Long equipmentId,
             @RequestParam BigDecimal actualTemp,
             @RequestParam BigDecimal threshold,
+            @RequestParam(defaultValue = "false") boolean sendEmail,
             @RequestParam(required = false) String email,
             RedirectAttributes redirectAttributes) {
         try {
@@ -139,15 +212,21 @@ public class AlertController {
                 ? Alert.EquipmentCategory.UPS 
                 : Alert.EquipmentCategory.COOLING;
             
-            Alert alert = alertService.createHighTempAlert(category, equipmentId, threshold, actualTemp);
-            
-            if (email != null && !email.trim().isEmpty()) {
-                alertService.sendAlertEmail(alert.getAlertId(), email.trim());
-                redirectAttributes.addFlashAttribute("success", 
-                    "High Temperature alert created and email sent to " + email);
+            if (sendEmail) {
+                // NOTIFY: send email only, no alert created, no toast
+                if (email == null || email.trim().isEmpty()) {
+                    redirectAttributes.addFlashAttribute("error", "Provide an email to notify.");
+                    return "redirect:/alerts/test";
+                }
+                String message = "HIGH TEMPERATURE NOTIFICATION: Actual " + actualTemp + "°C exceeds threshold " + threshold + "°C on " + category + " (ID: " + equipmentId + ")";
+                alertService.sendStandaloneNotificationEmail("High Temperature", message, email.trim());
+                redirectAttributes.addFlashAttribute("success", "High Temperature notification email sent to " + email);
             } else {
+                // TRIGGER: create alert + push SSE toast
+                Alert alert = alertService.createHighTempAlert(category, equipmentId, threshold, actualTemp, false);
+                pushAlert(alert);
                 redirectAttributes.addFlashAttribute("success", 
-                    "High Temperature alert created (ID: " + alert.getAlertId() + ")");
+                    "High Temperature alert triggered (ID: " + alert.getAlertId() + ")");
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed: " + e.getMessage());
@@ -162,6 +241,7 @@ public class AlertController {
             @RequestParam BigDecimal actualHumidity,
             @RequestParam BigDecimal threshold,
             @RequestParam String humidityType,
+            @RequestParam(defaultValue = "false") boolean sendEmail,
             @RequestParam(required = false) String email,
             RedirectAttributes redirectAttributes) {
         try {
@@ -170,15 +250,21 @@ public class AlertController {
                 : Alert.EquipmentCategory.COOLING;
             
             boolean isHigh = "HIGH".equals(humidityType);
-            Alert alert = alertService.createHumidityAlert(category, equipmentId, threshold, actualHumidity, isHigh);
+            String direction = isHigh ? "above" : "below";
             
-            if (email != null && !email.trim().isEmpty()) {
-                alertService.sendAlertEmail(alert.getAlertId(), email.trim());
-                redirectAttributes.addFlashAttribute("success", 
-                    "Humidity alert created and email sent to " + email);
+            if (sendEmail) {
+                if (email == null || email.trim().isEmpty()) {
+                    redirectAttributes.addFlashAttribute("error", "Provide an email to notify.");
+                    return "redirect:/alerts/test";
+                }
+                String message = "HUMIDITY NOTIFICATION: Actual " + actualHumidity + "% is " + direction + " threshold " + threshold + "% on " + category + " (ID: " + equipmentId + ")";
+                alertService.sendStandaloneNotificationEmail("Humidity Alert", message, email.trim());
+                redirectAttributes.addFlashAttribute("success", "Humidity notification email sent to " + email);
             } else {
+                Alert alert = alertService.createHumidityAlert(category, equipmentId, threshold, actualHumidity, isHigh, false);
+                pushAlert(alert);
                 redirectAttributes.addFlashAttribute("success", 
-                    "Humidity alert created (ID: " + alert.getAlertId() + ")");
+                    "Humidity alert triggered (ID: " + alert.getAlertId() + ")");
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed: " + e.getMessage());
@@ -202,18 +288,24 @@ public class AlertController {
             @RequestParam Long upsId,
             @RequestParam BigDecimal actualLoad,
             @RequestParam BigDecimal threshold,
+            @RequestParam(defaultValue = "false") boolean sendEmail,
             @RequestParam(required = false) String email,
             RedirectAttributes redirectAttributes) {
         try {
-            Alert alert = alertService.createOverloadAlert(upsId, threshold, actualLoad);
-            
-            if (email != null && !email.trim().isEmpty()) {
-                alertService.sendAlertEmail(alert.getAlertId(), email.trim());
-                redirectAttributes.addFlashAttribute("success", 
-                    "⚡ UPS OVERLOAD alert triggered! Email sent to " + email);
+            if (sendEmail) {
+                if (email == null || email.trim().isEmpty()) {
+                    redirectAttributes.addFlashAttribute("error", "Provide an email to notify.");
+                    return "redirect:/alerts/test";
+                }
+                String message = "UPS OVERLOAD NOTIFICATION: Load " + actualLoad + "% exceeds threshold " + threshold + "% on UPS (ID: " + upsId + ")";
+                alertService.sendStandaloneNotificationEmail("UPS Overload", message, email.trim());
+                redirectAttributes.addFlashAttribute("success",
+                    "UPS Overload notification email sent to " + email);
             } else {
-                redirectAttributes.addFlashAttribute("success", 
-                    "⚡ UPS OVERLOAD alert triggered (ID: " + alert.getAlertId() + ")");
+                Alert alert = alertService.createOverloadAlert(upsId, threshold, actualLoad, false);
+                pushAlert(alert);
+                redirectAttributes.addFlashAttribute("success",
+                    "UPS OVERLOAD alert triggered (ID: " + alert.getAlertId() + ")");
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed: " + e.getMessage());
@@ -221,23 +313,96 @@ public class AlertController {
         return "redirect:/alerts/test";
     }
 
+
     @PostMapping("/test/low-battery")
     public String createLowBatteryAlert(
             @RequestParam Long upsId,
             @RequestParam BigDecimal actualLevel,
             @RequestParam BigDecimal threshold,
+            @RequestParam(defaultValue = "false") boolean sendEmail,
             @RequestParam(required = false) String email,
             RedirectAttributes redirectAttributes) {
         try {
-            Alert alert = alertService.createLowBatteryAlert(upsId, threshold, actualLevel);
-            
-            if (email != null && !email.trim().isEmpty()) {
-                alertService.sendAlertEmail(alert.getAlertId(), email.trim());
-                redirectAttributes.addFlashAttribute("success", 
-                    "🔋 LOW BATTERY alert triggered! Email sent to " + email);
+            if (sendEmail) {
+                if (email == null || email.trim().isEmpty()) {
+                    redirectAttributes.addFlashAttribute("error", "Provide an email to notify.");
+                    return "redirect:/alerts/test";
+                }
+                String message = "LOW BATTERY NOTIFICATION: Battery level " + actualLevel + "% below threshold " + threshold + "% on UPS (ID: " + upsId + ")";
+                alertService.sendStandaloneNotificationEmail("Low Battery", message, email.trim());
+                redirectAttributes.addFlashAttribute("success",
+                    "Low Battery notification email sent to " + email);
             } else {
-                redirectAttributes.addFlashAttribute("success", 
-                    "🔋 LOW BATTERY alert triggered (ID: " + alert.getAlertId() + ")");
+                Alert alert = alertService.createLowBatteryAlert(upsId, threshold, actualLevel, false);
+                pushAlert(alert);
+                redirectAttributes.addFlashAttribute("success",
+                    "LOW BATTERY alert triggered (ID: " + alert.getAlertId() + ")");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed: " + e.getMessage());
+        }
+        return "redirect:/alerts/test";
+    }
+
+    @PostMapping("/test/maintenance-due")
+    public String createMaintenanceDueAlert(
+            @RequestParam String deviceType,
+            @RequestParam(required = false) Long upsMaintenanceId,
+            @RequestParam(required = false) Long batteryId,
+            @RequestParam(required = false) String note,
+            @RequestParam(defaultValue = "false") boolean sendEmail,
+            @RequestParam(required = false) String email,
+            RedirectAttributes redirectAttributes) {
+        try {
+            Alert.EquipmentCategory category;
+            Long equipmentId;
+            String message;
+
+            if ("UPS".equalsIgnoreCase(deviceType)) {
+                UpsMaintenance maintenance = maintenanceService.getUpsMaintenanceById(
+                        upsMaintenanceId != null ? upsMaintenanceId : -1L)
+                        .orElseThrow(() -> new RuntimeException("Select a UPS maintenance record."));
+
+                category = Alert.EquipmentCategory.UPS;
+                equipmentId = maintenance.getUps().getUpsId();
+                String dueDate = maintenance.getNextDueDate() != null
+                        ? maintenance.getNextDueDate().toString()
+                        : maintenance.getMaintenanceDate().toString();
+                message = "UPS " + maintenance.getUps().getAssetTag()
+                        + " maintenance (" + maintenance.getMaintenanceType() + ") due on " + dueDate;
+            } else if ("BATTERY".equalsIgnoreCase(deviceType)) {
+                UpsBattery battery = upsService.getBatteryById(
+                        batteryId != null ? batteryId : -1L)
+                        .orElseThrow(() -> new RuntimeException("Select a battery nearing replacement."));
+
+                category = Alert.EquipmentCategory.OTHER;
+                equipmentId = battery.getBatteryId();
+                String dueDate = battery.getReplacementDueDate() != null
+                        ? battery.getReplacementDueDate().toString()
+                        : "upcoming";
+                message = "Battery " + battery.getBatteryId() + " on UPS "
+                        + battery.getUps().getAssetTag() + " replacement due " + dueDate;
+            } else {
+                throw new RuntimeException("Device type must be UPS or BATTERY.");
+            }
+
+            if (note != null && !note.trim().isEmpty()) {
+                message += " - " + note.trim();
+            }
+
+            if (sendEmail) {
+                if (email == null || email.trim().isEmpty()) {
+                    redirectAttributes.addFlashAttribute("error", "Provide an email to notify.");
+                    return "redirect:/alerts/test";
+                }
+                alertService.sendStandaloneNotificationEmail("Maintenance Due", message, email.trim());
+                redirectAttributes.addFlashAttribute("success",
+                        "Maintenance due notification email sent to " + email);
+            } else {
+                Alert alert = alertService.createMaintenanceDueAlert(category, equipmentId, message, false);
+                pushAlert(alert);
+                redirectAttributes.addFlashAttribute("success",
+                        "Maintenance due alert triggered (ID: " + alert.getAlertId() + ")");
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed: " + e.getMessage());
@@ -245,3 +410,5 @@ public class AlertController {
         return "redirect:/alerts/test";
     }
 }
+
+

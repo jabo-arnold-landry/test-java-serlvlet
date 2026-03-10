@@ -77,6 +77,10 @@ public class UpsService {
         return upsBatteryRepository.findByUps_UpsId(upsId);
     }
 
+    public Optional<UpsBattery> getBatteryById(Long batteryId) {
+        return upsBatteryRepository.findById(batteryId);
+    }
+
     public List<UpsBattery> getUnhealthyBatteries() {
         return upsBatteryRepository.findUnhealthyBatteries();
     }

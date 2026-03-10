@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * Maintenance Due, and Equipment Faults.
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AlertService {
 
     @Autowired
@@ -52,6 +52,7 @@ public class AlertService {
     private static BigDecimal UPS_OVERLOAD_THRESHOLD = new BigDecimal("80");
     private static BigDecimal LOW_BATTERY_THRESHOLD = new BigDecimal("20");
     private static BigDecimal COOLING_HIGH_TEMP_THRESHOLD = new BigDecimal("25");
+    private static int BATTERY_REPLACEMENT_WARNING_DAYS = 30;
     
     // Email recipients (comma-separated) - null means all users
     private static String EMAIL_RECIPIENTS = null;
@@ -66,6 +67,7 @@ public class AlertService {
         thresholds.put("humidityLow", HUMIDITY_LOW_THRESHOLD);
         thresholds.put("upsOverload", UPS_OVERLOAD_THRESHOLD);
         thresholds.put("lowBattery", LOW_BATTERY_THRESHOLD);
+        thresholds.put("batteryReplacementWarningDays", BATTERY_REPLACEMENT_WARNING_DAYS);
         thresholds.put("autoSendEmail", autoSendEmail);
         thresholds.put("emailRecipients", EMAIL_RECIPIENTS);
         return thresholds;
@@ -74,6 +76,7 @@ public class AlertService {
     public void updateAlertThresholds(BigDecimal upsHighTemp, BigDecimal coolingHighTemp,
                                        BigDecimal humidityHigh, BigDecimal humidityLow, 
                                        BigDecimal overload, BigDecimal lowBattery,
+                                       int batteryReplacementWarningDays,
                                        boolean autoSend, String recipients) {
         HIGH_TEMP_THRESHOLD = upsHighTemp;
         COOLING_HIGH_TEMP_THRESHOLD = coolingHighTemp;
@@ -81,9 +84,12 @@ public class AlertService {
         HUMIDITY_LOW_THRESHOLD = humidityLow;
         UPS_OVERLOAD_THRESHOLD = overload;
         LOW_BATTERY_THRESHOLD = lowBattery;
+        BATTERY_REPLACEMENT_WARNING_DAYS = batteryReplacementWarningDays;
         autoSendEmail = autoSend;
         EMAIL_RECIPIENTS = (recipients != null && !recipients.trim().isEmpty()) ? recipients.trim() : null;
     }
+
+    public int getBatteryReplacementWarningDays() { return BATTERY_REPLACEMENT_WARNING_DAYS; }
 
     public BigDecimal getHighTempThreshold() { return HIGH_TEMP_THRESHOLD; }
     public BigDecimal getCoolingHighTempThreshold() { return COOLING_HIGH_TEMP_THRESHOLD; }
@@ -144,24 +150,42 @@ public class AlertService {
 
     // ==================== Alert CRUD ====================
 
+    @Transactional
     public Alert createAlert(Alert alert) {
         return alertRepository.save(alert);
     }
 
+    @Transactional(readOnly = true)
     public Optional<Alert> getAlertById(Long id) {
         return alertRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<Alert> getLatestAlertAfter(Long afterId) {
+        if (afterId != null) {
+            return alertRepository.findFirstByAlertIdGreaterThanOrderByAlertIdDesc(afterId);
+        }
+        return alertRepository.findFirstByOrderByAlertIdDesc();
+    }
+
+    @Transactional(readOnly = true)
     public List<Alert> getAllAlerts() {
         return alertRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<Alert> getUnsentAlerts() {
         return alertRepository.findByIsSentFalse();
     }
 
+    @Transactional(readOnly = true)
     public List<Alert> getUnacknowledgedAlerts() {
         return alertRepository.findByIsAcknowledgedFalse();
+    }
+
+    @Transactional(readOnly = true)
+    public long countUnacknowledgedAlerts() {
+        return alertRepository.countByIsAcknowledgedFalse();
     }
 
     // ==================== Alert Generators ====================
@@ -170,8 +194,15 @@ public class AlertService {
      * Create a High Temperature alert for a UPS or Cooling unit.
      * Auto-sends email notification to all admins/managers.
      */
-    public Alert createHighTempAlert(Alert.EquipmentCategory equipmentType,
+        public Alert createHighTempAlert(Alert.EquipmentCategory equipmentType,
                                       Long equipmentId, BigDecimal threshold, BigDecimal actual) {
+        return createHighTempAlert(equipmentType, equipmentId, threshold, actual, true);
+    }
+
+    @Transactional
+    public Alert createHighTempAlert(Alert.EquipmentCategory equipmentType,
+                                      Long equipmentId, BigDecimal threshold, BigDecimal actual,
+                                      boolean notifyAll) {
         Alert alert = Alert.builder()
                 .alertType(Alert.AlertType.HIGH_TEMP)
                 .equipmentType(equipmentType)
@@ -183,15 +214,21 @@ public class AlertService {
                 .isAcknowledged(false)
                 .build();
         Alert saved = alertRepository.save(alert);
-        sendAlertToAllRecipients(saved); // Auto-send email
+        if (notifyAll) {
+            sendAlertToAllRecipients(saved);
+        }
         return saved;
     }
-
-    /**
+/**
      * Create a Low Battery alert for a UPS unit.
      * Auto-sends email notification to all admins/managers.
      */
-    public Alert createLowBatteryAlert(Long upsId, BigDecimal threshold, BigDecimal actual) {
+        public Alert createLowBatteryAlert(Long upsId, BigDecimal threshold, BigDecimal actual) {
+        return createLowBatteryAlert(upsId, threshold, actual, true);
+    }
+
+    @Transactional
+    public Alert createLowBatteryAlert(Long upsId, BigDecimal threshold, BigDecimal actual, boolean notifyAll) {
         Alert alert = Alert.builder()
                 .alertType(Alert.AlertType.LOW_BATTERY)
                 .equipmentType(Alert.EquipmentCategory.UPS)
@@ -203,15 +240,21 @@ public class AlertService {
                 .isAcknowledged(false)
                 .build();
         Alert saved = alertRepository.save(alert);
-        sendAlertToAllRecipients(saved); // Auto-send email
+        if (notifyAll) {
+            sendAlertToAllRecipients(saved);
+        }
         return saved;
     }
-
-    /**
+/**
      * Create a UPS Overload alert.
      * Auto-sends email notification to all admins/managers.
      */
-    public Alert createOverloadAlert(Long upsId, BigDecimal threshold, BigDecimal actual) {
+        public Alert createOverloadAlert(Long upsId, BigDecimal threshold, BigDecimal actual) {
+        return createOverloadAlert(upsId, threshold, actual, true);
+    }
+
+    @Transactional
+    public Alert createOverloadAlert(Long upsId, BigDecimal threshold, BigDecimal actual, boolean notifyAll) {
         Alert alert = Alert.builder()
                 .alertType(Alert.AlertType.UPS_OVERLOAD)
                 .equipmentType(Alert.EquipmentCategory.UPS)
@@ -223,14 +266,20 @@ public class AlertService {
                 .isAcknowledged(false)
                 .build();
         Alert saved = alertRepository.save(alert);
-        sendAlertToAllRecipients(saved); // Auto-send email
+        if (notifyAll) {
+            sendAlertToAllRecipients(saved);
+        }
         return saved;
     }
-
-    /**
+/**
      * Create a Maintenance Due alert.
      */
-    public Alert createMaintenanceDueAlert(Alert.EquipmentCategory type, Long equipmentId, String message) {
+        public Alert createMaintenanceDueAlert(Alert.EquipmentCategory type, Long equipmentId, String message) {
+        return createMaintenanceDueAlert(type, equipmentId, message, true);
+    }
+
+    @Transactional
+    public Alert createMaintenanceDueAlert(Alert.EquipmentCategory type, Long equipmentId, String message, boolean notifyAll) {
         Alert alert = Alert.builder()
                 .alertType(Alert.AlertType.MAINTENANCE_DUE)
                 .equipmentType(type)
@@ -240,12 +289,14 @@ public class AlertService {
                 .isAcknowledged(false)
                 .build();
         Alert saved = alertRepository.save(alert);
-        sendAlertToAllRecipients(saved); // Auto-send email
+        if (notifyAll) {
+            sendAlertToAllRecipients(saved);
+        }
         return saved;
     }
+// ==================== Acknowledgment ====================
 
-    // ==================== Acknowledgment ====================
-
+    @Transactional
     public Alert acknowledgeAlert(Long alertId, Long userId) {
         Alert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new RuntimeException("Alert not found: " + alertId));
@@ -263,6 +314,13 @@ public class AlertService {
      */
     public Alert createHumidityAlert(Alert.EquipmentCategory equipmentType,
                                       Long equipmentId, BigDecimal threshold, BigDecimal actual, String direction) {
+        return createHumidityAlert(equipmentType, equipmentId, threshold, actual, direction, true);
+    }
+
+    @Transactional
+    public Alert createHumidityAlert(Alert.EquipmentCategory equipmentType,
+                                      Long equipmentId, BigDecimal threshold, BigDecimal actual, String direction,
+                                      boolean notifyAll) {
         Alert alert = Alert.builder()
                 .alertType(Alert.AlertType.HUMIDITY)
                 .equipmentType(equipmentType)
@@ -274,7 +332,9 @@ public class AlertService {
                 .isAcknowledged(false)
                 .build();
         Alert saved = alertRepository.save(alert);
-        sendAlertToAllRecipients(saved); // Auto-send email
+        if (notifyAll) {
+            sendAlertToAllRecipients(saved); // Auto-send email
+        }
         return saved;
     }
 
@@ -283,6 +343,7 @@ public class AlertService {
     /**
      * Send email notification for an alert using HTML templates.
      */
+    @Transactional
     public void sendAlertEmail(Long alertId, String recipientEmail) {
         Alert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new RuntimeException("Alert not found: " + alertId));
@@ -413,8 +474,15 @@ public class AlertService {
      */
     public Alert createHumidityAlert(Alert.EquipmentCategory equipmentType,
                                       Long equipmentId, BigDecimal threshold, BigDecimal actual, boolean isHigh) {
+        return createHumidityAlert(equipmentType, equipmentId, threshold, actual, isHigh, true);
+    }
+
+    @Transactional
+    public Alert createHumidityAlert(Alert.EquipmentCategory equipmentType,
+                                      Long equipmentId, BigDecimal threshold, BigDecimal actual, boolean isHigh,
+                                      boolean notifyAll) {
         String direction = isHigh ? "above" : "below";
-        return createHumidityAlert(equipmentType, equipmentId, threshold, actual, direction);
+        return createHumidityAlert(equipmentType, equipmentId, threshold, actual, direction, notifyAll);
     }
 
     /**
@@ -458,4 +526,51 @@ public class AlertService {
             throw new RuntimeException("Failed to send test email: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Send a standalone notification email without creating a DB alert record.
+     * Used by the "Notify" button on the simulation console.
+     */
+    public void sendStandaloneNotificationEmail(String alertTypeName, String message, String recipientEmail) {
+        if (mailSender == null) {
+            System.out.println("Mail sender not configured. Standalone email skipped.");
+            return;
+        }
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            helper.setTo(recipientEmail);
+            helper.setSubject("[SPCMS NOTIFICATION] " + alertTypeName);
+
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String html = "<!DOCTYPE html><html><head><meta charset='UTF-8'></head>"
+                + "<body style='margin:0;padding:0;font-family:Inter,Arial,sans-serif;background:#f0f2f5;'>"
+                + "<div style='max-width:600px;margin:0 auto;padding:20px;'>"
+                + "  <div style='background:linear-gradient(135deg,#1a1d23,#2d3139);border-radius:12px 12px 0 0;padding:30px;text-align:center;'>"
+                + "    <h1 style='color:#fff;margin:0;font-size:24px;'>\u26A1 SPCMS Notification</h1>"
+                + "    <p style='color:rgba(255,255,255,0.7);margin:10px 0 0;font-size:14px;'>SmartPower & Cooling Management System</p>"
+                + "  </div>"
+                + "  <div style='background:#fff;padding:30px;border:1px solid #e5e7eb;'>"
+                + "    <div style='background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:15px;margin-bottom:20px;border-left:4px solid #3b82f6;'>"
+                + "      <p style='margin:0;font-weight:600;color:#1e40af;'>" + alertTypeName + "</p>"
+                + "    </div>"
+                + "    <p style='color:#374151;font-size:15px;line-height:1.6;'>" + message + "</p>"
+                + "    <p style='color:#6b7280;font-size:13px;margin-top:20px;'>This is a notification email. No alert record was created in the system.</p>"
+                + "  </div>"
+                + "  <div style='background:#f9fafb;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;padding:20px;text-align:center;'>"
+                + "    <p style='margin:0;color:#6b7280;font-size:12px;'>Sent at " + timestamp + "</p>"
+                + "  </div>"
+                + "</div></body></html>";
+
+            helper.setText(html, true);
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send notification email: " + e.getMessage(), e);
+        }
+    }
 }
+
+
+
+
+

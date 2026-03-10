@@ -22,7 +22,7 @@
         .bg-red-soft { background:rgba(239,68,68,0.1); color:#ef4444; }
         .bg-purple-soft { background:rgba(139,92,246,0.1); color:#8b5cf6; }
         .chart-container { background:#fff; border-radius:12px; padding:20px; border:1px solid #e5e7eb; }
-    </style>
+            </style>
 </head>
 <body>
     <jsp:include page="common/sidebar.jsp"/>
@@ -162,6 +162,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
+
         // UPS Load Trend Chart (Sample data - replace with dynamic data)
         const loadCtx = document.getElementById('loadTrendChart').getContext('2d');
         new Chart(loadCtx, {
@@ -215,5 +216,8 @@
             }
         });
     </script>
+    
+    <!-- Global Alert Notification System -->
+    <jsp:include page="common/alert-notifications.jsp"/>
 </body>
 </html>

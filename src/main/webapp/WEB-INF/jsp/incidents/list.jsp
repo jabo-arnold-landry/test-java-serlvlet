@@ -38,5 +38,8 @@
             </table>
         </div>
     </div>
+    
+    <!-- Global Alert Notification System -->
+    <jsp:include page="../common/alert-notifications.jsp"/>
 </body>
 </html>

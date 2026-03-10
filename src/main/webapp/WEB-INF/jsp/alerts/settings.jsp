@@ -175,11 +175,22 @@
                     <input type="number" name="upsOverloadThreshold" value="${thresholds.upsOverload != null ? thresholds.upsOverload : 80}" step="1" min="0" max="100">
                     <span class="unit">%</span>
                 </div>
+            </div>
+            
+            <!-- Battery Thresholds -->
+            <div class="settings-card">
+                <h5><i class="bi bi-battery-half icon-battery"></i> Battery Thresholds</h5>
                 
                 <div class="threshold-input-group">
                     <label>Low Battery Warning</label>
                     <input type="number" name="lowBatteryThreshold" value="${thresholds.lowBattery != null ? thresholds.lowBattery : 20}" step="1" min="0" max="100">
                     <span class="unit">%</span>
+                </div>
+                
+                <div class="threshold-input-group">
+                    <label>Replacement Warning</label>
+                    <input type="number" name="batteryReplacementWarningDays" value="${thresholds.batteryReplacementWarningDays != null ? thresholds.batteryReplacementWarningDays : 30}" step="1" min="1" max="365">
+                    <span class="unit">days before due</span>
                 </div>
             </div>
             

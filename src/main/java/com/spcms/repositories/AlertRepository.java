@@ -9,6 +9,9 @@ import java.util.List;
 public interface AlertRepository extends JpaRepository<Alert, Long> {
     List<Alert> findByIsSentFalse();
     List<Alert> findByIsAcknowledgedFalse();
+    long countByIsAcknowledgedFalse();
     List<Alert> findByAlertType(Alert.AlertType alertType);
     List<Alert> findByEquipmentTypeAndEquipmentId(Alert.EquipmentCategory type, Long equipmentId);
+    java.util.Optional<Alert> findFirstByOrderByAlertIdDesc();
+    java.util.Optional<Alert> findFirstByAlertIdGreaterThanOrderByAlertIdDesc(Long alertId);
 }
