@@ -247,8 +247,15 @@
         .then(function(res) { return res.ok ? res.json() : null; })
         .then(function(data) {
             if (data && data.id && data.id > alertPoll.lastSeenId) {
+                var isFirstPoll = (alertPoll.lastSeenId === 0);
                 alertPoll.lastSeenId = data.id;
-                renderAlertCard(data);
+                
+                // Only show toast for new alerts that occur *after* page load
+                if (!isFirstPoll) {
+                    renderAlertCard(data);
+                } else {
+                    console.log('🔇 Silently initialized lastSeenId to', data.id);
+                }
             }
         })
         .catch(function(error) {

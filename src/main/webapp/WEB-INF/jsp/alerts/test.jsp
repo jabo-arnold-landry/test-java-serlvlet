@@ -153,10 +153,12 @@
                     <form action="${pageContext.request.contextPath}/alerts/test/maintenance-due" method="post">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Device</label>
-                                <select name="deviceType" class="form-select" required>
-                                    <option value="UPS">UPS</option>
-                                    <option value="BATTERY">Battery</option>
+                                <label class="form-label">Equipment (UPS)</label>
+                                <select name="upsId" class="form-select" required>
+                                    <option value="">-- Select UPS --</option>
+                                    <c:forEach var="ups" items="${upsList}">
+                                        <option value="${ups.upsId}">${ups.upsName} (${ups.assetTag})</option>
+                                    </c:forEach>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -174,7 +176,7 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">UPS Maintenance Record</label>
+                            <label class="form-label">UPS Maintenance Record (Optional)</label>
                             <select name="upsMaintenanceId" class="form-select">
                                 <option value="">-- Select UPS maintenance --</option>
                                 <c:forEach var="m" items="${dueUpsMaintenance}">
@@ -186,10 +188,9 @@
                                     <option disabled>None available</option>
                                 </c:if>
                             </select>
-                            <small class="text-muted">Required when device type is UPS.</small>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Battery Nearing Replacement</label>
+                            <label class="form-label">Battery Nearing Replacement (Optional)</label>
                             <select name="batteryId" class="form-select">
                                 <option value="">-- Select battery --</option>
                                 <c:forEach var="b" items="${dueBatteries}">
@@ -201,7 +202,10 @@
                                     <option disabled>None available</option>
                                 </c:if>
                             </select>
-                            <small class="text-muted">Required when device type is Battery.</small>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="isUpsReplacement" value="true" class="form-check-input" id="upsReplaceCheck">
+                            <label class="form-check-label" for="upsReplaceCheck">UPS Nearing Replacement (Optional)</label>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Note</label>
@@ -441,7 +445,7 @@
     </div>
     
     <!-- Global Alert Notification System -->
-    <jsp:include page="../common/alert-notifications.jsp"/>
+    
     
     <!-- AJAX form submission for real-time simulation without page refresh -->
     <script>

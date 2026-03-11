@@ -75,8 +75,10 @@
     </div>
     
     <!-- Global Alert Notification System -->
-    <jsp:include page="../common/alert-notifications.jsp"/>
+    
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <jsp:include page="/WEB-INF/jsp/common/alert-notifications.jsp"/>
 </body>
 </html>

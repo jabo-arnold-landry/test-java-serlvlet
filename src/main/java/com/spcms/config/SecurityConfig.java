@@ -46,6 +46,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Public access - MUST come first
                 .requestMatchers(
+                    new AntPathRequestMatcher("/"),
+                    new AntPathRequestMatcher("/index.jsp"),
                     new AntPathRequestMatcher("/login"),
                     new AntPathRequestMatcher("/login/**"),
                     new AntPathRequestMatcher("/perform_login"),

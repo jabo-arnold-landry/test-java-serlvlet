@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class LoginController {
 
+    @GetMapping("/")
+    public String root() {
+        return "redirect:/dashboard";
+    }
+
     @GetMapping("/login")
     @ResponseBody
     public String loginPage(HttpServletRequest request) {

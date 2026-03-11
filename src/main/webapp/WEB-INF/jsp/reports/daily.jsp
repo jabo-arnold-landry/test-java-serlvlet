@@ -50,5 +50,6 @@
             </c:otherwise>
         </c:choose>
     </div>
+    <jsp:include page="/WEB-INF/jsp/common/alert-notifications.jsp"/>
 </body>
 </html>

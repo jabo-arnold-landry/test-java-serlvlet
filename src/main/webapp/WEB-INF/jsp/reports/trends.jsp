@@ -91,5 +91,6 @@
             options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } }
         });
     </script>
+    <jsp:include page="/WEB-INF/jsp/common/alert-notifications.jsp"/>
 </body>
 </html>

@@ -8,6 +8,7 @@ import com.spcms.services.UpsService;
 import com.spcms.services.MaintenanceService;
 import com.spcms.models.UpsBattery;
 import com.spcms.models.UpsMaintenance;
+import com.spcms.models.Ups;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -346,60 +347,60 @@ public class AlertController {
 
     @PostMapping("/test/maintenance-due")
     public String createMaintenanceDueAlert(
-            @RequestParam String deviceType,
+            @RequestParam Long upsId,
             @RequestParam(required = false) Long upsMaintenanceId,
             @RequestParam(required = false) Long batteryId,
+            @RequestParam(required = false) Boolean isUpsReplacement,
             @RequestParam(required = false) String note,
             @RequestParam(defaultValue = "false") boolean sendEmail,
             @RequestParam(required = false) String email,
             RedirectAttributes redirectAttributes) {
         try {
-            Alert.EquipmentCategory category;
-            Long equipmentId;
-            String message;
+            Ups ups = upsService.getUpsById(upsId)
+                    .orElseThrow(() -> new RuntimeException("Selected UPS not found."));
 
-            if ("UPS".equalsIgnoreCase(deviceType)) {
-                UpsMaintenance maintenance = maintenanceService.getUpsMaintenanceById(
-                        upsMaintenanceId != null ? upsMaintenanceId : -1L)
-                        .orElseThrow(() -> new RuntimeException("Select a UPS maintenance record."));
+            StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append("Maintenance notification for UPS ").append(ups.getAssetTag())
+                    .append(" (").append(ups.getUpsName()).append(")");
 
-                category = Alert.EquipmentCategory.UPS;
-                equipmentId = maintenance.getUps().getUpsId();
+            if (upsMaintenanceId != null && upsMaintenanceId > 0) {
+                UpsMaintenance maintenance = maintenanceService.getUpsMaintenanceById(upsMaintenanceId)
+                        .orElseThrow(() -> new RuntimeException("Select a valid UPS maintenance record."));
                 String dueDate = maintenance.getNextDueDate() != null
                         ? maintenance.getNextDueDate().toString()
                         : maintenance.getMaintenanceDate().toString();
-                message = "UPS " + maintenance.getUps().getAssetTag()
-                        + " maintenance (" + maintenance.getMaintenanceType() + ") due on " + dueDate;
-            } else if ("BATTERY".equalsIgnoreCase(deviceType)) {
-                UpsBattery battery = upsService.getBatteryById(
-                        batteryId != null ? batteryId : -1L)
-                        .orElseThrow(() -> new RuntimeException("Select a battery nearing replacement."));
+                messageBuilder.append(" | Maintenance (").append(maintenance.getMaintenanceType()).append(") due on ").append(dueDate);
+            }
 
-                category = Alert.EquipmentCategory.OTHER;
-                equipmentId = battery.getBatteryId();
+            if (batteryId != null && batteryId > 0) {
+                UpsBattery battery = upsService.getBatteryById(batteryId)
+                        .orElseThrow(() -> new RuntimeException("Select a valid battery."));
                 String dueDate = battery.getReplacementDueDate() != null
                         ? battery.getReplacementDueDate().toString()
                         : "upcoming";
-                message = "Battery " + battery.getBatteryId() + " on UPS "
-                        + battery.getUps().getAssetTag() + " replacement due " + dueDate;
-            } else {
-                throw new RuntimeException("Device type must be UPS or BATTERY.");
+                messageBuilder.append(" | Battery ").append(battery.getBatteryId()).append(" replacement due ").append(dueDate);
+            }
+
+            if (Boolean.TRUE.equals(isUpsReplacement)) {
+                messageBuilder.append(" | UPS nearing end of life, replacement needed");
             }
 
             if (note != null && !note.trim().isEmpty()) {
-                message += " - " + note.trim();
+                messageBuilder.append("\nNote: ").append(note.trim());
             }
+
+            String finalMessage = messageBuilder.toString();
 
             if (sendEmail) {
                 if (email == null || email.trim().isEmpty()) {
                     redirectAttributes.addFlashAttribute("error", "Provide an email to notify.");
                     return "redirect:/alerts/test";
                 }
-                alertService.sendStandaloneNotificationEmail("Maintenance Due", message, email.trim());
+                alertService.sendStandaloneNotificationEmail("Maintenance Due", finalMessage, email.trim());
                 redirectAttributes.addFlashAttribute("success",
                         "Maintenance due notification email sent to " + email);
             } else {
-                Alert alert = alertService.createMaintenanceDueAlert(category, equipmentId, message, false);
+                Alert alert = alertService.createMaintenanceDueAlert(Alert.EquipmentCategory.UPS, upsId, finalMessage, false);
                 pushAlert(alert);
                 redirectAttributes.addFlashAttribute("success",
                         "Maintenance due alert triggered (ID: " + alert.getAlertId() + ")");
