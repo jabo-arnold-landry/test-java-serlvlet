@@ -453,54 +453,70 @@
                     btn.disabled = true;
                 });
                 
-                fetch(form.action, {
-                    method: form.method || 'POST',
-                    body: new URLSearchParams(formData), // send as x-www-form-urlencoded
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                })
-                .then(res => res.text())
-                .then(html => {
-                    // Restore buttons
-                    buttons.forEach(btn => {
-                        btn.innerHTML = btn.dataset.originalText;
-                        btn.disabled = false;
-                    });
-                    
-                    // Parse HTML to check for errors
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const alertError = doc.querySelector('.alert-danger');
-                    if (alertError) {
-                        // Display error using a quick alert or inject into current DOM
-                        const currentError = document.querySelector('.main-content > .alert-danger');
-                        if (currentError) currentError.remove(); // remove old
-                        
-                        const newError = alertError.cloneNode(true);
-                        document.querySelector('.demo-banner').insertAdjacentElement('beforebegin', newError);
-                        
-                        // Scroll to top to see error
-                        window.scrollTo(0, 0);
-                    } else {
-                        // Success!
-                        // Remove any existing errors
-                        const currentError = document.querySelector('.main-content > .alert-danger');
-                        if (currentError) currentError.remove();
-                        
-                        // The SSE will handle toast creation automatically in the UI.
-                        // We don't really need to reset the form, as the user might test again.
-                    }
-                })
-                .catch(err => {
-                    console.error('Error submitting form:', err);
-                    buttons.forEach(btn => {
-                        btn.innerHTML = btn.dataset.originalText;
-                        btn.disabled = false;
-                    });
-                    alert('An error occurred while communicating with the server.');
-                });
+        fetch(form.action, {
+            method: form.method || 'POST',
+            body: new URLSearchParams(formData), // send as x-www-form-urlencoded
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(res => res.text())
+        .then(html => {
+            // Restore buttons
+            buttons.forEach(btn => {
+                btn.innerHTML = btn.dataset.originalText;
+                btn.disabled = false;
+            });
+            
+            // Parse HTML to pull flashed alerts
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const alertError = doc.querySelector('.alert-danger');
+            const alertSuccess = doc.querySelector('.alert-success');
+
+            // Clean existing alerts
+            document.querySelectorAll('.main-content > .alert-danger, .main-content > .alert-success')
+                .forEach(el => el.remove());
+
+            const anchor = document.querySelector('.main-content');
+            if (alertError) {
+                const cloned = alertError.cloneNode(true);
+                anchor.insertAdjacentElement('afterbegin', cloned);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            if (alertSuccess) {
+                const cloned = alertSuccess.cloneNode(true);
+                anchor.insertAdjacentElement('afterbegin', cloned);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            // Fallback generic success if no flash was present
+            const generic = document.createElement('div');
+            generic.className = 'alert alert-success alert-dismissible fade show';
+            generic.innerHTML = '<i class=\"bi bi-check-circle-fill\"></i> Request submitted successfully.' +
+                '<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button>';
+            anchor.insertAdjacentElement('afterbegin', generic);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .catch(err => {
+            console.error('Error submitting form:', err);
+            buttons.forEach(btn => {
+                btn.innerHTML = btn.dataset.originalText;
+                btn.disabled = false;
+            });
+            // Show a visible error message in-page
+            document.querySelectorAll('.main-content > .alert-danger, .main-content > .alert-success')
+                .forEach(el => el.remove());
+            const anchor = document.querySelector('.main-content');
+            const errBox = document.createElement('div');
+            errBox.className = 'alert alert-danger alert-dismissible fade show';
+            errBox.innerHTML = '<i class=\"bi bi-exclamation-circle-fill\"></i> Send failed: ' + err.message +
+                '<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button>';
+            anchor.insertAdjacentElement('afterbegin', errBox);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
             });
         });
     });
