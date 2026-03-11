@@ -6,8 +6,10 @@
          version="6.0">
 
     <display-name>SPCMS - SmartPower and Cooling Management System</display-name>
-
-    <!-- Spring Boot handles all servlet configuration via SpringBootServletInitializer -->
-    <!-- No additional servlet mappings needed here -->
+    
+    <!-- Welcome file list -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
 
 </web-app>

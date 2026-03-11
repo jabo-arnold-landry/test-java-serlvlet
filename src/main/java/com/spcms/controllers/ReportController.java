@@ -18,7 +18,9 @@ public class ReportController {
 
     @GetMapping
     public String dailyReport(Model model) {
-        model.addAttribute("report", reportService.getDailyReport(LocalDate.now()).orElse(null));
+        LocalDate today = LocalDate.now();
+        model.addAttribute("report", reportService.getDailyReport(today).orElse(null));
+        model.addAttribute("selectedDate", today);
         return "reports/daily";
     }
 
@@ -26,6 +28,7 @@ public class ReportController {
     public String generateReport(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                   Model model) {
         model.addAttribute("report", reportService.generateDailyReport(date));
+        model.addAttribute("selectedDate", date);
         return "reports/daily";
     }
 
