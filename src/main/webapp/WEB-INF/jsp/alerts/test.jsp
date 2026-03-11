@@ -60,17 +60,6 @@
         .searchable-select-wrapper select {
             width: 100%;
         }
-        .demo-banner {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .demo-banner i { font-size: 20px; }
         .alert-scenario {
             background: #fef3c7;
             border: 1px solid #fcd34d;
@@ -100,14 +89,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         </c:if>
-        
-        <div class="demo-banner">
-            <i class="bi bi-broadcast"></i>
-            <div>
-                <strong>Simulation Console</strong>
-                <span style="opacity:0.9;margin-left:10px;">Simulate sensor data for demonstration and training purposes</span>
-            </div>
-        </div>
         
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
@@ -176,7 +157,7 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">UPS Maintenance Record (Optional)</label>
+                            <label class="form-label">UPS Maintenance Record</label>
                             <select name="upsMaintenanceId" class="form-select">
                                 <option value="">-- Select UPS maintenance --</option>
                                 <c:forEach var="m" items="${dueUpsMaintenance}">
@@ -190,7 +171,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Battery Nearing Replacement (Optional)</label>
+                            <label class="form-label">Battery Nearing Replacement</label>
                             <select name="batteryId" class="form-select">
                                 <option value="">-- Select battery --</option>
                                 <c:forEach var="b" items="${dueBatteries}">
@@ -205,7 +186,7 @@
                         </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" name="isUpsReplacement" value="true" class="form-check-input" id="upsReplaceCheck">
-                            <label class="form-check-label" for="upsReplaceCheck">UPS Nearing Replacement (Optional)</label>
+                            <label class="form-check-label" for="upsReplaceCheck">UPS Nearing Replacement</label>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Note</label>
