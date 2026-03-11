@@ -10,4 +10,7 @@ public interface VisitApprovalRepository extends JpaRepository<VisitApproval, Lo
     List<VisitApproval> findByStatus(VisitApproval.ApprovalStatus status);
     List<VisitApproval> findByVisitor_VisitorId(Long visitorId);
     List<VisitApproval> findByApprovedBy_UserId(Long managerId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT a FROM VisitApproval a WHERE a.status = com.spcms.models.VisitApproval.ApprovalStatus.APPROVED AND NOT EXISTS (SELECT c FROM com.spcms.models.VisitorCheckInOut c WHERE c.visitor.visitorId = a.visitor.visitorId)")
+    List<VisitApproval> findApprovedWaitingForCheckIn();
 }

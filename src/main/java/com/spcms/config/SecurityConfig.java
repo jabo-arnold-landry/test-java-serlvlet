@@ -60,10 +60,18 @@ public class SecurityConfig {
                 // User management - ADMIN only
                 .requestMatchers(new AntPathRequestMatcher("/users/**")).hasRole("ADMIN")
 
-                // Visitor approval - MANAGER or ADMIN
+                // Visitor registration and checking - TECHNICIAN or ADMIN
+                .requestMatchers(
+                    new AntPathRequestMatcher("/visitors/register/**"),
+                    new AntPathRequestMatcher("/visitors/checkin/**"),
+                    new AntPathRequestMatcher("/visitors/checkout/**")
+                ).hasAnyRole("TECHNICIAN", "ADMIN")
+
+                // Visitor approval and dashboard - MANAGER or ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/visitors/approve/**"),
-                    new AntPathRequestMatcher("/visitors/reject/**")
+                    new AntPathRequestMatcher("/visitors/reject/**"),
+                    new AntPathRequestMatcher("/visitors/dashboard/**")
                 ).hasAnyRole("MANAGER", "ADMIN")
 
                 // Reports generation - MANAGER or ADMIN

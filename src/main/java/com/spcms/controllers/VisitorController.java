@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.List;
 
 @Controller
 @RequestMapping("/visitors")
@@ -18,11 +19,19 @@ public class VisitorController {
     @Autowired
     private com.spcms.repositories.VisitApprovalRepository visitApprovalRepository;
 
+    @Autowired
+    private com.spcms.repositories.UserRepository userRepository;
+
     @GetMapping
     public String list(Model model) {
         model.addAttribute("visitors", visitorService.getAllVisitors());
         model.addAttribute("activeVisitors", visitorService.getActiveVisitors());
         model.addAttribute("pendingApprovals", visitorService.getPendingApprovals());
+        model.addAttribute("waitingForCheckIn", visitorService.getWaitingForCheckIn());
+        
+        // Fetch users to populate the escort dropdown
+        model.addAttribute("staffList", userRepository.findAll());
+        
         return "visitors/list";
     }
 

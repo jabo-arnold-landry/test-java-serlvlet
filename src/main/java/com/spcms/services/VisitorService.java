@@ -93,6 +93,10 @@ public class VisitorService {
         return visitApprovalRepository.findByStatus(VisitApproval.ApprovalStatus.PENDING);
     }
 
+    public List<VisitApproval> getWaitingForCheckIn() {
+        return visitApprovalRepository.findApprovedWaitingForCheckIn();
+    }
+
     // ==================== Check-In / Check-Out ====================
 
     public VisitorCheckInOut checkIn(Long visitorId, String temporaryBadge, Long escortId) {
