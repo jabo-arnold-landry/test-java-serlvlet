@@ -64,7 +64,7 @@ public class VisitorService {
         return visitApprovalRepository.save(approval);
     }
 
-    public VisitApproval approveVisit(Long approvalId, Long managerId) {
+    public VisitApproval approveVisit(Long approvalId, Long managerId, Integer durationHours) {
         VisitApproval approval = visitApprovalRepository.findById(approvalId)
                 .orElseThrow(() -> new RuntimeException("Approval not found: " + approvalId));
         var manager = new com.spcms.models.User();
@@ -72,6 +72,7 @@ public class VisitorService {
         approval.setApprovedBy(manager);
         approval.setStatus(VisitApproval.ApprovalStatus.APPROVED);
         approval.setDecisionTime(LocalDateTime.now());
+        approval.setApprovedDurationHours(durationHours);
         approval.setNotificationSent(true); // TODO: send actual notification
         return visitApprovalRepository.save(approval);
     }
@@ -122,5 +123,33 @@ public class VisitorService {
 
     public List<VisitorCheckInOut> getActiveVisitors() {
         return visitorCheckInOutRepository.findActiveVisitors();
+    }
+
+    public List<VisitorCheckInOut> getOverstayedVisitors() {
+        List<VisitorCheckInOut> active = getActiveVisitors();
+        List<VisitorCheckInOut> overstayed = new java.util.ArrayList<>();
+        for (VisitorCheckInOut visit : active) {
+            List<VisitApproval> approvals = visitApprovalRepository.findByVisitor_VisitorId(visit.getVisitor().getVisitorId());
+            VisitApproval latestApproval = approvals.stream()
+                .filter(a -> a.getStatus() == VisitApproval.ApprovalStatus.APPROVED)
+                .max(java.util.Comparator.comparing(VisitApproval::getDecisionTime))
+                .orElse(null);
+            
+            if (latestApproval != null && latestApproval.getApprovedDurationHours() != null && visit.getCheckInTime() != null) {
+                LocalDateTime expectedOut = visit.getCheckInTime().plusHours(latestApproval.getApprovedDurationHours());
+                if (LocalDateTime.now().isAfter(expectedOut)) {
+                    overstayed.add(visit);
+                }
+            }
+        }
+        return overstayed;
+    }
+
+    public List<VisitorCheckInOut> getVisitHistory(LocalDate start, LocalDate end) {
+        return visitorCheckInOutRepository.findVisitHistory(start, end);
+    }
+
+    public List<Object[]> getHighFrequencyVisitors() {
+        return visitorCheckInOutRepository.findHighFrequencyVisitors();
     }
 }

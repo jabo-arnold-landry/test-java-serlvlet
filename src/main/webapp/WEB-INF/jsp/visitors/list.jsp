@@ -58,8 +58,9 @@
                                 <td>${a.visitor.fullName}</td><td>${a.visitor.purposeOfVisit}</td>
                                 <td>${a.visitor.hostEmployee.fullName}</td>
                                 <td>
-                                    <form action="${pageContext.request.contextPath}/visitors/approve/${a.approvalId}" method="post" class="d-inline">
+                                    <form action="${pageContext.request.contextPath}/visitors/approve/${a.approvalId}" method="post" class="d-inline align-items-center">
                                         <input type="hidden" name="managerId" value="1">
+                                        <input type="number" name="durationHours" value="1" min="1" class="form-control form-control-sm d-inline" style="width: 70px;" title="Approved Duration (Hours)">
                                         <button class="btn btn-sm btn-success">Approve</button>
                                     </form>
                                 </td>

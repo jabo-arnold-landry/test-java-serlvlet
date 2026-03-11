@@ -31,6 +31,9 @@ public class VisitApproval {
     @Column(name = "decision_time")
     private LocalDateTime decisionTime;
 
+    @Column(name = "approved_duration_hours")
+    private Integer approvedDurationHours;
+
     @Column(columnDefinition = "TEXT")
     private String remarks;
 

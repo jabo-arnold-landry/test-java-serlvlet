@@ -15,4 +15,10 @@ public interface VisitorCheckInOutRepository extends JpaRepository<VisitorCheckI
 
     @Query("SELECT v FROM VisitorCheckInOut v WHERE v.escort.userId = :escortId AND v.visitClosed = false")
     List<VisitorCheckInOut> findByEscort(@org.springframework.data.repository.query.Param("escortId") Long escortId);
+
+    @Query("SELECT v FROM VisitorCheckInOut v WHERE v.visitClosed = true AND CAST(v.checkInTime AS date) >= :startDate AND CAST(v.checkInTime AS date) <= :endDate ORDER BY v.checkInTime DESC")
+    List<VisitorCheckInOut> findVisitHistory(@org.springframework.data.repository.query.Param("startDate") java.time.LocalDate startDate, @org.springframework.data.repository.query.Param("endDate") java.time.LocalDate endDate);
+
+    @Query("SELECT v.visitor, COUNT(v) FROM VisitorCheckInOut v WHERE v.visitClosed = true GROUP BY v.visitor ORDER BY COUNT(v) DESC")
+    List<Object[]> findHighFrequencyVisitors();
 }
