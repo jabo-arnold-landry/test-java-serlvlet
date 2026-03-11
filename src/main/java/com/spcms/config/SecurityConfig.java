@@ -70,8 +70,7 @@ public class SecurityConfig {
                 // Visitor approval and dashboard - MANAGER or ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/visitors/approve/**"),
-                    new AntPathRequestMatcher("/visitors/reject/**"),
-                    new AntPathRequestMatcher("/visitors/dashboard/**")
+                    new AntPathRequestMatcher("/visitors/reject/**")
                 ).hasAnyRole("MANAGER", "ADMIN")
 
                 // Reports generation - MANAGER or ADMIN

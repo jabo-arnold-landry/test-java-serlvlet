@@ -27,9 +27,6 @@
             <div class="nav-section-label">Visitors</div>
             <a href="${pageContext.request.contextPath}/visitors" class="nav-link"><i class="bi bi-person-badge"></i> Visitor Management</a>
         </sec:authorize>
-        <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
-            <a href="${pageContext.request.contextPath}/visitors/dashboard" class="nav-link"><i class="bi bi-speedometer"></i> Visitor Dashboard</a>
-        </sec:authorize>
 
         <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
             <div class="nav-section-label">Reports</div>

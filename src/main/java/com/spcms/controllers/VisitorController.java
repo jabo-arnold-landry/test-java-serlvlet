@@ -23,14 +23,36 @@ public class VisitorController {
     private com.spcms.repositories.UserRepository userRepository;
 
     @GetMapping
-    public String list(Model model) {
+    public String list(@RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate startDate,
+                       @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate endDate,
+                       Model model) {
+        
+        if (startDate == null) startDate = java.time.LocalDate.now().minusDays(30);
+        if (endDate == null) endDate = java.time.LocalDate.now();
+
+        List<com.spcms.models.VisitorCheckInOut> active = visitorService.getActiveVisitors();
+        
         model.addAttribute("visitors", visitorService.getAllVisitors());
-        model.addAttribute("activeVisitors", visitorService.getActiveVisitors());
+        model.addAttribute("activeVisitors", active);
         model.addAttribute("pendingApprovals", visitorService.getPendingApprovals());
         model.addAttribute("waitingForCheckIn", visitorService.getWaitingForCheckIn());
-        
-        // Fetch users to populate the escort dropdown
         model.addAttribute("staffList", userRepository.findAll());
+        
+        // Dashboard specific
+        model.addAttribute("overstayedVisitors", visitorService.getOverstayedVisitors());
+        model.addAttribute("visitHistory", visitorService.getVisitHistory(startDate, endDate));
+        model.addAttribute("highFrequencyVisitors", visitorService.getHighFrequencyVisitors());
+        
+        java.util.Map<Long, String> durationStrings = new java.util.HashMap<>();
+        for(com.spcms.models.VisitorCheckInOut v : active) {
+            if(v.getCheckInTime() != null) {
+                java.time.Duration d = java.time.Duration.between(v.getCheckInTime(), java.time.LocalDateTime.now());
+                durationStrings.put(v.getCheckId(), String.format("%dh %dm", d.toHours(), d.toMinutesPart()));
+            }
+        }
+        model.addAttribute("durationStrings", durationStrings);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         
         return "visitors/list";
     }
@@ -88,35 +110,4 @@ public class VisitorController {
         return "redirect:/visitors";
     }
 
-    @GetMapping("/dashboard")
-    public String dashboard(@RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate startDate,
-                            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate endDate,
-                            Model model) {
-        if (startDate == null) startDate = java.time.LocalDate.now().minusDays(30);
-        if (endDate == null) endDate = java.time.LocalDate.now();
-        
-        List<com.spcms.models.VisitorCheckInOut> active = visitorService.getActiveVisitors();
-        List<com.spcms.models.VisitorCheckInOut> overstayed = visitorService.getOverstayedVisitors();
-        List<com.spcms.models.VisitorCheckInOut> history = visitorService.getVisitHistory(startDate, endDate);
-        List<Object[]> highFrequency = visitorService.getHighFrequencyVisitors();
-        
-        // Calculate durations for active visitors for the view
-        java.util.Map<Long, String> durationStrings = new java.util.HashMap<>();
-        for(com.spcms.models.VisitorCheckInOut v : active) {
-            if(v.getCheckInTime() != null) {
-                java.time.Duration d = java.time.Duration.between(v.getCheckInTime(), java.time.LocalDateTime.now());
-                durationStrings.put(v.getCheckId(), String.format("%dh %dm", d.toHours(), d.toMinutesPart()));
-            }
-        }
-        
-        model.addAttribute("activeVisitors", active);
-        model.addAttribute("overstayedVisitors", overstayed);
-        model.addAttribute("visitHistory", history);
-        model.addAttribute("highFrequencyVisitors", highFrequency);
-        model.addAttribute("durationStrings", durationStrings);
-        model.addAttribute("startDate", startDate);
-        model.addAttribute("endDate", endDate);
-        
-        return "visitors/dashboard";
-    }
 }
