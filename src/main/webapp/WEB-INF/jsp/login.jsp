@@ -229,6 +229,9 @@
                 <button type="submit" class="btn-login">
                     <i class="bi bi-box-arrow-in-right"></i> Sign In
                 </button>
+                <div class="text-center mt-3">
+                    <a href="${pageContext.request.contextPath}/register-visitor" style="color: var(--accent-blue); text-decoration: none; font-size: 13px;">Don't have an account? Register as Visitor</a>
+                </div>
             </form>
 
             <div class="divider">Authorized Access Only</div>

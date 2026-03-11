@@ -54,7 +54,9 @@ public class SecurityConfig {
                     new AntPathRequestMatcher("/css/**"),
                     new AntPathRequestMatcher("/js/**"),
                     new AntPathRequestMatcher("/images/**"),
-                    new AntPathRequestMatcher("/webjars/**")
+                    new AntPathRequestMatcher("/webjars/**"),
+                    new AntPathRequestMatcher("/register-visitor"),
+                    new AntPathRequestMatcher("/register-visitor/**")
                 ).permitAll()
 
                 // User management - ADMIN only
@@ -155,7 +157,7 @@ public class SecurityConfig {
                         targetUrl = request.getContextPath() + "/monitoring";
                         break;
                     case "ROLE_VIEWER":
-                        targetUrl = request.getContextPath() + "/dashboard";
+                        targetUrl = request.getContextPath() + "/visitor-portal";
                         break;
                 }
             }
