@@ -86,7 +86,7 @@
     </dependencies>
 
     <build>
-        <finalName>test-java-serlvlet</finalName>
+        <finalName>kigali boy</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
