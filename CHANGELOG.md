@@ -93,3 +93,4 @@
 - Updating comments
 - Formatting code
 - Optimizing imports
+- Removing unused variables
