@@ -36,6 +36,9 @@ public class VisitorCheckInOut {
     @Column(name = "equipment_confirmed_out")
     private Boolean equipmentConfirmedOut = false;
 
+    @Column(name = "badge_returned")
+    private Boolean badgeReturned = false;
+
     @Column(name = "visit_closed")
     private Boolean visitClosed = false;
 

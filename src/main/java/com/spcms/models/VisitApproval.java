@@ -24,6 +24,7 @@ public class VisitApproval {
     @JoinColumn(name = "approved_by")
     private User approvedBy;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private ApprovalStatus status = ApprovalStatus.PENDING;
@@ -37,6 +38,7 @@ public class VisitApproval {
     @Column(columnDefinition = "TEXT")
     private String remarks;
 
+    @Builder.Default
     @Column(name = "notification_sent")
     private Boolean notificationSent = false;
 

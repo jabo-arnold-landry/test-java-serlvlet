@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <nav class="sidebar">
     <div class="sidebar-brand">
         <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
@@ -23,9 +25,21 @@
         
         <a href="${pageContext.request.contextPath}/alerts" class="nav-link"><i class="bi bi-bell-fill"></i> Alerts</a>
         
-        <sec:authorize access="hasAnyRole('TECHNICIAN', 'MANAGER', 'ADMIN')">
-            <div class="nav-section-label">Visitors</div>
-            <a href="${pageContext.request.contextPath}/visitors" class="nav-link"><i class="bi bi-person-badge"></i> Visitor Management</a>
+        <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
+            <div class="nav-section-label">Visitor Admin</div>
+            <a href="${pageContext.request.contextPath}/visitors" class="nav-link"><i class="bi bi-shield-lock"></i> Security Dashboard</a>
+        </sec:authorize>
+        
+        <sec:authorize access="hasAnyRole('TECHNICIAN', 'ADMIN')">
+            <div class="nav-section-label">Visitor Operations</div>
+            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-person-badge-fill"></i> Ops Command Center</a>
+            <sec:authorize access="hasRole('TECHNICIAN')">
+                <div class="ms-4 mb-2">
+                    <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="nav-link py-1 small text-muted"><i class="bi bi-check2-circle"></i> My Assignments</a>
+                    <a href="${pageContext.request.contextPath}/visitor-portal/active" class="nav-link py-1 small text-muted"><i class="bi bi-person-walking"></i> Active Escorts</a>
+                    <a href="${pageContext.request.contextPath}/visitor-portal/history" class="nav-link py-1 small text-muted"><i class="bi bi-clock-history"></i> Visit History</a>
+                </div>
+            </sec:authorize>
         </sec:authorize>
 
         <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">

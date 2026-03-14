@@ -8,8 +8,7 @@ public class RootController {
 
     @GetMapping("/")
     public String root() {
-        // Spring Security will automatically intercept this and redirect to /login if unauthenticated.
-        // If authenticated, it will redirect successfully to /dashboard (or wherever).
+        // Removed explicit redirect:/dashboard. Let Spring Security handle the root path redirection naturally.
         return "redirect:/dashboard";
     }
 }

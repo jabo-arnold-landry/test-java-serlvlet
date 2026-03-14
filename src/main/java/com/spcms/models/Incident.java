@@ -35,6 +35,7 @@ public class Incident {
     @Column(nullable = false, length = 10)
     private Severity severity;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 15)
     private IncidentStatus status = IncidentStatus.OPEN;
@@ -64,6 +65,9 @@ public class Incident {
 
     @Column(name = "attachment_path", length = 500)
     private String attachmentPath;
+
+    @Column(name = "visitor_id")
+    private Long visitorId;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

@@ -28,6 +28,9 @@ public class VisitorService {
     @Autowired
     private VisitorCheckInOutRepository visitorCheckInOutRepository;
 
+    @Autowired
+    private com.spcms.repositories.IncidentRepository incidentRepository;
+
     // ==================== Visitor Registration ====================
 
     public Visitor registerVisitor(Visitor visitor) {
@@ -94,7 +97,20 @@ public class VisitorService {
     }
 
     public List<VisitApproval> getWaitingForCheckIn() {
-        return visitApprovalRepository.findApprovedWaitingForCheckIn();
+        return visitApprovalRepository.findApprovedWaitingForCheckIn(VisitApproval.ApprovalStatus.APPROVED);
+    }
+
+    public List<VisitApproval> getHistoricalApprovals() {
+        return visitApprovalRepository.findAll().stream()
+            .filter(a -> a.getStatus() != VisitApproval.ApprovalStatus.PENDING)
+            .sorted(java.util.Comparator.comparing(VisitApproval::getDecisionTime, java.util.Comparator.nullsLast(java.util.Comparator.reverseOrder())))
+            .toList();
+    }
+
+    public List<VisitApproval> getApprovedVisitsToday() {
+        return getWaitingForCheckIn().stream()
+            .filter(a -> a.getVisitor().getVisitDate().equals(LocalDate.now()))
+            .toList();
     }
 
     // ==================== Check-In / Check-Out ====================
@@ -116,13 +132,18 @@ public class VisitorService {
         return visitorCheckInOutRepository.save(checkInOut);
     }
 
-    public VisitorCheckInOut checkOut(Long checkId, boolean equipmentConfirmed) {
+    public VisitorCheckInOut checkOut(Long checkId, boolean equipmentConfirmed, boolean badgeReturned) {
         VisitorCheckInOut checkInOut = visitorCheckInOutRepository.findById(checkId)
                 .orElseThrow(() -> new RuntimeException("Check-in record not found: " + checkId));
         checkInOut.setCheckOutTime(LocalDateTime.now());
         checkInOut.setEquipmentConfirmedOut(equipmentConfirmed);
+        checkInOut.setBadgeReturned(badgeReturned);
         checkInOut.setVisitClosed(true);
         return visitorCheckInOutRepository.save(checkInOut);
+    }
+
+    public long countCompletedVisitsToday() {
+        return visitorCheckInOutRepository.countCompletedToday();
     }
 
     public List<VisitorCheckInOut> getActiveVisitors() {
@@ -135,7 +156,7 @@ public class VisitorService {
         for (VisitorCheckInOut visit : active) {
             List<VisitApproval> approvals = visitApprovalRepository.findByVisitor_VisitorId(visit.getVisitor().getVisitorId());
             VisitApproval latestApproval = approvals.stream()
-                .filter(a -> a.getStatus() == VisitApproval.ApprovalStatus.APPROVED)
+                .filter(a -> a.getStatus() == VisitApproval.ApprovalStatus.APPROVED && a.getDecisionTime() != null)
                 .max(java.util.Comparator.comparing(VisitApproval::getDecisionTime))
                 .orElse(null);
             
@@ -155,5 +176,27 @@ public class VisitorService {
 
     public List<Object[]> getHighFrequencyVisitors() {
         return visitorCheckInOutRepository.findHighFrequencyVisitors();
+    }
+
+    public com.spcms.models.Incident saveIncident(com.spcms.models.Incident incident) {
+        return incidentRepository.save(incident);
+    }
+
+    // ==================== Technician Specific ====================
+
+    public List<VisitApproval> getTechnicianAssignments(Long userId) {
+        return visitApprovalRepository.findByVisitor_HostEmployee_UserIdAndStatus(userId, VisitApproval.ApprovalStatus.APPROVED);
+    }
+
+    public List<VisitorCheckInOut> getTechnicianActiveEscorts(Long userId) {
+        return visitorCheckInOutRepository.findByEscort_UserIdAndVisitClosedOrderByCheckInTimeDesc(userId, false);
+    }
+
+    public List<VisitorCheckInOut> getTechnicianVisitHistory(Long userId) {
+        return visitorCheckInOutRepository.findByEscort_UserIdAndVisitClosedOrderByCheckInTimeDesc(userId, true);
+    }
+
+    public List<com.spcms.models.Incident> getTechnicianIncidents(Long userId) {
+        return incidentRepository.findByReportedBy_UserIdOrderByCreatedAtDesc(userId);
     }
 }

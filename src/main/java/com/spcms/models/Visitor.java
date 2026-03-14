@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "visitors")
@@ -35,6 +36,16 @@ public class Visitor {
     @Column(name = "purpose_of_visit", nullable = false, columnDefinition = "TEXT")
     private String purposeOfVisit;
 
+    @Column(name = "department_to_visit", length = 100)
+    private String departmentToVisit;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    @Column(name = "arrival_time")
+    private java.time.LocalTime arrivalTime;
+
+    @Column(name = "expected_duration_hours")
+    private Integer expectedDurationHours;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host_employee_id")
     private User hostEmployee;
@@ -53,6 +64,10 @@ public class Visitor {
 
     @Column(name = "visit_date", nullable = false)
     private LocalDate visitDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requested_by")
+    private User requestedBy;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
