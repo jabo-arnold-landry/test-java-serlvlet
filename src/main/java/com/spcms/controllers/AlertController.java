@@ -213,6 +213,13 @@ public class AlertController {
                 ? Alert.EquipmentCategory.UPS 
                 : Alert.EquipmentCategory.COOLING;
             
+            // VALIDATION: Check if actual value exceeds threshold
+            if (actualTemp.compareTo(threshold) <= 0) {
+                redirectAttributes.addFlashAttribute("warning", 
+                    "NO THRESHOLD EXCEEDED: Actual temperature (" + actualTemp + "°C) does not exceed limit (" + threshold + "°C). No alert will be sent.");
+                return "redirect:/alerts/test";
+            }
+            
             if (sendEmail) {
                 // NOTIFY: send email only, no alert created, no toast
                 if (email == null || email.trim().isEmpty()) {
@@ -252,6 +259,17 @@ public class AlertController {
             
             boolean isHigh = "HIGH".equals(humidityType);
             String direction = isHigh ? "above" : "below";
+            
+            // VALIDATION: Check if actual value violates threshold
+            boolean violatesThreshold = (isHigh && actualHumidity.compareTo(threshold) > 0) || 
+                                       (!isHigh && actualHumidity.compareTo(threshold) < 0);
+            
+            if (!violatesThreshold) {
+                String expectedCondition = isHigh ? "higher than " + threshold + "%" : "lower than " + threshold + "%";
+                redirectAttributes.addFlashAttribute("warning", 
+                    "NO THRESHOLD EXCEEDED: Actual humidity (" + actualHumidity + "%) is not " + expectedCondition + ". No alert will be sent.");
+                return "redirect:/alerts/test";
+            }
             
             if (sendEmail) {
                 if (email == null || email.trim().isEmpty()) {

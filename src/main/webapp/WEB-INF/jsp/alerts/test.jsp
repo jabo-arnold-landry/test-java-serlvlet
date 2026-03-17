@@ -34,7 +34,7 @@
         }
         .form-control:focus, .form-select:focus {
             border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2); 
         }
         .icon-temp { color: #ef4444; }
         .icon-humidity { color: #3b82f6; }
@@ -80,6 +80,12 @@
         <c:if test="${not empty success}">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="bi bi-check-circle-fill"></i> ${success}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </c:if>
+        <c:if test="${not empty warning}">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i> ${warning}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         </c:if>
@@ -473,15 +479,22 @@
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const alertError = doc.querySelector('.alert-danger');
+            const alertWarning = doc.querySelector('.alert-warning');
             const alertSuccess = doc.querySelector('.alert-success');
 
             // Clean existing alerts
-            document.querySelectorAll('.main-content > .alert-danger, .main-content > .alert-success')
+            document.querySelectorAll('.main-content > .alert-danger, .main-content > .alert-warning, .main-content > .alert-success')
                 .forEach(el => el.remove());
 
             const anchor = document.querySelector('.main-content');
             if (alertError) {
                 const cloned = alertError.cloneNode(true);
+                anchor.insertAdjacentElement('afterbegin', cloned);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            if (alertWarning) {
+                const cloned = alertWarning.cloneNode(true);
                 anchor.insertAdjacentElement('afterbegin', cloned);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 return;
