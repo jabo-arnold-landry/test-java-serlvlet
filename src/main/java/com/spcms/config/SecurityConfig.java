@@ -2,9 +2,11 @@ package com.spcms.config;
 
 import com.spcms.models.User;
 import com.spcms.repositories.UserRepository;
+import com.spcms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -38,6 +40,10 @@ public class SecurityConfig {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    @Lazy
+    private UserService userService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -134,6 +140,13 @@ public class SecurityConfig {
     public AuthenticationSuccessHandler roleBasedSuccessHandler() {
         return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
             String targetUrl = request.getContextPath() + "/dashboard";
+
+            // Record login event and update lastLogin timestamp
+            String username = authentication.getName();
+            String ipAddress = request.getRemoteAddr();
+            userRepository.findByUsername(username).ifPresent(user ->
+                userService.recordLogin(user.getUserId(), ipAddress)
+            );
 
             for (GrantedAuthority authority : authentication.getAuthorities()) {
                 String role = authority.getAuthority();
