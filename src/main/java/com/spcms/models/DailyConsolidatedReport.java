@@ -57,6 +57,9 @@ public class DailyConsolidatedReport {
     @Column(name = "total_downtime_min")
     private Integer totalDowntimeMin = 0;
 
+    @Column(name = "critical_incidents")
+    private Integer criticalIncidents = 0;
+
     @Column(name = "mttr_minutes", precision = 10, scale = 2)
     private BigDecimal mttrMinutes;
 

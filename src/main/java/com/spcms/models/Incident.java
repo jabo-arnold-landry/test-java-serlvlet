@@ -3,12 +3,15 @@ package com.spcms.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "incidents")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Incident {
 
@@ -48,9 +51,11 @@ public class Incident {
     private User assignedTo;
 
     @Column(name = "downtime_start")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime downtimeStart;
 
     @Column(name = "downtime_end")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime downtimeEnd;
 
     @Column(name = "downtime_minutes")

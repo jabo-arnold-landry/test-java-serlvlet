@@ -24,6 +24,10 @@ public class IncidentService {
         return incidentRepository.save(incident);
     }
 
+    public void deleteIncident(Long id) {
+        incidentRepository.deleteById(id);
+    }
+
     public Optional<Incident> getIncidentById(Long id) {
         return incidentRepository.findById(id);
     }
@@ -93,5 +97,20 @@ public class IncidentService {
 
     public Long getCriticalIncidentCount(LocalDateTime start, LocalDateTime end) {
         return incidentRepository.countCriticalIncidents(start, end);
+    }
+
+    // ==================== Incident Report ====================
+
+    public List<Incident> getIncidentsForDate(LocalDateTime start, LocalDateTime end) {
+        return incidentRepository.findByCreatedAtBetween(start, end);
+    }
+
+    public List<Incident> getResolvedIncidentsForDate(LocalDateTime start, LocalDateTime end) {
+        return incidentRepository.findByStatusAndCreatedAtBetween(
+                Incident.IncidentStatus.RESOLVED, start, end);
+    }
+
+    public List<Object[]> getIncidentCountByEquipmentType(LocalDateTime start, LocalDateTime end) {
+        return incidentRepository.countByEquipmentType(start, end);
     }
 }
