@@ -18,13 +18,16 @@ public class ReportController {
 
     @GetMapping
     public String dailyReport(Model model) {
-        model.addAttribute("report", reportService.getDailyReport(LocalDate.now()).orElse(null));
+        LocalDate today = LocalDate.now();
+        model.addAttribute("selectedDate", today);
+        model.addAttribute("report", reportService.getDailyReport(today).orElse(null));
         return "reports/daily";
     }
 
     @GetMapping("/generate")
     public String generateReport(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                   Model model) {
+        model.addAttribute("selectedDate", date);
         model.addAttribute("report", reportService.generateDailyReport(date));
         return "reports/daily";
     }
