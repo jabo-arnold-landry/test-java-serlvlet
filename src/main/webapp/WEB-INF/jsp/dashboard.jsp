@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +23,27 @@
         .bg-red-soft { background:rgba(239,68,68,0.1); color:#ef4444; }
         .bg-purple-soft { background:rgba(139,92,246,0.1); color:#8b5cf6; }
         .chart-container { background:#fff; border-radius:12px; padding:20px; border:1px solid #e5e7eb; }
-            </style>
+        .warning-board { background:#fff; border-radius:12px; border:1px solid #fcd34d; padding:20px; }
+        .warning-chip { border:1px solid #fde68a; background:#fffbeb; border-radius:10px; padding:12px; }
+        .warning-chip .count { font-size:22px; font-weight:700; color:#92400e; line-height:1; }
+        .warning-chip .label { font-size:12px; color:#78350f; font-weight:600; }
+        .warning-list { border:1px solid #e5e7eb; border-radius:10px; overflow:hidden; }
+        .warning-item { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; text-decoration:none; color:inherit; padding:12px 14px; border-bottom:1px solid #e5e7eb; }
+        .warning-item:last-child { border-bottom:none; }
+        .warning-item:hover { background:#f9fafb; }
+        .warning-icon { width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:#f3f4f6; color:#374151; }
+        .warning-main { flex:1; min-width:0; }
+        .warning-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
+        .warning-message { font-size:13px; font-weight:600; color:#111827; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .warning-meta { display:flex; gap:12px; flex-wrap:wrap; font-size:12px; color:#6b7280; }
+        .warning-right { display:flex; align-items:center; gap:8px; margin-top:2px; }
+        .warning-chevron { color:#9ca3af; }
+
+        @media (max-width: 992px) {
+            .warning-item { flex-direction:column; }
+            .warning-right { width:100%; justify-content:flex-start; }
+        }
+    </style>
 </head>
 <body>
     <jsp:include page="common/sidebar.jsp"/>
@@ -102,6 +123,87 @@
                 </div>
             </div>
         </div>
+
+        <!-- Dashboard Warnings -->
+        <c:if test="${not empty dashboardWarnings}">
+        <div class="warning-board mb-4">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                <div>
+                    <h6 style="font-weight:700;margin:0;"><i class="bi bi-exclamation-triangle-fill text-warning"></i> Dashboard Warnings</h6>
+                    <p class="text-muted mb-0" style="font-size:13px;">Unresolved alerts that need technician or admin action.</p>
+                </div>
+                <a href="${pageContext.request.contextPath}/alerts" class="btn btn-warning btn-sm text-dark fw-semibold">
+                    <i class="bi bi-bell-fill"></i> View Alerts (${dashboardTotalWarnings != null ? dashboardTotalWarnings : 0})
+                </a>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-xl col-md-4 col-6">
+                    <div class="warning-chip">
+                        <div class="count">${dashboardHighTempWarnings != null ? dashboardHighTempWarnings : 0}</div>
+                        <div class="label">High Temp</div>
+                    </div>
+                </div>
+                <div class="col-xl col-md-4 col-6">
+                    <div class="warning-chip">
+                        <div class="count">${dashboardHumidityWarnings != null ? dashboardHumidityWarnings : 0}</div>
+                        <div class="label">Humidity</div>
+                    </div>
+                </div>
+                <div class="col-xl col-md-4 col-6">
+                    <div class="warning-chip">
+                        <div class="count">${dashboardLowBatteryWarnings != null ? dashboardLowBatteryWarnings : 0}</div>
+                        <div class="label">Low Battery</div>
+                    </div>
+                </div>
+                <div class="col-xl col-md-4 col-6">
+                    <div class="warning-chip">
+                        <div class="count">${dashboardOverloadWarnings != null ? dashboardOverloadWarnings : 0}</div>
+                        <div class="label">UPS Overload</div>
+                    </div>
+                </div>
+                <div class="col-xl col-md-4 col-6">
+                    <div class="warning-chip">
+                        <div class="count">${dashboardMaintenanceDueWarnings != null ? dashboardMaintenanceDueWarnings : 0}</div>
+                        <div class="label">Maintenance Due</div>
+                    </div>
+                </div>
+            </div>
+
+                <div class="warning-list">
+                    <c:forEach var="warn" items="${dashboardWarnings}" end="4">
+                        <a href="${pageContext.request.contextPath}/alerts/view/${warn.alertId}" class="warning-item">
+                            <div class="warning-main">
+                                <div class="warning-head">
+                                <span class="warning-icon">
+                                    <c:choose>
+                                        <c:when test="${warn.alertType == 'HIGH_TEMP'}"><i class="bi bi-thermometer-high"></i></c:when>
+                                        <c:when test="${warn.alertType == 'HUMIDITY'}"><i class="bi bi-droplet"></i></c:when>
+                                        <c:when test="${warn.alertType == 'LOW_BATTERY'}"><i class="bi bi-battery-half"></i></c:when>
+                                        <c:when test="${warn.alertType == 'UPS_OVERLOAD'}"><i class="bi bi-lightning"></i></c:when>
+                                        <c:when test="${warn.alertType == 'MAINTENANCE_DUE'}"><i class="bi bi-calendar-check"></i></c:when>
+                                        <c:otherwise><i class="bi bi-exclamation-triangle"></i></c:otherwise>
+                                    </c:choose>
+                                </span>
+                                <span class="badge bg-secondary">${warn.alertType}</span>
+                                <span class="badge bg-${dashboardWarningSeverityClassById[warn.alertId]}">${dashboardWarningSeverityById[warn.alertId]}</span>
+                                <span class="text-muted" style="font-size:12px;">${warn.equipmentType} #${warn.equipmentId}</span>
+                            </div>
+                            <div class="warning-message" title="${warn.message}">${warn.message}</div>
+                            <div class="warning-meta">
+                                <span><i class="bi bi-clock"></i> ${dashboardWarningTriggeredAtById[warn.alertId]}</span>
+                                <span><i class="bi bi-speedometer2"></i> ${dashboardWarningReadingById[warn.alertId]}</span>
+                            </div>
+                            </div>
+                            <div class="warning-right">
+                                <span class="badge ${fn:contains(dashboardWarningSlaById[warn.alertId], 'Breached') ? 'bg-danger' : 'bg-light text-dark'}">${dashboardWarningSlaById[warn.alertId]}</span>
+                                <i class="bi bi-chevron-right warning-chevron"></i>
+                            </div>
+                        </a>
+                    </c:forEach>
+                </div>
+        </div>
+        </c:if>
 
         <!-- Charts Row -->
         <div class="row g-4 mb-4">
