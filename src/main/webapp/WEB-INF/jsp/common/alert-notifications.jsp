@@ -97,29 +97,27 @@
 (function() {
     // Prevent double-initialization
     if (window.__alertSystemInitialized) {
-        console.log('⚠️ Alert system already initialized, skipping.');
         return;
     }
     window.__alertSystemInitialized = true;
-
-    console.log('🚀 Alert Notification System Initializing...');
     
     // Use server-side context path — always reliable
     const CONTEXT_PATH = '${pageContext.request.contextPath}';
     
     const alertPoll = {
         baseUrl: CONTEXT_PATH,
-        lastSeenId: 0
+        lastSeenId: 0,
+        sseConnected: false,
+        reconnectTimer: null,
+        pollTimer: null,
+        fetchInFlight: false
     };
     
     const toastStack = document.getElementById('alertToastStack');
     
     if (!toastStack) {
-        console.error('❌ Alert toast stack container not found!');
         return;
     }
-    
-    console.log('✅ Toast stack found, base URL:', alertPoll.baseUrl);
     
     const alertStyles = {
         HIGH_TEMP:       { accent: '#dc3545', bg: 'rgba(220,53,69,0.1)',  icon: 'bi-exclamation-triangle-fill', label: 'High Temperature Alert' },
@@ -131,8 +129,6 @@
     };
 
     function renderAlertCard(data) {
-        console.log('🔔 Rendering alert card:', data);
-        
         const style = alertStyles[data.type] || alertStyles.default;
         const card = document.createElement('div');
         card.className = 'live-toast-card';
@@ -186,26 +182,54 @@
         }, 10000);
     }
 
+    function clearReconnectTimer() {
+        if (alertPoll.reconnectTimer) {
+            clearTimeout(alertPoll.reconnectTimer);
+            alertPoll.reconnectTimer = null;
+        }
+    }
+
+    function scheduleSseReconnect() {
+        if (document.visibilityState === 'hidden' || alertPoll.reconnectTimer) {
+            return;
+        }
+        alertPoll.reconnectTimer = setTimeout(function() {
+            alertPoll.reconnectTimer = null;
+            startSse();
+        }, 5000);
+    }
+
+    function closeSseConnection() {
+        if (window.alertEventSource) {
+            window.alertEventSource.close();
+            window.alertEventSource = null;
+        }
+        alertPoll.sseConnected = false;
+    }
+
     // ---------- SSE (primary real-time channel) ----------
     function startSse() {
+        if (document.visibilityState === 'hidden') {
+            return;
+        }
+        if (typeof EventSource === 'undefined') {
+            return;
+        }
+
         var sseUrl = alertPoll.baseUrl + '/alerts/stream';
-        console.log('🔗 Starting SSE connection to:', sseUrl);
         
         try {
-            if (window.alertEventSource) {
-                window.alertEventSource.close();
-                console.log('🔌 Closed existing SSE connection');
-            }
+            closeSseConnection();
+            clearReconnectTimer();
             
             var es = new EventSource(sseUrl);
             window.alertEventSource = es;
             
             es.onopen = function() {
-                console.log('✅ SSE connection OPENED and ready');
+                alertPoll.sseConnected = true;
             };
             
             var handler = function(event) {
-                console.log('📨 SSE event received:', event.type, event.data);
                 if (!event || !event.data) return;
                 try {
                     var data = JSON.parse(event.data);
@@ -214,7 +238,7 @@
                         renderAlertCard(data);
                     }
                 } catch (e) {
-                    console.error('❌ SSE parse error:', e);
+                    // Ignore malformed events and continue listening.
                 }
             };
             
@@ -229,22 +253,37 @@
             };
             
             es.onerror = function() {
-                console.warn('⚠️ SSE error / connection lost, retrying in 5s...');
-                es.close();
-                setTimeout(startSse, 5000);
+                closeSseConnection();
+                scheduleSseReconnect();
             };
         } catch (error) {
-            console.error('❌ Failed to start SSE:', error);
-            setTimeout(startSse, 5000);
+            closeSseConnection();
+            scheduleSseReconnect();
         }
     }
 
     // ---------- Polling (backup channel) ----------
     function pollLatestAlert() {
+        if (document.visibilityState === 'hidden' || alertPoll.sseConnected || alertPoll.fetchInFlight) {
+            return;
+        }
+
         var pollUrl = alertPoll.baseUrl + '/alerts/latest?sinceId=' + alertPoll.lastSeenId;
-        
+
+        alertPoll.fetchInFlight = true;
         fetch(pollUrl, { headers: { 'Accept': 'application/json' } })
-        .then(function(res) { return res.ok ? res.json() : null; })
+        .then(function(res) {
+            if (!res.ok) {
+                return null;
+            }
+
+            var contentType = res.headers.get('Content-Type') || '';
+            if (contentType.indexOf('application/json') === -1) {
+                return null;
+            }
+
+            return res.json();
+        })
         .then(function(data) {
             if (data && data.id && data.id > alertPoll.lastSeenId) {
                 var isFirstPoll = (alertPoll.lastSeenId === 0);
@@ -253,27 +292,47 @@
                 // Only show toast for new alerts that occur *after* page load
                 if (!isFirstPoll) {
                     renderAlertCard(data);
-                } else {
-                    console.log('🔇 Silently initialized lastSeenId to', data.id);
                 }
             }
         })
-        .catch(function(error) {
-            console.error('❌ Poll error:', error);
+        .catch(function() {
+            // Keep silent; fallback polling retries automatically.
+        })
+        .finally(function() {
+            alertPoll.fetchInFlight = false;
         });
     }
 
     // ---------- Init ----------
     function initializeAlerts() {
-        console.log('🚀 Initializing alert system with context path:', alertPoll.baseUrl);
-        
         // Start SSE (primary)
         startSse();
         
-        // Start polling as backup every 3 seconds
-        setInterval(pollLatestAlert, 3000);
+        // Start polling as backup every 10 seconds (used when SSE is unavailable)
+        alertPoll.pollTimer = setInterval(pollLatestAlert, 10000);
         // Also do one immediate poll
         setTimeout(pollLatestAlert, 500);
+
+        // Pause network activity when tab is not visible and resume when visible.
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                clearReconnectTimer();
+                closeSseConnection();
+                return;
+            }
+            startSse();
+            pollLatestAlert();
+        });
+
+        // Ensure intervals and open sockets are not leaked on page unload.
+        window.addEventListener('beforeunload', function() {
+            clearReconnectTimer();
+            closeSseConnection();
+            if (alertPoll.pollTimer) {
+                clearInterval(alertPoll.pollTimer);
+                alertPoll.pollTimer = null;
+            }
+        });
     }
 
     // Expose a manual test helper on the console
