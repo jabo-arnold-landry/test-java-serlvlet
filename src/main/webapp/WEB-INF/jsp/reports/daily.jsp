@@ -15,6 +15,9 @@
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div><h4 style="font-weight:700;margin:0;">Daily Consolidated Report</h4></div>
+            <a href="${pageContext.request.contextPath}/reports/export/csv?date=${selectedDate}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-download"></i> Export CSV
+            </a>
         </div>
         
         <c:choose>
