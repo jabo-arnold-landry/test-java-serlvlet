@@ -17,7 +17,10 @@ public class MonitoringController {
 
     @GetMapping
     public String list(Model model) {
-        model.addAttribute("readings", monitoringService.getAllReadings());
+        // Keep both keys for backward compatibility across monitoring views.
+        var readings = monitoringService.getAllReadings();
+        model.addAttribute("readings", readings);
+        model.addAttribute("logs", readings);
         return "monitoring/list";
     }
 

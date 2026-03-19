@@ -80,6 +80,9 @@ public class Ups {
     @Column(name = "battery_current", precision = 10, scale = 2)
     private BigDecimal batteryCurrent;
 
+    @Column(name = "battery_health_percentage", precision = 5, scale = 2)
+    private BigDecimal batteryHealthPercentage;
+
     @Column(name = "frequency_hz", precision = 6, scale = 2)
     private BigDecimal frequencyHz;
 

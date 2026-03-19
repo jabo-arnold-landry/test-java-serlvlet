@@ -75,7 +75,8 @@ public class SecurityConfig {
                 // Reports generation - MANAGER or ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/reports/generate/**"),
-                    new AntPathRequestMatcher("/reports/downtime-trend/**")
+                    new AntPathRequestMatcher("/reports/downtime-trend/**"),
+                    new AntPathRequestMatcher("/reports/project/**")
                 ).hasAnyRole("MANAGER", "ADMIN")
 
                 // Maintenance - TECHNICIAN, MANAGER, ADMIN
