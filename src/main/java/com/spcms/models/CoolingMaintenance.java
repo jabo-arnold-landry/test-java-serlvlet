@@ -40,6 +40,9 @@ public class CoolingMaintenance {
     @Column(length = 100)
     private String technician;
 
+    @Column(name = "maintenance_cost", precision = 15, scale = 2)
+    private java.math.BigDecimal maintenanceCost;
+
     @Column(length = 100)
     private String vendor;
 

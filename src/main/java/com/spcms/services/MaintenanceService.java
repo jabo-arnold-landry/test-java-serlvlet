@@ -74,6 +74,21 @@ public class MaintenanceService {
         return coolingMaintenanceRepository.save(maintenance);
     }
 
+
+    public java.math.BigDecimal getTotalUpsCostByDateRange(LocalDate start, LocalDate end) {
+        return getUpsMaintenanceByDateRange(start, end).stream()
+                .filter(m -> m.getMaintenanceCost() != null)
+                .map(UpsMaintenance::getMaintenanceCost)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+    }
+
+    public java.math.BigDecimal getTotalCoolingCostByDateRange(LocalDate start, LocalDate end) {
+        return getCoolingMaintenanceByDateRange(start, end).stream()
+                .filter(m -> m.getMaintenanceCost() != null)
+                .map(CoolingMaintenance::getMaintenanceCost)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+    }
+
     // ==================== Quarterly Scheduling ====================
 
     /**
@@ -87,16 +102,15 @@ public class MaintenanceService {
         LocalDate now = LocalDate.now();
         for (int q = 0; q < 4; q++) {
             LocalDate maintenanceDate = now.plusMonths(3L * (q + 1));
-            UpsMaintenance maint = UpsMaintenance.builder()
-                    .ups(ups)
-                    .maintenanceType(UpsMaintenance.MaintenanceType.PREVENTIVE)
-                    .maintenanceDate(maintenanceDate)
-                    .nextDueDate(maintenanceDate.plusMonths(3))
-                    .technician(technician)
-                    .vendor(vendor)
-                    .remarks("Quarterly preventive maintenance - Q" + (q + 1))
-                    .build();
-            upsMaintenanceRepository.save(maint);
+            UpsMaintenance maintenance = new UpsMaintenance();
+maintenance.setUps(ups);
+            maintenance.setMaintenanceType(UpsMaintenance.MaintenanceType.PREVENTIVE);
+            maintenance.setMaintenanceDate(maintenanceDate);
+            maintenance.setNextDueDate(maintenanceDate.plusMonths(3));
+            maintenance.setTechnician(technician);
+            maintenance.setVendor(vendor);
+            maintenance.setRemarks("Quarterly preventive maintenance - Q" + (q + 1));
+            upsMaintenanceRepository.save(maintenance);
         }
     }
 
@@ -110,16 +124,36 @@ public class MaintenanceService {
         LocalDate now = LocalDate.now();
         for (int q = 0; q < 4; q++) {
             LocalDate maintenanceDate = now.plusMonths(3L * (q + 1));
-            CoolingMaintenance maint = CoolingMaintenance.builder()
-                    .coolingUnit(cooling)
-                    .maintenanceType(CoolingMaintenance.MaintenanceType.PREVENTIVE)
-                    .maintenanceDate(maintenanceDate)
-                    .nextMaintenanceDate(maintenanceDate.plusMonths(3))
-                    .technician(technician)
-                    .vendor(vendor)
-                    .remarks("Quarterly preventive maintenance - Q" + (q + 1))
-                    .build();
-            coolingMaintenanceRepository.save(maint);
+            CoolingMaintenance maintenance = new CoolingMaintenance();
+            maintenance.setCoolingUnit(cooling);
+            maintenance.setMaintenanceType(CoolingMaintenance.MaintenanceType.PREVENTIVE);
+            maintenance.setMaintenanceDate(maintenanceDate);
+            maintenance.setNextMaintenanceDate(maintenanceDate.plusMonths(3));
+            maintenance.setTechnician(technician);
+            maintenance.setVendor(vendor);
+            maintenance.setRemarks("Quarterly preventive maintenance - Q" + (q + 1));
+            coolingMaintenanceRepository.save(maintenance);
         }
+    }
+    public List<UpsMaintenance> getAllUpsMaintenance() {
+        return upsMaintenanceRepository.findAll();
+    }
+
+    public List<CoolingMaintenance> getAllCoolingMaintenance() {
+        return coolingMaintenanceRepository.findAll();
+    }
+
+    public java.math.BigDecimal getTotalUpsCost() {
+        return getAllUpsMaintenance().stream()
+                .filter(m -> m.getMaintenanceCost() != null)
+                .map(UpsMaintenance::getMaintenanceCost)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+    }
+
+    public java.math.BigDecimal getTotalCoolingCost() {
+        return getAllCoolingMaintenance().stream()
+                .filter(m -> m.getMaintenanceCost() != null)
+                .map(CoolingMaintenance::getMaintenanceCost)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
     }
 }

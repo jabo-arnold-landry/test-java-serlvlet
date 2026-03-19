@@ -31,32 +31,38 @@ public class MonitoringService {
     }
 
     private void checkThresholdsAndAlert(MonitoringLog log) {
-        Alert.EquipmentCategory category = log.getEquipmentType() == MonitoringLog.EquipmentType.UPS 
-                ? Alert.EquipmentCategory.UPS : Alert.EquipmentCategory.COOLING;
+        Alert.EquipmentCategory category = log.getEquipmentType() == MonitoringLog.EquipmentType.UPS
+                ? Alert.EquipmentCategory.UPS
+                : Alert.EquipmentCategory.COOLING;
 
         if (log.getEquipmentType() == MonitoringLog.EquipmentType.COOLING) {
             // Humidity Check (Ideal: 30% - 65%)
             if (log.getHumidityPercent() != null) {
                 if (log.getHumidityPercent().compareTo(new BigDecimal("65")) > 0) {
-                    alertService.createHumidityAlert(category, log.getEquipmentId(), new BigDecimal("65"), log.getHumidityPercent(), "above");
+                    alertService.createHumidityAlert(category, log.getEquipmentId(), new BigDecimal("65"),
+                            log.getHumidityPercent(), "above");
                 } else if (log.getHumidityPercent().compareTo(new BigDecimal("30")) < 0) {
-                    alertService.createHumidityAlert(category, log.getEquipmentId(), new BigDecimal("30"), log.getHumidityPercent(), "below");
+                    alertService.createHumidityAlert(category, log.getEquipmentId(), new BigDecimal("30"),
+                            log.getHumidityPercent(), "below");
                 }
             }
             // Temperature Check
             if (log.getReturnAirTemp() != null && log.getReturnAirTemp().compareTo(new BigDecimal("28")) > 0) {
-                alertService.createHighTempAlert(category, log.getEquipmentId(), new BigDecimal("28"), log.getReturnAirTemp());
+                alertService.createHighTempAlert(category, log.getEquipmentId(), new BigDecimal("28"),
+                        log.getReturnAirTemp());
             }
         } else if (log.getEquipmentType() == MonitoringLog.EquipmentType.UPS) {
             // Temperature Check
             if (log.getTemperature() != null && log.getTemperature().compareTo(new BigDecimal("35")) > 0) {
-                alertService.createHighTempAlert(category, log.getEquipmentId(), new BigDecimal("35"), log.getTemperature());
+                alertService.createHighTempAlert(category, log.getEquipmentId(), new BigDecimal("35"),
+                        log.getTemperature());
             }
             // Overload Check
             if (log.getLoadPercentage() != null && log.getLoadPercentage().compareTo(new BigDecimal("80")) > 0) {
                 alertService.createOverloadAlert(log.getEquipmentId(), new BigDecimal("80"), log.getLoadPercentage());
             }
-            // Note: Low battery is usually triggered by UPS status/voltage rather than just monitoring log, but can be added here if needed.
+            // Note: Low battery is usually triggered by UPS status/voltage rather than just
+            // monitoring log, but can be added here if needed.
         }
     }
 
@@ -69,19 +75,25 @@ public class MonitoringService {
     }
 
     public List<MonitoringLog> getReadingsForEquipment(MonitoringLog.EquipmentType type, Long equipmentId) {
-        return monitoringLogRepository.findByEquipmentTypeAndEquipmentIdOrderByReadingTimeDesc(type, equipmentId);
+        return monitoringLogRepository.findByEquipmentTypeAndEquipmentIdOrderByCreatedAtDesc(
+                type, equipmentId);
     }
 
     public List<MonitoringLog> getReadingsByDateRange(LocalDateTime start, LocalDateTime end) {
-        return monitoringLogRepository.findByReadingTimeBetweenOrderByReadingTimeDesc(start, end);
+        return monitoringLogRepository.findByCreatedAtBetweenOrderByCreatedAtDesc(start, end);
     }
 
     public List<MonitoringLog> getReadingsByTypeAndDateRange(MonitoringLog.EquipmentType type,
-                                                              LocalDateTime start, LocalDateTime end) {
+            LocalDateTime start, LocalDateTime end) {
         return monitoringLogRepository.findByTypeAndDateRange(type, start, end);
     }
 
     public void deleteReading(Long id) {
         monitoringLogRepository.deleteById(id);
+    }
+
+    public List<MonitoringLog> getReadingsForUps(Long upsId) {
+        return monitoringLogRepository.findByEquipmentTypeAndEquipmentIdOrderByCreatedAtDesc(
+                MonitoringLog.EquipmentType.UPS, upsId);
     }
 }

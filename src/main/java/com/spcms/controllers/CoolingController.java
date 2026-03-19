@@ -45,7 +45,6 @@ public class CoolingController {
     public String view(@PathVariable Long id, Model model) {
         model.addAttribute("coolingUnit", coolingService.getCoolingUnitById(id)
                 .orElseThrow(() -> new RuntimeException("Cooling unit not found")));
-        model.addAttribute("alarms", coolingService.getAlarmsByCoolingUnit(id));
         return "cooling/view";
     }
 

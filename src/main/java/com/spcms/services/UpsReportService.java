@@ -22,16 +22,16 @@ public class UpsReportService {
     /**
      * Generate a report for a specific period
      */
-    public UpsReport generateReport(UpsReport.ReportPeriod period, LocalDate reportDate, 
-                                    String filterStatus, String filterLocation) {
-        
+    public UpsReport generateReport(UpsReport.ReportPeriod period, LocalDate reportDate,
+            String filterStatus, String filterLocation) {
+
         try {
             System.out.println("[UpsReportService] Starting report generation");
             System.out.println("[UpsReportService] Period: " + period);
             System.out.println("[UpsReportService] ReportDate: " + reportDate);
             System.out.println("[UpsReportService] FilterStatus: " + filterStatus);
             System.out.println("[UpsReportService] FilterLocation: " + filterLocation);
-            
+
             LocalDateTime startDateTime;
             LocalDateTime endDateTime;
 
@@ -66,7 +66,8 @@ public class UpsReportService {
 
             // Build and populate the report
             System.out.println("[UpsReportService] Building report...");
-            UpsReport report = buildUpsReport(period, reportDate, devices, startDateTime.toLocalDate(), endDateTime.toLocalDate(), filterStatus, filterLocation);
+            UpsReport report = buildUpsReport(period, reportDate, devices, startDateTime.toLocalDate(),
+                    endDateTime.toLocalDate(), filterStatus, filterLocation);
             System.out.println("[UpsReportService] Report generated successfully");
             return report;
         } catch (Exception e) {
@@ -79,20 +80,23 @@ public class UpsReportService {
     /**
      * Fetch devices by applying filters
      */
-    private List<Ups> fetchDevicesByFilters(LocalDateTime startDate, LocalDateTime endDate, String filterStatus, String filterLocation) {
-        
+    private List<Ups> fetchDevicesByFilters(LocalDateTime startDate, LocalDateTime endDate, String filterStatus,
+            String filterLocation) {
+
         try {
             System.out.println("[UpsReportService] fetchDevicesByFilters called");
-            System.out.println("[UpsReportService] FilterStatus: " + filterStatus + ", FilterLocation: " + filterLocation);
-            
-            if (filterStatus != null && !filterStatus.isEmpty() && filterLocation != null && !filterLocation.isEmpty()) {
+            System.out.println(
+                    "[UpsReportService] FilterStatus: " + filterStatus + ", FilterLocation: " + filterLocation);
+
+            if (filterStatus != null && !filterStatus.isEmpty() && filterLocation != null
+                    && !filterLocation.isEmpty()) {
                 System.out.println("[UpsReportService] Applying BOTH status and location filters");
-                return upsRepository.findByDateRangeStatusAndLocation(startDate, endDate, 
-                    Ups.UpsStatus.valueOf(filterStatus), filterLocation);
+                return upsRepository.findByDateRangeStatusAndLocation(startDate, endDate,
+                        Ups.UpsStatus.valueOf(filterStatus), filterLocation);
             } else if (filterStatus != null && !filterStatus.isEmpty()) {
                 System.out.println("[UpsReportService] Applying status filter only");
-                return upsRepository.findByDateRangeAndStatus(startDate, endDate, 
-                    Ups.UpsStatus.valueOf(filterStatus));
+                return upsRepository.findByDateRangeAndStatus(startDate, endDate,
+                        Ups.UpsStatus.valueOf(filterStatus));
             } else if (filterLocation != null && !filterLocation.isEmpty()) {
                 System.out.println("[UpsReportService] Applying location filter only");
                 return upsRepository.findByDateRangeAndLocation(startDate, endDate, filterLocation);
@@ -110,15 +114,13 @@ public class UpsReportService {
     /**
      * Build the complete report with statistics
      */
-    private UpsReport buildUpsReport(UpsReport.ReportPeriod period, LocalDate reportDate, 
-                                     List<Ups> devices, LocalDate startDate, LocalDate endDate,
-                                     String filterStatus, String filterLocation) {
-        
+    private UpsReport buildUpsReport(UpsReport.ReportPeriod period, LocalDate reportDate,
+            List<Ups> devices, LocalDate startDate, LocalDate endDate,
+            String filterStatus, String filterLocation) {
+
         UpsReport report = UpsReport.builder()
-                .reportId(generateReportId(period, reportDate))
-                .reportDate(reportDate)
                 .generatedAt(LocalDateTime.now())
-                .reportPeriod(period)
+                .reportPeriod(period.name()) // added .name() to convert enum to String
                 .periodStartDate(startDate)
                 .periodEndDate(endDate)
                 .filterStatus(filterStatus)
@@ -140,17 +142,16 @@ public class UpsReportService {
      * Calculate report statistics
      */
     private void calculateStatistics(UpsReport report, List<Ups> devices) {
-        
+
         report.setTotalDevicesAdded(devices.size());
 
         // Status breakdown
         Map<String, Integer> statusCount = devices.stream()
                 .collect(Collectors.groupingBy(
                         u -> u.getStatus().toString(),
-                        Collectors.summingInt(u -> 1)
-                ));
+                        Collectors.summingInt(u -> 1)));
         report.setDevicesByStatus(statusCount);
-        
+
         report.setTotalActiveDevices(statusCount.getOrDefault("ACTIVE", 0));
         report.setTotalFaultyDevices(statusCount.getOrDefault("FAULTY", 0));
         report.setTotalUnderMaintenanceDevices(statusCount.getOrDefault("UNDER_MAINTENANCE", 0));
@@ -160,16 +161,14 @@ public class UpsReportService {
         Map<String, Integer> locationCount = devices.stream()
                 .collect(Collectors.groupingBy(
                         u -> u.getLocationRoom() != null ? u.getLocationRoom() : "Unknown",
-                        Collectors.summingInt(u -> 1)
-                ));
+                        Collectors.summingInt(u -> 1)));
         report.setDevicesByLocation(locationCount);
 
         // Brand distribution
         Map<String, Integer> brandCount = devices.stream()
                 .collect(Collectors.groupingBy(
                         u -> u.getBrand() != null ? u.getBrand() : "Unknown",
-                        Collectors.summingInt(u -> 1)
-                ));
+                        Collectors.summingInt(u -> 1)));
         report.setDevicesByBrand(brandCount);
 
         // Capacity statistics
@@ -182,7 +181,8 @@ public class UpsReportService {
             BigDecimal totalCapacity = capacities.stream()
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
             report.setTotalCapacityKva(totalCapacity);
-            report.setAverageCapacityKva(totalCapacity.divide(BigDecimal.valueOf(capacities.size()), 2, RoundingMode.HALF_UP));
+            report.setAverageCapacityKva(
+                    totalCapacity.divide(BigDecimal.valueOf(capacities.size()), 2, RoundingMode.HALF_UP));
             report.setMaxCapacityKva(capacities.stream().max(BigDecimal::compareTo).orElse(BigDecimal.ZERO));
             report.setMinCapacityKva(capacities.stream().min(BigDecimal::compareTo).orElse(BigDecimal.ZERO));
         }
@@ -193,7 +193,6 @@ public class UpsReportService {
      */
     private UpsReport.UpsReportDetail convertToReportDetail(Ups ups) {
         return UpsReport.UpsReportDetail.builder()
-                .upsId(ups.getUpsId())
                 .assetTag(ups.getAssetTag())
                 .upsName(ups.getUpsName())
                 .brand(ups.getBrand())
@@ -202,11 +201,7 @@ public class UpsReportService {
                 .capacityKva(ups.getCapacityKva())
                 .status(ups.getStatus().toString())
                 .locationRoom(ups.getLocationRoom())
-                .locationRack(ups.getLocationRack())
-                .locationZone(ups.getLocationZone())
                 .installationDate(ups.getInstallationDate())
-                .createdAt(ups.getCreatedAt())
-                .currentLoadKw(ups.getCurrentLoadKw())
                 .loadPercentage(ups.getLoadPercentage())
                 .build();
     }

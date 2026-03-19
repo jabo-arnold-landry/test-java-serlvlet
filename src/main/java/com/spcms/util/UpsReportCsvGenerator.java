@@ -30,16 +30,8 @@ public class UpsReportCsvGenerator {
         writer.println(report.getReportPeriod() + " Report: " + report.getPeriodStartDate() + " to " + report.getPeriodEndDate());
         writer.println("Generated on: " + report.getGeneratedAt().format(DATETIME_FORMATTER));
         
-        if (report.getFilterStatus() != null || report.getFilterLocation() != null) {
-            writer.print("Applied Filters: ");
-            if (report.getFilterStatus() != null) {
-                writer.print("Status=" + report.getFilterStatus() + " ");
-            }
-            if (report.getFilterLocation() != null) {
-                writer.print("Location=" + report.getFilterLocation());
-            }
-            writer.println();
-        }
+        // Filters applied (if your UpsReport model supports them)
+        // writer.println("Applied Filters: Status=" + report.getFilterStatus() + ", Location=" + report.getFilterLocation());
         
         writer.println();
         writer.println();
@@ -106,7 +98,7 @@ public class UpsReportCsvGenerator {
                     escapeCsv(detail.getUpsName()) + "," +
                     escapeCsv(detail.getBrand()) + "," +
                     escapeCsv(detail.getModel()) + "," +
-                    escapeCsv(detail.getSerialNumber()) + "," +
+                    escapeCsv(detail.getSerialNo()) + "," +
                     (detail.getCapacityKva() != null ? detail.getCapacityKva() : "N/A") + "," +
                     escapeCsv(detail.getStatus()) + "," +
                     escapeCsv(detail.getLocationRoom()) + "," +
