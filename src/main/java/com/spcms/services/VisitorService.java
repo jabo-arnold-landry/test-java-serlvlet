@@ -29,6 +29,9 @@ public class VisitorService {
     private VisitorCheckInOutRepository visitorCheckInOutRepository;
 
     @Autowired
+    private com.spcms.repositories.ActivityLogRepository activityLogRepository;
+
+    @Autowired
     private com.spcms.repositories.IncidentRepository incidentRepository;
 
     // ==================== Visitor Registration ====================
@@ -36,7 +39,10 @@ public class VisitorService {
     public Visitor registerVisitor(Visitor visitor) {
         // Generate a unique pass number
         visitor.setPassNumber("VP-" + System.currentTimeMillis());
-        return visitorRepository.save(visitor);
+        Visitor saved = visitorRepository.save(visitor);
+        logAction(visitor.getRequestedBy(), "VISITOR_REGISTERED", "Visitor", saved.getVisitorId(), 
+                  "Visitor: " + saved.getFullName() + " registered for " + saved.getCompany());
+        return saved;
     }
 
     public Optional<Visitor> getVisitorById(Long id) {
@@ -77,7 +83,10 @@ public class VisitorService {
         approval.setDecisionTime(LocalDateTime.now());
         approval.setApprovedDurationHours(durationHours);
         approval.setNotificationSent(true); // TODO: send actual notification
-        return visitApprovalRepository.save(approval);
+        VisitApproval saved = visitApprovalRepository.save(approval);
+        logAction(manager, "VISIT_APPROVED", "VisitApproval", saved.getApprovalId(), 
+                  "Approved visit for: " + approval.getVisitor().getFullName() + " (Duration: " + durationHours + "h)");
+        return saved;
     }
 
     public VisitApproval rejectVisit(Long approvalId, Long managerId, String reason) {
@@ -89,6 +98,18 @@ public class VisitorService {
         approval.setStatus(VisitApproval.ApprovalStatus.REJECTED);
         approval.setDecisionTime(LocalDateTime.now());
         approval.setRemarks(reason);
+        return visitApprovalRepository.save(approval);
+    }
+
+    public VisitApproval requestInfo(Long approvalId, Long managerId, String remarks) {
+        VisitApproval approval = visitApprovalRepository.findById(approvalId)
+                .orElseThrow(() -> new RuntimeException("Approval not found: " + approvalId));
+        var manager = new com.spcms.models.User();
+        manager.setUserId(managerId);
+        approval.setApprovedBy(manager);
+        approval.setStatus(VisitApproval.ApprovalStatus.MORE_INFO);
+        approval.setDecisionTime(LocalDateTime.now());
+        approval.setRemarks(remarks);
         return visitApprovalRepository.save(approval);
     }
 
@@ -129,7 +150,10 @@ public class VisitorService {
                 .equipmentConfirmedOut(false)
                 .visitClosed(false)
                 .build();
-        return visitorCheckInOutRepository.save(checkInOut);
+        VisitorCheckInOut saved = visitorCheckInOutRepository.save(checkInOut);
+        logAction(escort, "VISITOR_CHECK_IN", "VisitorCheckInOut", saved.getCheckId(), 
+                  "Checked in and activated session for: " + visitor.getFullName() + " (Badge: " + temporaryBadge + ")");
+        return saved;
     }
 
     public VisitorCheckInOut checkOut(Long checkId, boolean equipmentConfirmed, boolean badgeReturned) {
@@ -139,7 +163,10 @@ public class VisitorService {
         checkInOut.setEquipmentConfirmedOut(equipmentConfirmed);
         checkInOut.setBadgeReturned(badgeReturned);
         checkInOut.setVisitClosed(true);
-        return visitorCheckInOutRepository.save(checkInOut);
+        VisitorCheckInOut saved = visitorCheckInOutRepository.save(checkInOut);
+        logAction(checkInOut.getEscort(), "VISITOR_CHECK_OUT", "VisitorCheckInOut", saved.getCheckId(), 
+                  "Checked out and closed session for: " + checkInOut.getVisitor().getFullName());
+        return saved;
     }
 
     public long countCompletedVisitsToday() {
@@ -179,7 +206,23 @@ public class VisitorService {
     }
 
     public com.spcms.models.Incident saveIncident(com.spcms.models.Incident incident) {
-        return incidentRepository.save(incident);
+        com.spcms.models.Incident saved = incidentRepository.save(incident);
+        logAction(incident.getReportedBy(), "INCIDENT_REPORTED", "Incident", saved.getIncidentId(), 
+                  "Security incident reported: " + saved.getTitle() + " (Severity: " + saved.getSeverity() + ")");
+        return saved;
+    }
+
+    private void logAction(com.spcms.models.User user, String action, String type, Long id, String details) {
+        if (user == null) return;
+        com.spcms.models.ActivityLog log = com.spcms.models.ActivityLog.builder()
+            .user(user)
+            .action(action)
+            .entityType(type)
+            .entityId(id)
+            .details(details)
+            .timestamp(LocalDateTime.now())
+            .build();
+        activityLogRepository.save(log);
     }
 
     // ==================== Technician Specific ====================
@@ -196,7 +239,10 @@ public class VisitorService {
         return visitorCheckInOutRepository.findByEscort_UserIdAndVisitClosedOrderByCheckInTimeDesc(userId, true);
     }
 
-    public List<com.spcms.models.Incident> getTechnicianIncidents(Long userId) {
-        return incidentRepository.findByReportedBy_UserIdOrderByCreatedAtDesc(userId);
+    public List<com.spcms.models.ActivityLog> getLatestActivity(int limit) {
+        return activityLogRepository.findAll().stream()
+            .sorted(java.util.Comparator.comparing(com.spcms.models.ActivityLog::getTimestamp).reversed())
+            .limit(limit)
+            .toList();
     }
 }

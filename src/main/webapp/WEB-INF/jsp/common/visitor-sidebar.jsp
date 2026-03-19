@@ -92,15 +92,17 @@
         <i class="bi bi-speedometer2"></i> ${isTech ? 'My Terminal' : 'Overview'}
     </a>
     
-    <c:if test="${!isTech}">
+    <c:if test="${currentUser.role == 'SECURITY'}">
         <a href="${pageContext.request.contextPath}/visitor-portal/request" class="vp-nav-item ${pageName == 'request' ? 'active' : ''}">
             <i class="bi bi-person-plus-fill"></i> Register Arrival
         </a>
     </c:if>
 
-    <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="vp-nav-item ${pageName == 'visit-log' ? 'active' : ''}">
-        <i class="bi bi-journal-check"></i> ${isTech ? 'My Assignments' : 'Visit Log'}
-    </a>
+    <c:if test="${currentUser.role != 'ADMIN' && currentUser.role != 'MANAGER'}">
+        <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="vp-nav-item ${pageName == 'visit-log' ? 'active' : ''}">
+            <i class="bi bi-journal-check"></i> ${isTech ? 'My Assignments' : 'Visit Log'}
+        </a>
+    </c:if>
 
     <a href="${pageContext.request.contextPath}/visitor-portal/active" class="vp-nav-item ${pageName == 'active' ? 'active' : ''}">
         <i class="bi bi-shield-shaded"></i> ${isTech ? 'Active Escorts' : 'Active Visitors'}
@@ -116,6 +118,12 @@
         <i class="bi bi-broadcast"></i> Notifications
         <span class="badge rounded-pill bg-danger border border-light ms-auto small" style="font-size: 0.65rem;">Live</span>
     </a>
+
+    <c:if test="${currentUser.role == 'ADMIN'}">
+        <a href="${pageContext.request.contextPath}/visitor-portal/audit-logs" class="vp-nav-item ${pageName == 'audit-logs' ? 'active' : ''}">
+            <i class="bi bi-file-earmark-lock2"></i> System Audit Logs
+        </a>
+    </c:if>
 
     <a href="${pageContext.request.contextPath}/visitor-portal/support" class="vp-nav-item ${pageName == 'support' ? 'active' : ''}">
         <i class="bi bi-exclamation-triangle"></i> ${isTech ? 'Log Incident' : 'Support'}

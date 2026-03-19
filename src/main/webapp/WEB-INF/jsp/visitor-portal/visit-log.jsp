@@ -34,14 +34,16 @@
             <c:set var="isTech" value="${currentUser.role == 'TECHNICIAN'}" />
             <div class="d-flex align-items-center justify-content-between mb-5">
                 <div>
-                    <h2 class="fw-black text-slate-900 mb-1" style="color: #0f172a;">${isTech ? 'Assigned Visits' : 'Check-In Registry'}</h2>
+                    <h2 class="fw-black text-slate-900 mb-1" style="color: #0f172a;">
+                        ${isAdmin ? 'Systems Compliance Log' : (isSecurity ? 'Receptionist Tracking' : (isManager ? 'Governance Pipeline' : 'Assigned Visits'))}
+                    </h2>
                     <p class="text-slate-500 mb-0">
-                        ${isTech ? 'Protocol-approved visitors pending your escort activation' : 'Authorize facility access and manage security badge issuance'}
+                        ${isAdmin ? 'Centralized audit of all visitor movements and institutional security logs' : (isSecurity ? 'Awaiting approved visitors for facility access initialization' : (isManager ? 'Review, approve, or reject pending visit requests' : 'Protocol-approved visitors pending your escort activation'))}
                     </p>
                 </div>
-                <c:if test="${!isTech}">
+                <c:if test="${isSecurity}">
                     <a href="${pageContext.request.contextPath}/visitor-portal/request" class="btn btn-primary px-4 py-3 rounded-4 fw-black shadow-lg hover-lift transition-300">
-                        <i class="bi bi-plus-lg me-2"></i>INVOKE REGISTRATION
+                        <i class="bi bi-plus-lg me-2"></i>REGISTER ARRIVAL
                     </a>
                 </c:if>
             </div>
@@ -104,17 +106,16 @@
                                                         <i class="bi bi-shield-check me-1"></i>Approved
                                                     </span>
                                                 </td>
-                                                <c:if test="${!isTech}">
+                                                <c:if test="${isSecurity || isAdmin}">
                                                     <td class="pe-4 py-4 text-end">
                                                         <button class="btn btn-slate-900 text-white px-3 py-2 rounded-3 hover-lift transition-300 me-2" 
-                                                                data-bs-toggle="modal" data-bs-target="#checkinModal${a.visitor.visitorId}">
-                                                            <i class="bi bi-box-arrow-in-right"></i>
-                                                        </button>
-                                                        <button class="btn btn-outline-danger px-3 py-2 rounded-3 hover-lift transition-300" 
-                                                                data-bs-toggle="modal" data-bs-target="#deleteModal${a.visitor.visitorId}">
-                                                            <i class="bi bi-trash"></i>
+                                                                data-bs-toggle="modal" data-bs-target="#checkinModal${a.visitor.visitorId}" title="Perform Check-In">
+                                                            <i class="bi bi-box-arrow-in-right me-1"></i>CHECK-IN
                                                         </button>
                                                     </td>
+                                                </c:if>
+                                                <c:if test="${isManager}">
+                                                    <td class="pe-4 py-4 text-end text-muted small italic">Awaiting Arrival</td>
                                                 </c:if>
                                             </tr>
 
@@ -169,10 +170,6 @@
 
             <c:if test="${!isTech}">
                 <!-- Secondary Section: Full Pipeline (Only for Security/Admins) -->
-                ...
-            </c:if>
-        </div>
-    </div>
 
     <style>
         .fw-black { font-weight: 800; }
@@ -224,21 +221,102 @@
                                                         <c:when test="${a.status == 'PENDING'}"><span class="badge bg-warning text-dark rounded-pill px-3">Pending</span></c:when>
                                                         <c:when test="${a.status == 'APPROVED'}"><span class="badge bg-success rounded-pill px-3">Approved</span></c:when>
                                                         <c:when test="${a.status == 'REJECTED'}"><span class="badge bg-danger rounded-pill px-3">Rejected</span></c:when>
+                                                        <c:when test="${a.status == 'MORE_INFO'}"><span class="badge bg-info text-dark rounded-pill px-3">Info Requested</span></c:when>
                                                     </c:choose>
                                                 </td>
-                                                <c:if test="${!isTech}">
-                                                    <td class="px-4 py-3">
-                                                        <a href="${pageContext.request.contextPath}/visitor-portal/edit/${a.visitor.visitorId}"
-                                                           class="btn btn-sm btn-outline-primary me-1">
-                                                            <i class="bi bi-pencil me-1"></i>Edit
-                                                        </a>
-                                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                                                data-bs-target="#deleteModalAll${a.visitor.visitorId}">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                </c:if>
+                                                <td class="px-4 py-3 text-end">
+                                                    <c:choose>
+                                                        <c:when test="${isManager && (a.status == 'PENDING' || a.status == 'MORE_INFO')}">
+                                                            <button class="btn btn-sm btn-success rounded-pill px-2 me-1" data-bs-toggle="modal" data-bs-target="#approveModal${a.approvalId}">APPROVE</button>
+                                                            <button class="btn btn-sm btn-info text-white rounded-pill px-2 me-1" data-bs-toggle="modal" data-bs-target="#infoModal${a.approvalId}">INFO</button>
+                                                            <button class="btn btn-sm btn-danger rounded-pill px-2" data-bs-toggle="modal" data-bs-target="#rejectModal${a.approvalId}">REJECT</button>
+                                                        </c:when>
+                                                        <c:when test="${isSecurity || isAdmin}">
+                                                            <a href="${pageContext.request.contextPath}/visitor-portal/edit/${a.visitor.visitorId}"
+                                                               class="btn btn-sm btn-outline-primary me-1">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </a>
+                                                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteModalAll${a.visitor.visitorId}">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="text-muted small italic">View Only</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
                                             </tr>
+
+                                            <!-- INFO MODAL -->
+                                            <div class="modal fade" id="infoModal${a.approvalId}" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content rounded-4 shadow border-0">
+                                                        <div class="modal-header bg-info text-white rounded-top-4">
+                                                            <h5 class="modal-title fw-bold">Request More Information</h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form action="${pageContext.request.contextPath}/visitor-portal/request-info/${a.approvalId}" method="post">
+                                                            <div class="modal-body p-4">
+                                                                <p class="text-muted small">Specify what details are missing or need clarification from Security.</p>
+                                                                <label class="form-label fw-bold">Instruction/Remarks</label>
+                                                                <textarea name="remarks" class="form-control rounded-3" rows="3" required placeholder="e.g., Please clarify purpose of visit..."></textarea>
+                                                            </div>
+                                                            <div class="modal-footer border-0">
+                                                                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-info text-white rounded-pill px-4">Send Request</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- APPROVE MODAL -->
+                                            <div class="modal fade" id="approveModal${a.approvalId}" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content rounded-4 shadow border-0">
+                                                        <div class="modal-header bg-success text-white rounded-top-4">
+                                                            <h5 class="modal-title fw-bold">Approve Visit Request</h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form action="${pageContext.request.contextPath}/visitor-portal/approve/${a.approvalId}" method="post">
+                                                            <div class="modal-body p-4">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold">Authorized Duration (Hours)</label>
+                                                                    <input type="number" name="durationHours" class="form-control rounded-3" value="4" min="1" max="24">
+                                                                </div>
+                                                                <p class="text-muted small mb-0">The visitor will be notified and ready for check-in by Security.</p>
+                                                            </div>
+                                                            <div class="modal-footer border-0">
+                                                                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-success rounded-pill px-4">Confirm Approval</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- REJECT MODAL -->
+                                            <div class="modal fade" id="rejectModal${a.approvalId}" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content rounded-4 shadow border-0">
+                                                        <div class="modal-header bg-danger text-white rounded-top-4">
+                                                            <h5 class="modal-title fw-bold">Reject Visit Request</h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form action="${pageContext.request.contextPath}/visitor-portal/reject/${a.approvalId}" method="post">
+                                                            <div class="modal-body p-4">
+                                                                <label class="form-label fw-bold">Reason for Rejection</label>
+                                                                <textarea name="reason" class="form-control rounded-3" rows="3" required placeholder="Specify reason for denial..."></textarea>
+                                                            </div>
+                                                            <div class="modal-footer border-0">
+                                                                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-danger rounded-pill px-4">Confirm Rejection</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                             <!-- DELETE MODAL for all-registrations section -->
                                             <div class="modal fade" id="deleteModalAll${a.visitor.visitorId}" tabindex="-1">
@@ -278,7 +356,7 @@
                     </div>
                 </div>
             </div>
-
+            </c:if>
         </div>
     </div>
 

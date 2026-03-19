@@ -27,9 +27,9 @@
                     </p>
                 </div>
                 <div class="d-none d-md-block">
-                    <button class="btn btn-white border border-light text-slate-600 px-4 py-3 rounded-4 shadow-sm fw-bold">
+                    <a href="${pageContext.request.contextPath}/visitor-portal/history/export-pdf" class="btn btn-white border border-light text-slate-600 px-4 py-3 rounded-4 shadow-sm fw-bold">
                         <i class="bi bi-download me-2"></i>EXPORT LOGS
-                    </button>
+                    </a>
                 </div>
             </div>
 

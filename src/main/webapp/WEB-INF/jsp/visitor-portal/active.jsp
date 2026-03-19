@@ -37,9 +37,11 @@
             <c:set var="isTech" value="${currentUser.role == 'TECHNICIAN'}" />
             <div class="d-flex align-items-center justify-content-between mb-5">
                 <div>
-                    <h2 class="fw-black text-slate-900 mb-1" style="color: #0f172a;">${isTech ? 'Active Escorts' : 'Live Facility Traffic'}</h2>
+                    <h2 class="fw-black text-slate-900 mb-1" style="color: #0f172a;">
+                        ${isSecurity ? 'Live Entrance Tracking' : (isManager ? 'Live Facility Traffic' : 'Active Escorts')}
+                    </h2>
                     <p class="text-slate-500 mb-0">
-                        ${isTech ? 'Real-time tracking of visitors currently under your protocol supervision' : 'Monitor live visitor dispersion and manage session termination protocols'}
+                        ${isSecurity ? 'Monitor live visitor signals and manage session termination protocols' : (isAdmin || isManager ? 'Real-time oversight of visitor dispersion and security compliance' : 'Real-time tracking of visitors currently under your protocol supervision')}
                     </p>
                 </div>
                 <div class="d-none d-md-flex align-items-center bg-white p-3 rounded-4 shadow-sm border border-light">
@@ -123,62 +125,69 @@
                                                 </td>
                                                 <td class="pe-4 py-4 text-end">
                                                     <c:choose>
-                                                        <c:when test="${isTech}">
+                                                        <c:when test="${isTechnician}">
                                                             <a href="${pageContext.request.contextPath}/visitor-portal/report-incident?visitorId=${v.visitor.visitorId}" 
                                                                class="btn btn-outline-danger btn-sm rounded-3 px-3 py-2 fw-bold hover-lift transition-300">
                                                                 <i class="bi bi-exclamation-octagon me-1"></i>REPORT
                                                             </a>
                                                         </c:when>
-                                                        <c:otherwise>
+                                                        <c:when test="${isSecurity}">
                                                             <button class="btn btn-warning text-white px-4 py-2 rounded-4 fw-black shadow-sm hover-lift transition-300" 
                                                                     data-bs-toggle="modal" data-bs-target="#checkoutModal${v.checkId}">
                                                                 <i class="bi bi-box-arrow-right me-2"></i>LOG OUT
                                                             </button>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-bold">
+                                                                <i class="bi bi-broadcast me-2"></i>ACTIVE
+                                                            </span>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </td>
                                             </tr>
 
-                                            <!-- CHECK-OUT MODAL (Redesigned) -->
-                                            <div class="modal fade" id="checkoutModal${v.checkId}" tabindex="-1">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content border-0 shadow-lg rounded-5 overflow-hidden">
-                                                        <div class="modal-header bg-warning p-4 border-0">
-                                                            <h5 class="modal-title fw-black">Session Termination</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            <c:if test="${isSecurity}">
+                                                <!-- CHECK-OUT MODAL (Redesigned) -->
+                                                <div class="modal fade" id="checkoutModal${v.checkId}" tabindex="-1">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content border-0 shadow-lg rounded-5 overflow-hidden">
+                                                            <div class="modal-header bg-warning p-4 border-0">
+                                                                <h5 class="modal-title fw-black">Session Termination</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <form action="${pageContext.request.contextPath}/visitor-portal/checkout/${v.checkId}" method="post">
+                                                                <div class="modal-body p-5">
+                                                                    <div class="text-center mb-4">
+                                                                        <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-circle inline-block mb-3">
+                                                                            <i class="bi bi-exclamation-triangle fs-2"></i>
+                                                                        </div>
+                                                                        <h6 class="fw-bold text-slate-900">Finalizing visit for ${v.visitor.fullName}</h6>
+                                                                        <p class="small text-slate-500">Duration documented: ${durationMap[v.checkId]}</p>
+                                                                    </div>
+                                                                    <div class="space-y-3">
+                                                                        <div class="p-3 border border-slate-100 bg-slate-50 rounded-4">
+                                                                            <div class="form-check form-switch custom-switch">
+                                                                                <input class="form-check-input" type="checkbox" name="equipmentConfirmed" id="equip${v.checkId}" value="true" checked>
+                                                                                <label class="form-check-label fw-bold text-slate-700" for="equip${v.checkId}">All Equipment Recovered</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="p-3 border border-slate-100 bg-slate-50 rounded-4 mt-3">
+                                                                            <div class="form-check form-switch custom-switch">
+                                                                                <input class="form-check-input" type="checkbox" name="badgeReturned" id="badge${v.checkId}" value="true" checked>
+                                                                                <label class="form-check-label fw-bold text-slate-700" for="badge${v.checkId}">Access Badge Deactivated</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer p-4 border-0">
+                                                                    <button type="button" class="btn btn-slate-100 text-slate-600 px-4 py-3 rounded-4 fw-bold" data-bs-dismiss="modal">CANCEL</button>
+                                                                    <button type="submit" class="btn btn-warning text-white px-4 py-3 rounded-4 fw-black shadow-lg">CONFIRM DEPARTURE</button>
+                                                                </div>
+                                                            </form>
                                                         </div>
-                                                        <form action="${pageContext.request.contextPath}/visitor-portal/checkout/${v.checkId}" method="post">
-                                                            <div class="modal-body p-5">
-                                                                <div class="text-center mb-4">
-                                                                    <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-circle inline-block mb-3">
-                                                                        <i class="bi bi-exclamation-triangle fs-2"></i>
-                                                                    </div>
-                                                                    <h6 class="fw-bold text-slate-900">Finalizing visit for ${v.visitor.fullName}</h6>
-                                                                    <p class="small text-slate-500">Duration documented: ${durationMap[v.checkId]}</p>
-                                                                </div>
-                                                                <div class="space-y-3">
-                                                                    <div class="p-3 border border-slate-100 bg-slate-50 rounded-4">
-                                                                        <div class="form-check form-switch custom-switch">
-                                                                            <input class="form-check-input" type="checkbox" name="equipmentConfirmed" id="equip${v.checkId}" value="true" checked>
-                                                                            <label class="form-check-label fw-bold text-slate-700" for="equip${v.checkId}">All Equipment Recovered</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="p-3 border border-slate-100 bg-slate-50 rounded-4 mt-3">
-                                                                        <div class="form-check form-switch custom-switch">
-                                                                            <input class="form-check-input" type="checkbox" name="badgeReturned" id="badge${v.checkId}" value="true" checked>
-                                                                            <label class="form-check-label fw-bold text-slate-700" for="badge${v.checkId}">Access Badge Deactivated</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer p-4 border-0">
-                                                                <button type="button" class="btn btn-slate-100 text-slate-600 px-4 py-3 rounded-4 fw-bold" data-bs-dismiss="modal">CANCEL</button>
-                                                                <button type="submit" class="btn btn-warning text-white px-4 py-3 rounded-4 fw-black shadow-lg">CONFIRM DEPARTURE</button>
-                                                            </div>
-                                                        </form>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </c:if>
                                         </c:forEach>
                                     </c:otherwise>
                                 </c:choose>

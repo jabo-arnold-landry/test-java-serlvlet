@@ -342,7 +342,7 @@
 
             <!-- 2. Manager Analytics View (Already polished previously) -->
             <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
-            <div class="tab-pane fade <sec:authorize access="!hasRole('TECHNICIAN')">show active</sec:authorize>" id="manager-dashboard">
+            <div class="tab-pane fade" id="manager-dashboard">
                 <div class="row g-4 mb-4">
                     <div class="col-lg-8">
                         <div class="table-container h-100">

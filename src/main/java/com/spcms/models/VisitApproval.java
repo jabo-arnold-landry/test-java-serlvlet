@@ -46,7 +46,7 @@ public class VisitApproval {
     private LocalDateTime createdAt;
 
     public enum ApprovalStatus {
-        PENDING, APPROVED, REJECTED
+        PENDING, APPROVED, REJECTED, MORE_INFO
     }
 
     @PrePersist
