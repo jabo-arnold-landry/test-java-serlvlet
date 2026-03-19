@@ -73,9 +73,12 @@
                 </thead>
                 <tbody>
                     <c:forEach var="m" items="${overdueUps}">
-                    <tr class="table-warning">
+                    <tr class="table-danger">
                         <td><strong>${m.ups.assetTag}</strong></td>
-                        <td><span class="badge badge-overdue">${m.maintenanceType}</span></td>
+                        <td>
+                            <span class="badge badge-overdue">OVERDUE</span> 
+                            <small class="text-muted d-block mt-1" style="font-size:11px;">${m.maintenanceType}</small>
+                        </td>
                         <td>${m.maintenanceDate}</td>
                         <td class="text-danger fw-bold">${m.nextDueDate}</td>
                         <td>${m.technician}</td>
@@ -107,9 +110,49 @@
                         </td>
                     </tr>
                     </c:forEach>
-                    <c:if test="${empty overdueUps}">
+
+                    <c:forEach var="m" items="${upcomingUps}">
+                    <tr class="table-warning">
+                        <td><strong>${m.ups.assetTag}</strong></td>
+                        <td>
+                            <span class="badge badge-upcoming">UPCOMING</span> 
+                            <small class="text-muted d-block mt-1" style="font-size:11px;">${m.maintenanceType}</small>
+                        </td>
+                        <td>${m.maintenanceDate}</td>
+                        <td class="text-warning text-dark fw-bold">${m.nextDueDate}</td>
+                        <td>${m.technician}</td>
+                        <td>${m.vendor}</td>
+                        <td>
+                            <c:if test="${not empty m.serviceReportPath}">
+                                <a href="${pageContext.request.contextPath}/maintenance/download-report/ups/${m.maintenanceId}"
+                                   class="btn btn-sm btn-outline-secondary" title="Download Service Report">
+                                    <i class="bi bi-file-earmark-arrow-down"></i>
+                                </a>
+                            </c:if>
+                            <c:if test="${empty m.serviceReportPath}">
+                                <span class="text-muted">—</span>
+                            </c:if>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a href="${pageContext.request.contextPath}/maintenance/ups/edit/${m.maintenanceId}"
+                                   class="btn btn-outline-primary btn-action" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form action="${pageContext.request.contextPath}/maintenance/ups/delete/${m.maintenanceId}"
+                                      method="post" onsubmit="return confirm('Are you sure you want to delete this UPS maintenance record?');">
+                                    <button type="submit" class="btn btn-outline-danger btn-action" title="Delete">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </c:forEach>
+
+                    <c:if test="${empty overdueUps and empty upcomingUps}">
                         <tr><td colspan="8" class="text-center text-muted py-3">
-                            <i class="bi bi-check-circle text-success"></i> No overdue UPS maintenance. All up to date!
+                            <i class="bi bi-check-circle text-success"></i> No overdue or upcoming UPS maintenance. All up to date!
                         </td></tr>
                     </c:if>
                 </tbody>
@@ -128,9 +171,12 @@
                 </thead>
                 <tbody>
                     <c:forEach var="m" items="${overdueCooling}">
-                    <tr class="table-warning">
+                    <tr class="table-danger">
                         <td><strong>${m.coolingUnit.assetTag}</strong></td>
-                        <td><span class="badge badge-overdue">${m.maintenanceType}</span></td>
+                        <td>
+                            <span class="badge badge-overdue">OVERDUE</span>
+                            <small class="text-muted d-block mt-1" style="font-size:11px;">${m.maintenanceType}</small>
+                        </td>
                         <td>${m.maintenanceDate}</td>
                         <td>${m.filterCleaningDate}</td>
                         <td>${m.technician}</td>
@@ -162,9 +208,49 @@
                         </td>
                     </tr>
                     </c:forEach>
-                    <c:if test="${empty overdueCooling}">
+
+                    <c:forEach var="m" items="${upcomingCooling}">
+                    <tr class="table-warning">
+                        <td><strong>${m.coolingUnit.assetTag}</strong></td>
+                        <td>
+                            <span class="badge badge-upcoming">UPCOMING</span>
+                            <small class="text-muted d-block mt-1" style="font-size:11px;">${m.maintenanceType}</small>
+                        </td>
+                        <td>${m.maintenanceDate}</td>
+                        <td>${m.filterCleaningDate}</td>
+                        <td>${m.technician}</td>
+                        <td class="text-warning text-dark fw-bold">${m.nextMaintenanceDate}</td>
+                        <td>
+                            <c:if test="${not empty m.serviceReportPath}">
+                                <a href="${pageContext.request.contextPath}/maintenance/download-report/cooling/${m.maintenanceId}"
+                                   class="btn btn-sm btn-outline-secondary" title="Download Service Report">
+                                    <i class="bi bi-file-earmark-arrow-down"></i>
+                                </a>
+                            </c:if>
+                            <c:if test="${empty m.serviceReportPath}">
+                                <span class="text-muted">—</span>
+                            </c:if>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a href="${pageContext.request.contextPath}/maintenance/cooling/edit/${m.maintenanceId}"
+                                   class="btn btn-outline-primary btn-action" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form action="${pageContext.request.contextPath}/maintenance/cooling/delete/${m.maintenanceId}"
+                                      method="post" onsubmit="return confirm('Are you sure you want to delete this Cooling maintenance record?');">
+                                    <button type="submit" class="btn btn-outline-danger btn-action" title="Delete">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </c:forEach>
+
+                    <c:if test="${empty overdueCooling and empty upcomingCooling}">
                         <tr><td colspan="8" class="text-center text-muted py-3">
-                            <i class="bi bi-check-circle text-success"></i> No overdue Cooling maintenance.
+                            <i class="bi bi-check-circle text-success"></i> No overdue or upcoming Cooling maintenance. All up to date!
                         </td></tr>
                     </c:if>
                 </tbody>

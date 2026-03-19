@@ -47,9 +47,16 @@
                 <h6 class="fw-bold mb-3"><i class="bi bi-info-circle text-info"></i> Maintenance Details</h6>
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
-                        <label class="form-label">Cooling Unit ID <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="coolingUnit.coolingId"
-                               value="${coolingMaintenance.coolingUnit != null ? coolingMaintenance.coolingUnit.coolingId : ''}" required/>
+                        <label class="form-label">Cooling Unit <span class="text-danger">*</span></label>
+                        <select class="form-select" name="coolingUnit.coolingId" required>
+                            <option value="">-- Select Cooling Unit --</option>
+                            <c:forEach var="unit" items="${coolingList}">
+                                <option value="${unit.coolingId}" 
+                                        ${coolingMaintenance.coolingUnit != null && coolingMaintenance.coolingUnit.coolingId == unit.coolingId ? 'selected' : ''}>
+                                    ${unit.assetTag} - ${unit.unitName}
+                                </option>
+                            </c:forEach>
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Maintenance Type <span class="text-danger">*</span></label>

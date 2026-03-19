@@ -47,9 +47,16 @@
                 <h6 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary"></i> Maintenance Details</h6>
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
-                        <label class="form-label">UPS ID <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="ups.upsId"
-                               value="${upsMaintenance.ups != null ? upsMaintenance.ups.upsId : ''}" required/>
+                        <label class="form-label">UPS <span class="text-danger">*</span></label>
+                        <select class="form-select" name="ups.upsId" required>
+                            <option value="">-- Select UPS --</option>
+                            <c:forEach var="upsUnit" items="${upsList}">
+                                <option value="${upsUnit.upsId}" 
+                                        ${upsMaintenance.ups != null && upsMaintenance.ups.upsId == upsUnit.upsId ? 'selected' : ''}>
+                                    ${upsUnit.assetTag} - ${upsUnit.upsName}
+                                </option>
+                            </c:forEach>
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Maintenance Type <span class="text-danger">*</span></label>
@@ -132,8 +139,15 @@
                 <form action="${pageContext.request.contextPath}/maintenance/ups/schedule-quarterly" method="post">
                     <div class="row g-3 mb-3">
                         <div class="col-md-4">
-                            <label class="form-label">UPS ID <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" name="upsId" required/>
+                            <label class="form-label">UPS <span class="text-danger">*</span></label>
+                            <select class="form-select" name="upsId" required>
+                                <option value="">-- Select UPS --</option>
+                                <c:forEach var="upsUnit" items="${upsList}">
+                                    <option value="${upsUnit.upsId}">
+                                        ${upsUnit.assetTag} - ${upsUnit.upsName}
+                                    </option>
+                                </c:forEach>
+                            </select>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Technician <span class="text-danger">*</span></label>

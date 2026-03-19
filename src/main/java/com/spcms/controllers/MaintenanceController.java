@@ -5,6 +5,8 @@ import com.spcms.models.UpsMaintenance;
 import com.spcms.services.FileStorageService;
 import com.spcms.services.MaintenanceReminderService;
 import com.spcms.services.MaintenanceService;
+import com.spcms.services.UpsService;
+import com.spcms.services.CoolingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -32,12 +34,20 @@ public class MaintenanceController {
     @Autowired
     private MaintenanceReminderService reminderService;
 
+    @Autowired
+    private UpsService upsService;
+
+    @Autowired
+    private CoolingService coolingService;
+
     // ==================== List All Maintenance ====================
 
     @GetMapping
     public String list(Model model) {
         model.addAttribute("overdueUps", maintenanceService.getOverdueUpsMaintenance());
         model.addAttribute("overdueCooling", maintenanceService.getOverdueCoolingMaintenance());
+        model.addAttribute("upcomingUps", maintenanceService.getUpcomingUpsMaintenance());
+        model.addAttribute("upcomingCooling", maintenanceService.getUpcomingCoolingMaintenance());
         model.addAttribute("allUpsMaintenance", maintenanceService.getAllUpsMaintenance());
         model.addAttribute("allCoolingMaintenance", maintenanceService.getAllCoolingMaintenance());
         return "maintenance/list";
@@ -49,6 +59,7 @@ public class MaintenanceController {
     public String showUpsMaintenanceForm(Model model) {
         model.addAttribute("upsMaintenance", new UpsMaintenance());
         model.addAttribute("isEdit", false);
+        model.addAttribute("upsList", upsService.getAllUps());
         return "maintenance/ups-form";
     }
 
@@ -59,6 +70,7 @@ public class MaintenanceController {
                 .map(m -> {
                     model.addAttribute("upsMaintenance", m);
                     model.addAttribute("isEdit", true);
+                    model.addAttribute("upsList", upsService.getAllUps());
                     return "maintenance/ups-form";
                 })
                 .orElseGet(() -> {
@@ -110,6 +122,7 @@ public class MaintenanceController {
     public String showCoolingMaintenanceForm(Model model) {
         model.addAttribute("coolingMaintenance", new CoolingMaintenance());
         model.addAttribute("isEdit", false);
+        model.addAttribute("coolingList", coolingService.getAllCoolingUnits());
         return "maintenance/cooling-form";
     }
 
@@ -120,6 +133,7 @@ public class MaintenanceController {
                 .map(m -> {
                     model.addAttribute("coolingMaintenance", m);
                     model.addAttribute("isEdit", true);
+                    model.addAttribute("coolingList", coolingService.getAllCoolingUnits());
                     return "maintenance/cooling-form";
                 })
                 .orElseGet(() -> {
