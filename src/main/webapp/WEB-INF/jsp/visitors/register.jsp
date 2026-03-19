@@ -42,6 +42,9 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
           action="${pageContext.request.contextPath}/visitors/register"
           method="post"
         >
+          <c:if test="${not empty _csrf}">
+              <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+          </c:if>
           <h6 class="fw-bold mb-3">Personal Information</h6>
           <div class="row g-3 mb-4">
             <div class="col-md-4">

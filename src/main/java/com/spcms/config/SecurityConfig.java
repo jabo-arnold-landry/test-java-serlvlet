@@ -23,6 +23,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.DispatcherType;
 import java.util.Collections;
 
 /**
@@ -50,13 +51,14 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
+                // Allow JSP Forwards and Errors (Spring Boot 3 / Security 6 requirement)
+                .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
+                
                 // Public access - MUST come first
                 .requestMatchers(
-                    new AntPathRequestMatcher("/login"),
-                    new AntPathRequestMatcher("/login/**"),
-                    new AntPathRequestMatcher("/perform_login"),
-                    new AntPathRequestMatcher("/error"),
-                    new AntPathRequestMatcher("/error/**"),
+                    new AntPathRequestMatcher("/login**"),
+                    new AntPathRequestMatcher("/perform_login**"),
+                    new AntPathRequestMatcher("/error**"),
                     new AntPathRequestMatcher("/css/**"),
                     new AntPathRequestMatcher("/js/**"),
                     new AntPathRequestMatcher("/images/**"),
@@ -66,7 +68,20 @@ public class SecurityConfig {
                 // User management - ADMIN only
                 .requestMatchers(new AntPathRequestMatcher("/users/**")).hasRole("ADMIN")
 
-                // Visitor approval - MANAGER or ADMIN
+                // Visitor Portal - SECURITY, TECHNICIAN, MANAGER, ADMIN
+                .requestMatchers(new AntPathRequestMatcher("/visitor-portal/**")).hasAnyRole("SECURITY", "TECHNICIAN", "MANAGER", "ADMIN")
+
+                // Visitor registration and checking - TECHNICIAN or ADMIN
+                .requestMatchers(
+                    new AntPathRequestMatcher("/visitors/register/**"),
+                    new AntPathRequestMatcher("/visitors/checkin/**"),
+                    new AntPathRequestMatcher("/visitors/checkout/**")
+                ).hasAnyRole("TECHNICIAN", "ADMIN")
+
+                // legacy Visitor Management Dashboard
+                .requestMatchers(new AntPathRequestMatcher("/visitors")).hasAnyRole("MANAGER", "ADMIN")
+
+                // Visitor approval and dashboard - MANAGER or ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/visitors/approve/**"),
                     new AntPathRequestMatcher("/visitors/reject/**")
@@ -85,11 +100,11 @@ public class SecurityConfig {
                 // Monitoring - TECHNICIAN, MANAGER, ADMIN
                 .requestMatchers(new AntPathRequestMatcher("/monitoring/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
 
-                // Incidents - TECHNICIAN, MANAGER, ADMIN
-                .requestMatchers(new AntPathRequestMatcher("/incidents/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
+                // Incidents - TECHNICIAN, MANAGER, ADMIN, SECURITY
+                .requestMatchers(new AntPathRequestMatcher("/incidents/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN", "SECURITY")
 
-                // Shift reports - TECHNICIAN, MANAGER, ADMIN
-                .requestMatchers(new AntPathRequestMatcher("/shift-reports/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
+                // Shift reports - TECHNICIAN, MANAGER, ADMIN, SECURITY
+                .requestMatchers(new AntPathRequestMatcher("/shift-reports/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN", "SECURITY")
 
                 // Alerts - All authenticated
                 .requestMatchers(new AntPathRequestMatcher("/alerts/**")).authenticated()
@@ -126,7 +141,6 @@ public class SecurityConfig {
                 .failureUrl("/login?error=true")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
@@ -163,8 +177,11 @@ public class SecurityConfig {
                     case "ROLE_TECHNICIAN":
                         targetUrl = request.getContextPath() + "/monitoring";
                         break;
+                    case "ROLE_SECURITY":
+                        targetUrl = request.getContextPath() + "/visitor-portal";
+                        break;
                     case "ROLE_VIEWER":
-                        targetUrl = request.getContextPath() + "/dashboard";
+                        targetUrl = request.getContextPath() + "/visitor-portal";
                         break;
                 }
             }

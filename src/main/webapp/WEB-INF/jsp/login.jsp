@@ -229,14 +229,15 @@
                 <button type="submit" class="btn-login">
                     <i class="bi bi-box-arrow-in-right"></i> Sign In
                 </button>
+
             </form>
 
             <div class="divider">Authorized Access Only</div>
             <div class="role-badges">
                 <span class="role-badge">🛡 Admin</span>
+                <span class="role-badge">👮 Security</span>
                 <span class="role-badge">👷 Technician</span>
                 <span class="role-badge">📊 Manager</span>
-                <span class="role-badge">👁 Viewer</span>
             </div>
         </div>
     </div>

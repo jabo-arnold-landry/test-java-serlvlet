@@ -21,4 +21,10 @@ public interface VisitorCheckInOutRepository extends JpaRepository<VisitorCheckI
 
     @Query("SELECT v.visitor, COUNT(v) FROM VisitorCheckInOut v WHERE v.visitClosed = true GROUP BY v.visitor ORDER BY COUNT(v) DESC")
     List<Object[]> findHighFrequencyVisitors();
+
+    @Query("SELECT COUNT(v) FROM VisitorCheckInOut v WHERE v.visitClosed = true AND CAST(v.checkOutTime AS date) = CURRENT_DATE")
+    long countCompletedToday();
+
+    List<VisitorCheckInOut> findByVisitClosed(boolean visitClosed);
+    List<VisitorCheckInOut> findByEscort_UserIdAndVisitClosedOrderByCheckInTimeDesc(Long userId, boolean visitClosed);
 }
