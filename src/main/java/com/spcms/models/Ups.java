@@ -10,8 +10,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "ups")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Ups {
 
@@ -126,5 +128,13 @@ public class Ups {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public Long getUpsId() {
+        return upsId;
+    }
+
+    public void setUpsId(Long upsId) {
+        this.upsId = upsId;
     }
 }
