@@ -93,12 +93,14 @@ public class SecurityConfig {
                 // Alerts - All authenticated
                 .requestMatchers(new AntPathRequestMatcher("/alerts/**")).authenticated()
 
-                // Equipment, UPS, Cooling CRUD - TECHNICIAN, MANAGER, ADMIN
+                // Equipment, UPS, Cooling CRUD & UPS Reports - TECHNICIAN, MANAGER, ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/ups/new"),
                     new AntPathRequestMatcher("/ups/save"),
                     new AntPathRequestMatcher("/ups/edit/**"),
-                    new AntPathRequestMatcher("/ups/delete/**")
+                    new AntPathRequestMatcher("/ups/delete/**"),
+                    new AntPathRequestMatcher("/ups/reports"),
+                    new AntPathRequestMatcher("/ups/reports/**")
                 ).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
                 .requestMatchers(
                     new AntPathRequestMatcher("/cooling/new"),
