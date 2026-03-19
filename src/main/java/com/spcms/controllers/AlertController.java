@@ -9,14 +9,23 @@ import com.spcms.services.MaintenanceService;
 import com.spcms.models.UpsBattery;
 import com.spcms.models.UpsMaintenance;
 import com.spcms.models.Ups;
+import com.spcms.util.AlertInsightUtil;
+import com.spcms.util.AlertInsightUtil.AlertInsight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -42,10 +51,96 @@ public class AlertController {
     private final List<SseEmitter> alertEmitters = new CopyOnWriteArrayList<>();
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("alerts", alertService.getAllAlerts());
-        model.addAttribute("unacknowledgedAlerts", alertService.countUnacknowledgedAlerts());
+    public String list(Model model, Authentication authentication) {
+        Long currentUserId = resolveCurrentUserId(authentication);
+        List<Alert> alerts = alertService.getUnacknowledgedAlertsForUser(currentUserId);
+        Map<Long, AlertInsight> insights = AlertInsightUtil.buildInsights(alerts, LocalDateTime.now());
+
+        alerts.sort(Comparator
+                .comparingInt((Alert alert) -> {
+                    if (alert.getAlertId() == null || !insights.containsKey(alert.getAlertId())) {
+                        return 0;
+                    }
+                    return insights.get(alert.getAlertId()).getSeverityScore();
+                })
+                .reversed()
+                .thenComparing(Alert::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())));
+
+        Map<Long, Integer> severityScoreById = new HashMap<>();
+        Map<Long, String> severityLabelById = new HashMap<>();
+        Map<Long, String> severityClassById = new HashMap<>();
+        Map<Long, String> slaStatusById = new HashMap<>();
+        Map<Long, String> recommendationById = new HashMap<>();
+
+        for (Alert alert : alerts) {
+            if (alert.getAlertId() == null) {
+                continue;
+            }
+            AlertInsight insight = insights.getOrDefault(alert.getAlertId(), AlertInsight.empty());
+            severityScoreById.put(alert.getAlertId(), insight.getSeverityScore());
+            severityLabelById.put(alert.getAlertId(), insight.getSeverityLabel());
+            severityClassById.put(alert.getAlertId(), severityBadgeClass(insight.getSeverityLabel()));
+            slaStatusById.put(alert.getAlertId(), insight.getSlaStatusText());
+            recommendationById.put(alert.getAlertId(), insight.getRecommendation());
+        }
+
+        model.addAttribute("alerts", alerts);
+        model.addAttribute("severityScoreById", severityScoreById);
+        model.addAttribute("severityLabelById", severityLabelById);
+        model.addAttribute("severityClassById", severityClassById);
+        model.addAttribute("slaStatusById", slaStatusById);
+        model.addAttribute("recommendationById", recommendationById);
+        model.addAttribute("unacknowledgedAlerts", alertService.countUnacknowledgedAlertsForUser(currentUserId));
         return "alerts/list";
+    }
+
+    @GetMapping("/history")
+    public String history(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+                          @RequestParam(required = false) Alert.AlertType alertType,
+                          Model model,
+                          Authentication authentication) {
+
+        Long currentUserId = resolveCurrentUserId(authentication);
+
+        LocalDate normalizedFrom = fromDate;
+        LocalDate normalizedTo = toDate;
+
+        if (normalizedFrom != null && normalizedTo != null && normalizedFrom.isAfter(normalizedTo)) {
+            LocalDate temp = normalizedFrom;
+            normalizedFrom = normalizedTo;
+            normalizedTo = temp;
+        }
+
+        List<Alert> historyAlerts = alertService.getAcknowledgedAlertsForUser(currentUserId, normalizedFrom, normalizedTo, alertType);
+        Map<Long, LocalDateTime> acknowledgedAtMap = alertService.getAcknowledgedAtMapForUser(currentUserId, historyAlerts);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        Map<Long, String> triggeredAtById = new HashMap<>();
+        Map<Long, String> acknowledgedAtById = new HashMap<>();
+
+        for (Alert alert : historyAlerts) {
+            if (alert.getAlertId() == null) {
+                continue;
+            }
+            triggeredAtById.put(
+                    alert.getAlertId(),
+                    alert.getCreatedAt() != null ? alert.getCreatedAt().format(dateTimeFormatter) : "-");
+            acknowledgedAtById.put(
+                    alert.getAlertId(),
+                    acknowledgedAtMap.get(alert.getAlertId()) != null
+                        ? acknowledgedAtMap.get(alert.getAlertId()).format(dateTimeFormatter)
+                        : "-");
+        }
+
+        model.addAttribute("historyAlerts", historyAlerts);
+        model.addAttribute("fromDate", normalizedFrom);
+        model.addAttribute("toDate", normalizedTo);
+        model.addAttribute("selectedAlertType", alertType);
+        model.addAttribute("alertTypes", Alert.AlertType.values());
+        model.addAttribute("triggeredAtById", triggeredAtById);
+        model.addAttribute("acknowledgedAtById", acknowledgedAtById);
+        model.addAttribute("unacknowledgedAlerts", alertService.countUnacknowledgedAlertsForUser(currentUserId));
+        return "alerts/history";
     }
 
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -75,12 +170,51 @@ public class AlertController {
                 .orElseGet(Map::of);
     }
 
+            @GetMapping(value = "/details/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+            @ResponseBody
+            public Map<String, Object> alertDetails(@PathVariable Long id, Authentication authentication) {
+            Alert alert = alertService.getAlertById(id)
+                .orElseThrow(() -> new RuntimeException("Alert not found: " + id));
+            Long currentUserId = resolveCurrentUserId(authentication);
+
+            AlertInsight insight = AlertInsightUtil.buildInsight(alert, alertService.getAllAlerts(), LocalDateTime.now());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            boolean acknowledgedByCurrentUser = alertService.isAcknowledgedByUser(id, currentUserId);
+            LocalDateTime acknowledgedAtForCurrentUser = alertService.getAcknowledgedAtForUser(id, currentUserId).orElse(null);
+
+            Map<String, Object> details = new LinkedHashMap<>();
+            details.put("id", alert.getAlertId());
+            details.put("type", alert.getAlertType() != null ? alert.getAlertType().name() : "-");
+            details.put("equipment", (alert.getEquipmentType() != null ? alert.getEquipmentType().name() : "-") +
+                (alert.getEquipmentId() != null ? " #" + alert.getEquipmentId() : ""));
+            details.put("message", alert.getMessage() != null ? alert.getMessage() : "-");
+            details.put("thresholdValue", alert.getThresholdValue() != null ? alert.getThresholdValue().toPlainString() : "-");
+            details.put("actualValue", alert.getActualValue() != null ? alert.getActualValue().toPlainString() : "-");
+            details.put("sent", Boolean.TRUE.equals(alert.getIsSent()) ? "Yes" : "No");
+            details.put("status", acknowledgedByCurrentUser ? "Acknowledged" : "Pending");
+            details.put("createdAt", alert.getCreatedAt() != null ? alert.getCreatedAt().format(formatter) : "-");
+            details.put("acknowledgedAt", acknowledgedAtForCurrentUser != null ? acknowledgedAtForCurrentUser.format(formatter) : "-");
+            details.put("severity", insight.getSeverityLabel());
+            details.put("score", insight.getSeverityScore());
+            details.put("sla", insight.getSlaStatusText());
+            details.put("recommendation", insight.getRecommendation());
+            return details;
+            }
+
     @GetMapping("/view/{id}")
     public String viewAlert(@PathVariable Long id, Model model) {
         Alert alert = alertService.getAlertById(id)
                 .orElseThrow(() -> new RuntimeException("Alert not found: " + id));
         
         model.addAttribute("alert", alert);
+
+        AlertInsight insight = AlertInsightUtil.buildInsight(alert, alertService.getAllAlerts(), LocalDateTime.now());
+        model.addAttribute("alertSeverityScore", insight.getSeverityScore());
+        model.addAttribute("alertSeverityLabel", insight.getSeverityLabel());
+        model.addAttribute("alertSeverityClass", severityBadgeClass(insight.getSeverityLabel()));
+        model.addAttribute("alertSlaStatus", insight.getSlaStatusText());
+        model.addAttribute("alertRecommendation", insight.getRecommendation());
+        model.addAttribute("alertRepeatCount24h", insight.getRepeatCount24h());
         
         // Calculate max gauge value based on alert type
         BigDecimal maxGaugeValue;
@@ -103,6 +237,28 @@ public class AlertController {
         return "alerts/view";
     }
 
+    private String severityBadgeClass(String severity) {
+        if ("CRITICAL".equals(severity)) {
+            return "danger";
+        }
+        if ("HIGH".equals(severity)) {
+            return "warning text-dark";
+        }
+        if ("MEDIUM".equals(severity)) {
+            return "info text-dark";
+        }
+        return "secondary";
+    }
+
+    private Long resolveCurrentUserId(Authentication authentication) {
+        if (authentication == null || authentication.getName() == null) {
+            return null;
+        }
+        return userService.getUserByUsername(authentication.getName())
+                .map(User::getUserId)
+                .orElse(null);
+    }
+
     private void pushAlert(Alert alert) {
         List<SseEmitter> dead = new java.util.ArrayList<>();
         for (SseEmitter emitter : alertEmitters) {
@@ -117,7 +273,7 @@ public class AlertController {
                 );
                 emitter.send(SseEmitter.event()
                         .name("alert")
-                        .data(payload, MediaType.APPLICATION_JSON));
+                        .data(java.util.Objects.requireNonNull(payload), MediaType.APPLICATION_JSON));
             } catch (Exception e) {
                 dead.add(emitter);
             }
