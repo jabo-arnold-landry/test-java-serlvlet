@@ -31,6 +31,8 @@
         <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
             <div class="nav-section-label">Reports</div>
             <a href="${pageContext.request.contextPath}/reports" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Daily Report</a>
+            <a href="${pageContext.request.contextPath}/reports/branch-performance" class="nav-link"><i class="bi bi-diagram-3"></i> Branch Performance</a>
+            <a href="${pageContext.request.contextPath}/reports/cost-analysis" class="nav-link"><i class="bi bi-cash-coin"></i> Cost Analysis</a>
         </sec:authorize>
         
         <sec:authorize access="hasAnyRole('TECHNICIAN', 'MANAGER', 'ADMIN')">

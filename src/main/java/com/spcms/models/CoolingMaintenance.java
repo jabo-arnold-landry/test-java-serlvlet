@@ -2,6 +2,7 @@ package com.spcms.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -42,6 +43,15 @@ public class CoolingMaintenance {
 
     @Column(length = 100)
     private String vendor;
+
+    @Column(name = "maintenance_cost", precision = 15, scale = 2)
+    private BigDecimal maintenanceCost;
+
+    @Column(name = "parts_cost", precision = 15, scale = 2)
+    private BigDecimal partsCost;
+
+    @Column(name = "labor_cost", precision = 15, scale = 2)
+    private BigDecimal laborCost;
 
     @Column(columnDefinition = "TEXT")
     private String remarks;

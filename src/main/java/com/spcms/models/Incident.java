@@ -3,6 +3,7 @@ package com.spcms.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -55,6 +56,9 @@ public class Incident {
 
     @Column(name = "downtime_minutes")
     private Integer downtimeMinutes;
+
+    @Column(name = "repair_cost", precision = 15, scale = 2)
+    private BigDecimal repairCost;
 
     @Column(name = "root_cause", columnDefinition = "TEXT")
     private String rootCause;
