@@ -45,7 +45,7 @@
                 <p class="text-muted mb-0" style="font-size:14px;">Real-time data center infrastructure status</p>
             </div>
             <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
-            <a href="${pageContext.request.contextPath}/reports/generate?date=<fmt:formatDate value='<%=new java.util.Date()%>' pattern='yyyy-MM-dd'/>" class="btn btn-primary btn-sm">
+            <a href="${pageContext.request.contextPath}/reports/generate" class="btn btn-primary btn-sm">
                 <i class="bi bi-arrow-clockwise"></i> Generate Today's Report
             </a>
             </sec:authorize>

@@ -2,9 +2,11 @@ package com.spcms.config;
 
 import com.spcms.models.User;
 import com.spcms.repositories.UserRepository;
+import com.spcms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -39,6 +41,10 @@ public class SecurityConfig {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    @Lazy
+    private UserService userService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -69,7 +75,8 @@ public class SecurityConfig {
                 // Reports generation - MANAGER or ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/reports/generate/**"),
-                    new AntPathRequestMatcher("/reports/downtime-trend/**")
+                    new AntPathRequestMatcher("/reports/downtime-trend/**"),
+                    new AntPathRequestMatcher("/reports/project/**")
                 ).hasAnyRole("MANAGER", "ADMIN")
 
                 // Maintenance - TECHNICIAN, MANAGER, ADMIN
@@ -87,12 +94,14 @@ public class SecurityConfig {
                 // Alerts - All authenticated
                 .requestMatchers(new AntPathRequestMatcher("/alerts/**")).authenticated()
 
-                // Equipment, UPS, Cooling CRUD - TECHNICIAN, MANAGER, ADMIN
+                // Equipment, UPS, Cooling CRUD & UPS Reports - TECHNICIAN, MANAGER, ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/ups/new"),
                     new AntPathRequestMatcher("/ups/save"),
                     new AntPathRequestMatcher("/ups/edit/**"),
-                    new AntPathRequestMatcher("/ups/delete/**")
+                    new AntPathRequestMatcher("/ups/delete/**"),
+                    new AntPathRequestMatcher("/ups/reports"),
+                    new AntPathRequestMatcher("/ups/reports/**")
                 ).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
                 .requestMatchers(
                     new AntPathRequestMatcher("/cooling/new"),
@@ -134,6 +143,13 @@ public class SecurityConfig {
     public AuthenticationSuccessHandler roleBasedSuccessHandler() {
         return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
             String targetUrl = request.getContextPath() + "/dashboard";
+
+            // Record login event and update lastLogin timestamp
+            String username = authentication.getName();
+            String ipAddress = request.getRemoteAddr();
+            userRepository.findByUsername(username).ifPresent(user ->
+                userService.recordLogin(user.getUserId(), ipAddress)
+            );
 
             for (GrantedAuthority authority : authentication.getAuthorities()) {
                 String role = authority.getAuthority();

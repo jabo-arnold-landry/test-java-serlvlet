@@ -40,6 +40,14 @@
                                     <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to deactivate this user?')"><i class="bi bi-person-x"></i></button>
                                 </form>
                             </c:if>
+                            <c:if test="${!u.isActive}">
+                                <form action="${pageContext.request.contextPath}/users/reactivate/${u.userId}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-outline-success" onclick="return confirm('Are you sure you want to reactivate this user?')"><i class="bi bi-person-check"></i></button>
+                                </form>
+                            </c:if>
+                            <form action="${pageContext.request.contextPath}/users/delete/${u.userId}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to permanently delete this user? This action cannot be undone.')"><i class="bi bi-trash"></i></button>
+                            </form>
                         </td>
                     </tr>
                     </c:forEach>

@@ -20,29 +20,26 @@
         
         <div class="table-container">
             <table class="table hover">
-                <thead><tr><th>Timestamp</th><th>Device</th><th>Load/Temp</th><th>Battery</th><th>Alarm</th><th>Logged By</th></tr></thead>
+                <thead><tr><th>Timestamp</th><th>Device</th><th>Voltage</th><th>Load/Temp</th><th>Humidity</th><th>Battery Status</th><th>Logged By</th></tr></thead>
                 <tbody>
                     <c:forEach var="log" items="${logs}">
-                    <tr class="${log.isAlarmTriggered ? 'table-danger' : ''}">
-                        <td>${log.timestamp}</td>
+                    <tr>
+                        <td>${log.readingTime}</td>
+                        <td>${log.equipmentType} - ${log.equipmentId}</td>
                         <td>
-                            <c:if test="${log.ups != null}"><strong>UPS:</strong> ${log.ups.assetTag}</c:if>
-                            <c:if test="${log.coolingUnit != null}"><strong>Cooling:</strong> ${log.coolingUnit.assetTag}</c:if>
+                            <c:if test="${log.equipmentType == 'UPS'}">${log.inputVoltage}V / ${log.outputVoltage}V</c:if>
+                            <c:if test="${log.equipmentType == 'COOLING'}">-</c:if>
                         </td>
                         <td>
-                            <c:if test="${log.ups != null}">${log.upsLoadPercentage}% / ${log.roomTemperature}°C</c:if>
-                            <c:if test="${log.coolingUnit != null}">Return: ${log.coolingReturnTemp}°C</c:if>
+                            <c:if test="${log.equipmentType == 'UPS'}">${log.loadPercentage}% / ${log.temperature}°C</c:if>
+                            <c:if test="${log.equipmentType == 'COOLING'}">Return: ${log.returnAirTemp}°C</c:if>
                         </td>
-                        <td>${log.batteryVoltage != null ? log.batteryVoltage.toString().concat('V') : '-'}</td>
-                        <td>
-                            <c:if test="${log.isAlarmTriggered}">
-                                <span class="badge bg-danger"><i class="bi bi-exclamation-triangle"></i> ALERT</span>
-                            </c:if>
-                        </td>
-                        <td>${log.loggedBy}</td>
+                        <td>${log.humidityPercent != null ? log.humidityPercent : '-'}</td>
+                        <td>${log.batteryStatus != null ? log.batteryStatus : '-'}</td>
+                        <td>${log.recordedBy != null ? log.recordedBy.fullName : 'System'}</td>
                     </tr>
                     </c:forEach>
-                    <c:if test="${empty logs}"><tr><td colspan="6" class="text-center text-muted">No monitoring logs recorded yet.</td></tr></c:if>
+                    <c:if test="${empty logs}"><tr><td colspan="7" class="text-center text-muted">No monitoring logs recorded yet. Use "Record Manual Reading" to add data.</td></tr></c:if>
                 </tbody>
             </table>
         </div>
