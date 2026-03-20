@@ -72,6 +72,15 @@ public class SecurityConfig {
                     new AntPathRequestMatcher("/reports/downtime-trend/**")
                 ).hasAnyRole("MANAGER", "ADMIN")
 
+                // Decision requests approvals - ADMIN only
+                .requestMatchers(
+                    new AntPathRequestMatcher("/decisions/approve/**"),
+                    new AntPathRequestMatcher("/decisions/reject/**")
+                ).hasRole("ADMIN")
+
+                // Decision requests - MANAGER or ADMIN
+                .requestMatchers(new AntPathRequestMatcher("/decisions/**")).hasAnyRole("MANAGER", "ADMIN")
+
                 // Maintenance - TECHNICIAN, MANAGER, ADMIN
                 .requestMatchers(new AntPathRequestMatcher("/maintenance/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
 

@@ -29,6 +29,10 @@
         </sec:authorize>
 
         <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
+            <div class="nav-section-label">Decisions</div>
+            <a href="${pageContext.request.contextPath}/decisions" class="nav-link"><i class="bi bi-clipboard-check"></i> Decision Requests</a>
+            <a href="${pageContext.request.contextPath}/decisions/report" class="nav-link"><i class="bi bi-bar-chart-line"></i> Decision Report</a>
+
             <div class="nav-section-label">Reports</div>
             <a href="${pageContext.request.contextPath}/reports" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Daily Report</a>
         </sec:authorize>

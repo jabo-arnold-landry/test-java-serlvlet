@@ -62,23 +62,38 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
             </div>
             <div class="col-md-4">
               <label class="form-label"
-                >Equipment ID <span class="text-danger">*</span></label
+                >Equipment <span class="text-danger">*</span></label
               >
-              <input
-                type="number"
-                class="form-control"
+              <select
+                class="form-select"
                 name="equipmentId"
-                required
-                placeholder="Enter asset ID"
-              />
+                id="upsSelect"
+                disabled
+              >
+                <option value="">-- Select UPS --</option>
+                <c:forEach var="u" items="${upsList}">
+                  <option value="${u.upsId}">${u.upsName} (${u.assetTag})</option>
+                </c:forEach>
+              </select>
+              <select
+                class="form-select mt-2"
+                name="equipmentId"
+                id="coolingSelect"
+                disabled
+              >
+                <option value="">-- Select Cooling Unit --</option>
+                <c:forEach var="c" items="${coolingList}">
+                  <option value="${c.coolingId}">${c.unitName} (${c.assetTag})</option>
+                </c:forEach>
+              </select>
             </div>
             <div class="col-md-4">
-              <label class="form-label">Recorded By (User ID)</label>
+              <label class="form-label">Recorded By</label>
               <input
-                type="number"
+                type="text"
                 class="form-control"
-                name="recordedBy.userId"
-                placeholder="Your user ID"
+                value="Current User"
+                disabled
               />
             </div>
           </div>
@@ -217,6 +232,32 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
           type === "UPS" || type === "" ? "block" : "none";
         document.getElementById("coolingFields").style.display =
           type === "COOLING" || type === "" ? "block" : "none";
+
+        var upsSelect = document.getElementById("upsSelect");
+        var coolingSelect = document.getElementById("coolingSelect");
+
+        if (type === "UPS") {
+          upsSelect.disabled = false;
+          upsSelect.required = true;
+          upsSelect.style.display = "block";
+          coolingSelect.disabled = true;
+          coolingSelect.required = false;
+          coolingSelect.style.display = "none";
+        } else if (type === "COOLING") {
+          coolingSelect.disabled = false;
+          coolingSelect.required = true;
+          coolingSelect.style.display = "block";
+          upsSelect.disabled = true;
+          upsSelect.required = false;
+          upsSelect.style.display = "none";
+        } else {
+          upsSelect.disabled = true;
+          upsSelect.required = false;
+          upsSelect.style.display = "block";
+          coolingSelect.disabled = true;
+          coolingSelect.required = false;
+          coolingSelect.style.display = "block";
+        }
       }
       toggleFields();
     </script>

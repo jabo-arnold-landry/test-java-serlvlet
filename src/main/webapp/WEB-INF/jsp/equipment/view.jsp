@@ -70,6 +70,17 @@
                         <tr><td class="text-muted">Power Rating</td><td>${equipment.powerRating}</td></tr>
                     </table>
                 </div>
+                <div class="stat-card mt-3">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-activity"></i> Power &amp; Environment</h6>
+                    <table class="table table-borderless mb-0" style="font-size:14px;">
+                        <tr><td class="text-muted" style="width:40%;">Power Source</td><td>${equipment.powerSource}</td></tr>
+                        <tr><td class="text-muted">Connected PDU</td><td>${equipment.connectedPdu}</td></tr>
+                        <tr><td class="text-muted">Temperature Range</td><td>${equipment.temperatureRange}</td></tr>
+                        <tr><td class="text-muted">Humidity Level</td><td>${equipment.humidityLevel}</td></tr>
+                        <tr><td class="text-muted">Power Consumption</td><td>${equipment.powerConsumption}</td></tr>
+                        <tr><td class="text-muted">Cooling Zone</td><td>${equipment.coolingZone}</td></tr>
+                    </table>
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="stat-card mb-3">
