@@ -22,21 +22,34 @@
             <table class="table hover">
                 <thead><tr><th>Timestamp</th><th>Device</th><th>Voltage</th><th>Load/Temp</th><th>Humidity</th><th>Battery Status</th><th>Logged By</th></tr></thead>
                 <tbody>
-                    <c:forEach var="log" items="${logs}">
-                    <tr>
+                    <c:forEach var="log" items="${readings}">
+                    <tr class="${log.equipmentType == 'COOLING' && log.humidityPercent > 65 ? 'table-danger' : ''}">
                         <td>${log.readingTime}</td>
-                        <td>${log.equipmentType} - ${log.equipmentId}</td>
                         <td>
-                            <c:if test="${log.equipmentType == 'UPS'}">${log.inputVoltage}V / ${log.outputVoltage}V</c:if>
-                            <c:if test="${log.equipmentType == 'COOLING'}">-</c:if>
+                            <strong>${log.equipmentType}:</strong> ${log.equipmentId}
                         </td>
                         <td>
                             <c:if test="${log.equipmentType == 'UPS'}">${log.loadPercentage}% / ${log.temperature}°C</c:if>
                             <c:if test="${log.equipmentType == 'COOLING'}">Return: ${log.returnAirTemp}°C</c:if>
                         </td>
-                        <td>${log.humidityPercent != null ? log.humidityPercent : '-'}</td>
-                        <td>${log.batteryStatus != null ? log.batteryStatus : '-'}</td>
-                        <td>${log.recordedBy != null ? log.recordedBy.fullName : 'System'}</td>
+                        <td>
+                            <c:if test="${log.equipmentType == 'UPS'}">${log.batteryStatus} / ${log.runtimeRemaining}m</c:if>
+                            <c:if test="${log.equipmentType == 'COOLING'}">-</c:if>
+                        </td>
+                        <td>
+                            <c:if test="${log.recordedBy != null}">
+                                ${log.recordedBy.username}
+                            </c:if>
+                            <c:if test="${log.recordedBy == null}">
+                                -
+                            </c:if>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="${pageContext.request.contextPath}/monitoring/edit/${log.logId}" class="btn btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <a href="${pageContext.request.contextPath}/monitoring/delete/${log.logId}" class="btn btn-outline-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this log?');"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </td>
                     </tr>
                     </c:forEach>
                     <c:if test="${empty logs}"><tr><td colspan="7" class="text-center text-muted">No monitoring logs recorded yet. Use "Record Manual Reading" to add data.</td></tr></c:if>
