@@ -10,8 +10,10 @@ import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface MonitoringLogRepository extends JpaRepository<MonitoringLog, Long> {
-    List<MonitoringLog> findByEquipmentTypeAndEquipmentIdOrderByCreatedAtDesc(
-    MonitoringLog.EquipmentType equipmentType, Long equipmentId);
+    long countByEquipmentTypeAndEquipmentId(MonitoringLog.EquipmentType type, Long equipmentId);
+
+    List<MonitoringLog> findByEquipmentTypeAndEquipmentIdOrderByReadingTimeDesc(
+            MonitoringLog.EquipmentType type, Long equipmentId);
 
     // Replace both broken methods with these:
 

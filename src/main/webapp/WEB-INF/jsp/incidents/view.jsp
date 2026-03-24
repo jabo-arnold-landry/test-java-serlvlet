@@ -21,6 +21,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         </c:if>
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i> ${error}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </c:if>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h4 style="font-weight:700;margin:0;">Incident #${incident.incidentId}: ${incident.title}</h4>
@@ -33,7 +39,7 @@
             <div class="col-md-3">
                 <div class="stat-card text-center">
                     <div class="stat-label">Status</div>
-                    <span class="badge ${incident.status == 'OPEN' ? 'bg-danger' : incident.status == 'IN_PROGRESS' ? 'bg-warning' : incident.status == 'RESOLVED' ? 'bg-success' : 'bg-secondary'} fs-6 mt-2">${incident.status}</span>
+                    <span class="badge ${incident.status == 'RESOLVED' ? 'bg-success' : 'bg-warning'} fs-6 mt-2">${incident.status}</span>
                 </div>
             </div>
             <div class="col-md-3">
@@ -67,6 +73,8 @@
                         <tr><td class="text-muted">Downtime End</td><td>${incident.downtimeEnd}</td></tr>
                         <tr><td class="text-muted">Root Cause</td><td>${incident.rootCause != null ? incident.rootCause : 'Not yet determined'}</td></tr>
                         <tr><td class="text-muted">Action Taken</td><td>${incident.actionTaken != null ? incident.actionTaken : 'Pending'}</td></tr>
+                        <tr><td class="text-muted">Resolved By</td><td>${incident.resolvedBy != null ? incident.resolvedBy.username : 'N/A'}</td></tr>
+                        <tr><td class="text-muted">Resolved At</td><td>${incident.resolvedAt != null ? incident.resolvedAt : '-'}</td></tr>
                         <tr><td class="text-muted">Reported By</td><td>${incident.reportedBy != null ? incident.reportedBy.fullName : 'N/A'}</td></tr>
                         <c:if test="${incident.attachmentPath != null}">
                         <tr><td class="text-muted">Attachment</td><td><a href="${incident.attachmentPath}" target="_blank">View Attachment</a></td></tr>
@@ -75,22 +83,37 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <c:if test="${incident.status == 'OPEN' || incident.status == 'IN_PROGRESS'}">
+                <c:if test="${canAssign}">
                 <div class="stat-card mb-3">
                     <h6 class="fw-bold mb-3"><i class="bi bi-person-check"></i> Assign Incident</h6>
                     <form action="${pageContext.request.contextPath}/incidents/assign/${incident.incidentId}" method="post">
                         <div class="mb-3">
-                            <label class="form-label">Assign to User ID</label>
-                            <input type="number" class="form-control" name="assigneeId" required/>
+                            <label class="form-label">Assign to User (Username)</label>
+                            <select class="form-select" name="assigneeUsername" required>
+                                <option value="" disabled ${incident.assignedTo == null ? 'selected' : ''}>-- Select User --</option>
+                                <c:forEach var="u" items="${users}">
+                                    <option value="${u.username}" ${incident.assignedTo != null && incident.assignedTo.username == u.username ? 'selected' : ''}>
+                                        ${u.fullName} (${u.username})
+                                    </option>
+                                </c:forEach>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm w-100"><i class="bi bi-person-plus"></i> Assign</button>
                     </form>
                 </div>
                 </c:if>
-                <c:if test="${incident.status == 'IN_PROGRESS'}">
+                <c:if test="${incident.status == 'IN_PROGRESS' && incident.assignedTo != null && incident.assignedTo.username == currentUsername}">
                 <div class="stat-card">
                     <h6 class="fw-bold mb-3"><i class="bi bi-check-circle"></i> Resolve Incident</h6>
                     <form action="${pageContext.request.contextPath}/incidents/resolve/${incident.incidentId}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Resolved By (Username)</label>
+                            <input type="text" class="form-control" name="resolvedByUsername" value="${currentUsername}" readonly/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Resolved At</label>
+                            <input type="datetime-local" class="form-control" name="resolvedAt" required/>
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Root Cause</label>
                             <textarea class="form-control" name="rootCause" rows="2" required></textarea>

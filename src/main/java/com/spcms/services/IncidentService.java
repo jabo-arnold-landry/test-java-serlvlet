@@ -2,6 +2,7 @@ package com.spcms.services;
 
 import com.spcms.models.Incident;
 import com.spcms.repositories.IncidentRepository;
+import com.spcms.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,8 @@ public class IncidentService {
     @Autowired
     private IncidentRepository incidentRepository;
 
+    @Autowired
+    private UserRepository userRepository;
     // ==================== CRUD ====================
 
     public Incident logIncident(Incident incident) {
@@ -48,25 +51,58 @@ public class IncidentService {
         return incidentRepository.findByCreatedAtBetween(start, end);
     }
 
+    public List<Incident> getResolvedIncidents() {
+        return incidentRepository.findByStatusInOrderByUpdatedAtDesc(
+                List.of(Incident.IncidentStatus.RESOLVED));
+    }
+
+    public void deleteIncident(Long id) {
+        incidentRepository.deleteById(id);
+    }
+
     // ==================== Status Management ====================
 
-    public Incident assignIncident(Long incidentId, Long assigneeId) {
+    public Incident assignIncident(Long incidentId, String assigneeUsername) {
         Incident incident = incidentRepository.findById(incidentId)
                 .orElseThrow(() -> new RuntimeException("Incident not found: " + incidentId));
-        var user = new com.spcms.models.User();
-        user.setUserId(assigneeId);
+        if (incident.getStatus() == Incident.IncidentStatus.RESOLVED) {
+            throw new IllegalStateException("Incident is already solved and cannot be assigned.");
+        }
+        if (incident.getAssignedTo() != null) {
+            throw new IllegalStateException("Incident is already assigned and cannot be reassigned.");
+        }
+        var user = userRepository.findByUsername(assigneeUsername)
+                .orElseThrow(() -> new RuntimeException("User not found: " + assigneeUsername));
         incident.setAssignedTo(user);
         incident.setStatus(Incident.IncidentStatus.IN_PROGRESS);
         return incidentRepository.save(incident);
     }
 
-    public Incident resolveIncident(Long incidentId, String rootCause, String actionTaken) {
+    public Incident resolveIncident(Long incidentId,
+                                    String rootCause,
+                                    String actionTaken,
+                                    String resolvedByUsername,
+                                    LocalDateTime resolvedAt) {
         Incident incident = incidentRepository.findById(incidentId)
                 .orElseThrow(() -> new RuntimeException("Incident not found: " + incidentId));
+        if (incident.getAssignedTo() == null
+                || resolvedByUsername == null
+                || !incident.getAssignedTo().getUsername().equals(resolvedByUsername)) {
+            throw new IllegalStateException("Only the assigned user can resolve this incident.");
+        }
+        if (incident.getStatus() == Incident.IncidentStatus.RESOLVED) {
+            throw new IllegalStateException("Incident is already solved.");
+        }
         incident.setStatus(Incident.IncidentStatus.RESOLVED);
         incident.setRootCause(rootCause);
         incident.setActionTaken(actionTaken);
-        incident.setDowntimeEnd(LocalDateTime.now());
+        LocalDateTime resolvedTime = resolvedAt != null ? resolvedAt : LocalDateTime.now();
+        incident.setDowntimeEnd(resolvedTime);
+        incident.setResolvedAt(resolvedTime);
+
+        var user = userRepository.findByUsername(resolvedByUsername)
+                .orElseThrow(() -> new RuntimeException("User not found: " + resolvedByUsername));
+        incident.setResolvedBy(user);
 
         // Calculate downtime
         if (incident.getDowntimeStart() != null) {
@@ -80,7 +116,7 @@ public class IncidentService {
     public Incident closeIncident(Long incidentId) {
         Incident incident = incidentRepository.findById(incidentId)
                 .orElseThrow(() -> new RuntimeException("Incident not found: " + incidentId));
-        incident.setStatus(Incident.IncidentStatus.CLOSED);
+        incident.setStatus(Incident.IncidentStatus.RESOLVED);
         return incidentRepository.save(incident);
     }
 

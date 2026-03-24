@@ -81,8 +81,8 @@
                 <div class="stat-card">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <div class="stat-label">Open Incidents</div>
-                            <div class="stat-value">${openIncidents != null ? openIncidents : 0}</div>
+                            <div class="stat-label">In Progress Incidents</div>
+                            <div class="stat-value">${inProgressIncidents != null ? inProgressIncidents : 0}</div>
                             <small class="text-danger"><i class="bi bi-exclamation-circle"></i> ${criticalIncidents != null ? criticalIncidents : 0} Critical</small>
                         </div>
                         <div class="stat-icon bg-orange-soft"><i class="bi bi-exclamation-triangle-fill"></i></div>

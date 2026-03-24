@@ -13,7 +13,7 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
     List<Incident> findBySeverityOrderByCreatedAtDesc(Incident.Severity severity);
     List<Incident> findByEquipmentTypeAndEquipmentId(Incident.EquipmentType type, Long equipmentId);
     List<Incident> findByAssignedTo_UserId(Long userId);
-    List<Incident> findByReportedBy_UserIdOrderByCreatedAtDesc(Long userId);
+    List<Incident> findByStatusInOrderByUpdatedAtDesc(List<Incident.IncidentStatus> statuses);
     List<Incident> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     @Query("SELECT SUM(i.downtimeMinutes) FROM Incident i WHERE i.createdAt BETWEEN :start AND :end")
