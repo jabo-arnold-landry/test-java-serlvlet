@@ -31,10 +31,8 @@ import java.util.Set;
  *
  * Change these credentials immediately after first login via /users.
  */
-=======
 import java.util.Optional;
 
->>>>>>> feature/visitor-management
 @Component
 @Order(1)
 public class DataInitializer implements CommandLineRunner {
@@ -55,9 +53,6 @@ public class DataInitializer implements CommandLineRunner {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-<<<<<<< HEAD
-    private MonitoringLogRepository monitoringLogRepository;
-=======
     private com.spcms.repositories.VisitorRepository visitorRepository;
 
     @Autowired
@@ -65,7 +60,6 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private com.spcms.repositories.VisitorCheckInOutRepository visitorCheckInOutRepository;
->>>>>>> feature/visitor-management
 
     @Override
     public void run(String... args) throws Exception {
