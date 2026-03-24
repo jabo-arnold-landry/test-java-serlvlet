@@ -33,14 +33,38 @@ public final class ReportCalculationUtil {
     }
 
     /**
-     * Calculate Mean Time Between Failures (MTBF).
-     * MTBF = (Total Operational Time - Total Downtime) / Number of Failures
+     * Calculate Mean Time Between Failures (MTBF) - IMPROVED FORMULA.
+     * 
+     * Formula: MTBF = Total Monitoring Period (hours) / Total Incidents
+     * 
+     * This formula directly relates the time period to the frequency of incidents,
+     * providing a clear metric of system reliability. A higher MTBF indicates
+     * longer periods between failures.
      *
+     * @param totalOperationalHours total operational period in hours (e.g., 24 for daily, 168 for weekly)
+     * @param numberOfIncidents      total number of incidents in the period
+     * @return MTBF in hours, or the full operational time if no incidents
+     */
+    public static BigDecimal calculateMTBFImproved(double totalOperationalHours, int numberOfIncidents) {
+        if (numberOfIncidents == 0) {
+            return BigDecimal.valueOf(totalOperationalHours).setScale(2, RoundingMode.HALF_UP);
+        }
+        return BigDecimal.valueOf(totalOperationalHours / numberOfIncidents)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Calculate Mean Time Between Failures (MTBF) - LEGACY FORMULA.
+     * 
+     * LEGACY: MTBF = (Total Operational Time - Total Downtime) / Number of Failures
+     * 
+     * @deprecated Use calculateMTBFImproved instead for clearer reliability metrics
      * @param totalOperationalHours total operational hours in the period (e.g., 24 for daily)
      * @param totalDowntimeMinutes  total downtime in minutes
      * @param numberOfFailures      number of failures/incidents
      * @return MTBF in hours, or the full operational time if no failures
      */
+    @Deprecated
     public static BigDecimal calculateMTBF(double totalOperationalHours, int totalDowntimeMinutes,
                                             int numberOfFailures) {
         if (numberOfFailures == 0) {

@@ -26,7 +26,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
     <div class="main-content">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h4 style="font-weight: 700; margin: 0">Record Manual Reading</h4>
+          <h4 style="font-weight: 700; margin: 0">${monitoringLog.logId != null ? 'Edit' : 'Record Manual'} Reading</h4>
           <p class="text-muted mb-0" style="font-size: 14px">
             Enter UPS or Cooling monitoring readings
           </p>
@@ -38,10 +38,15 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
         >
       </div>
       <div class="stat-card">
+        <c:if test="${not empty errorMsg}">
+            <div class="alert alert-danger">${errorMsg}</div>
+        </c:if>
         <form
           action="${pageContext.request.contextPath}/monitoring/save"
           method="post"
         >
+          <input type="hidden" name="logId" value="${monitoringLog.logId}" />
+
           <h6 class="fw-bold mb-3">Equipment Selection</h6>
           <div class="row g-3 mb-4">
             <div class="col-md-4">
@@ -56,8 +61,8 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                 onchange="toggleFields()"
               >
                 <option value="">-- Select --</option>
-                <option value="UPS">UPS</option>
-                <option value="COOLING">Cooling Unit</option>
+                <option value="UPS" ${monitoringLog.equipmentType == 'UPS' ? 'selected' : ''}>UPS</option>
+                <option value="COOLING" ${monitoringLog.equipmentType == 'COOLING' ? 'selected' : ''}>Cooling Unit</option>
               </select>
             </div>
             <div class="col-md-4">
@@ -70,6 +75,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                 name="equipmentId"
                 required
                 placeholder="Enter asset ID"
+                value="${monitoringLog.equipmentId}"
               />
             </div>
             <div class="col-md-4">
@@ -79,6 +85,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                 class="form-control"
                 name="recordedBy.userId"
                 placeholder="Your user ID"
+                value="${monitoringLog.recordedBy.userId}"
               />
             </div>
           </div>
@@ -93,6 +100,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                   step="0.01"
                   class="form-control"
                   name="inputVoltage"
+                  value="${monitoringLog.inputVoltage}"
                 />
               </div>
               <div class="col-md-3">
@@ -102,6 +110,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                   step="0.01"
                   class="form-control"
                   name="outputVoltage"
+                  value="${monitoringLog.outputVoltage}"
                 />
               </div>
               <div class="col-md-3">
@@ -111,6 +120,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                   step="0.01"
                   class="form-control"
                   name="loadPercentage"
+                  value="${monitoringLog.loadPercentage}"
                 />
               </div>
               <div class="col-md-3">
@@ -120,6 +130,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                   step="0.01"
                   class="form-control"
                   name="temperature"
+                  value="${monitoringLog.temperature}"
                 />
               </div>
               <div class="col-md-3">
@@ -129,6 +140,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                   class="form-control"
                   name="batteryStatus"
                   placeholder="e.g., Normal, Low"
+                  value="${monitoringLog.batteryStatus}"
                 />
               </div>
               <div class="col-md-3">
@@ -137,6 +149,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                   type="number"
                   class="form-control"
                   name="runtimeRemaining"
+                  value="${monitoringLog.runtimeRemaining}"
                 />
               </div>
             </div>
@@ -152,6 +165,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                   step="0.01"
                   class="form-control"
                   name="supplyAirTemp"
+                  value="${monitoringLog.supplyAirTemp}"
                 />
               </div>
               <div class="col-md-3">
@@ -161,6 +175,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                   step="0.01"
                   class="form-control"
                   name="returnAirTemp"
+                  value="${monitoringLog.returnAirTemp}"
                 />
               </div>
               <div class="col-md-3">
@@ -170,6 +185,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                   step="0.01"
                   class="form-control"
                   name="humidityPercent"
+                  value="${monitoringLog.humidityPercent}"
                 />
               </div>
               <div class="col-md-3">
@@ -179,6 +195,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                   class="form-control"
                   name="coolingPerformance"
                   placeholder="e.g., Good, Degraded"
+                  value="${monitoringLog.coolingPerformance}"
                 />
               </div>
             </div>
@@ -192,7 +209,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                 name="notes"
                 rows="3"
                 placeholder="Additional observations..."
-              ></textarea>
+              >${monitoringLog.notes}</textarea>
             </div>
           </div>
 

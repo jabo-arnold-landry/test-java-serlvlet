@@ -10,8 +10,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "ups")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Ups {
 
@@ -80,6 +82,9 @@ public class Ups {
     @Column(name = "battery_current", precision = 10, scale = 2)
     private BigDecimal batteryCurrent;
 
+    @Column(name = "battery_health_percentage", precision = 5, scale = 2)
+    private BigDecimal batteryHealthPercentage;
+
     @Column(name = "frequency_hz", precision = 6, scale = 2)
     private BigDecimal frequencyHz;
 
@@ -123,5 +128,13 @@ public class Ups {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public Long getUpsId() {
+        return upsId;
+    }
+
+    public void setUpsId(Long upsId) {
+        this.upsId = upsId;
     }
 }

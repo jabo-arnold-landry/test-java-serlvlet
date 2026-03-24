@@ -27,7 +27,10 @@
                 <h4 style="font-weight:700;margin:0;">UPS Systems</h4>
                 <p class="text-muted mb-0" style="font-size:14px;">Manage Uninterruptible Power Supply units</p>
             </div>
-            <a href="${pageContext.request.contextPath}/ups/new" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add UPS</a>
+            <div class="d-flex gap-2">
+                <a href="${pageContext.request.contextPath}/ups/reports" class="btn btn-outline-info"><i class="bi bi-bar-chart"></i> View Reports</a>
+                <a href="${pageContext.request.contextPath}/ups/new" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add UPS</a>
+            </div>
         </div>
 
         <div class="table-container">

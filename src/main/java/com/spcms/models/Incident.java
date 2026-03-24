@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -38,9 +39,10 @@ public class Incident {
     @Column(nullable = false, length = 10)
     private Severity severity;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 15)
-    private IncidentStatus status = IncidentStatus.OPEN;
+    private IncidentStatus status = IncidentStatus.IN_PROGRESS;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "reported_by")
@@ -65,14 +67,23 @@ public class Incident {
     @Column(name = "downtime_minutes")
     private Integer downtimeMinutes;
 
+    @Column(name = "repair_cost", precision = 15, scale = 2)
+    private BigDecimal repairCost;
+
     @Column(name = "root_cause", columnDefinition = "TEXT")
     private String rootCause;
 
     @Column(name = "action_taken", columnDefinition = "TEXT")
     private String actionTaken;
 
+    @Column(name = "resolved_at")
+    private LocalDateTime resolvedAt;
+
     @Column(name = "attachment_path", length = 500)
     private String attachmentPath;
+
+    @Column(name = "visitor_id")
+    private Long visitorId;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -89,7 +100,7 @@ public class Incident {
     }
 
     public enum IncidentStatus {
-        OPEN, IN_PROGRESS, RESOLVED, CLOSED
+        IN_PROGRESS, RESOLVED
     }
 
     @PrePersist

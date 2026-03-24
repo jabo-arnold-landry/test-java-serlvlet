@@ -114,8 +114,8 @@ public class CoolingUnit {
 
     // === Relationships ===
 
-    @OneToMany(mappedBy = "coolingUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CoolingAlarmLog> alarmLogs;
+    // @OneToMany(mappedBy = "coolingUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // private List<CoolingAlarmLog> alarmLogs;
 
     @OneToMany(mappedBy = "coolingUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CoolingMaintenance> maintenanceRecords;
@@ -157,5 +157,15 @@ public class CoolingUnit {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public void setResolvedBy(String resolvedBy) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setResolvedBy'");
+    }
+
+    public void setResolution(LocalDateTime now) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setResolution'");
     }
 }

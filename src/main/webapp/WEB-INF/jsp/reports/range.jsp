@@ -20,7 +20,14 @@
                 <h4 style="font-weight:700;margin:0;">Daily Consolidated Reports</h4>
                 <p class="text-muted mb-0" style="font-size:14px;">Date range report view with MTTR/MTBF calculations</p>
             </div>
-            <a href="${pageContext.request.contextPath}/reports" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+            <div class="d-flex gap-2">
+                <c:if test="${selectedStart != null && selectedEnd != null}">
+                    <a href="${pageContext.request.contextPath}/reports/export/csv/range?start=${selectedStart}&end=${selectedEnd}" class="btn btn-outline-primary">
+                        <i class="bi bi-download"></i> Export CSV
+                    </a>
+                </c:if>
+                <a href="${pageContext.request.contextPath}/reports" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+            </div>
         </div>
         <div class="table-container">
             <table class="table table-hover">

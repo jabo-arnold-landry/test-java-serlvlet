@@ -45,7 +45,7 @@
                 <p class="text-muted mb-0" style="font-size:14px;">Real-time data center infrastructure status</p>
             </div>
             <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
-            <a href="${pageContext.request.contextPath}/reports/generate?date=<fmt:formatDate value='<%=new java.util.Date()%>' pattern='yyyy-MM-dd'/>" class="btn btn-primary btn-sm">
+            <a href="${pageContext.request.contextPath}/reports/generate" class="btn btn-primary btn-sm">
                 <i class="bi bi-arrow-clockwise"></i> Generate Today's Report
             </a>
             </sec:authorize>
@@ -81,8 +81,8 @@
                 <div class="stat-card">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <div class="stat-label">Open Incidents</div>
-                            <div class="stat-value">${openIncidents != null ? openIncidents : 0}</div>
+                            <div class="stat-label">In Progress Incidents</div>
+                            <div class="stat-value">${inProgressIncidents != null ? inProgressIncidents : 0}</div>
                             <small class="text-danger"><i class="bi bi-exclamation-circle"></i> ${criticalIncidents != null ? criticalIncidents : 0} Critical</small>
                         </div>
                         <div class="stat-icon bg-orange-soft"><i class="bi bi-exclamation-triangle-fill"></i></div>

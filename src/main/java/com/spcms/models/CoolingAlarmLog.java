@@ -1,59 +1,135 @@
 package com.spcms.models;
 
-import jakarta.persistence.*;
-import lombok.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "cooling_alarm_log")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
-@Builder
-public class CoolingAlarmLog {
+public class CoolingAlarmLog implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "alarm_id")
     private Long alarmId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cooling_id", nullable = false)
-    private CoolingUnit coolingUnit;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "alarm_type", nullable = false, length = 25)
-    private AlarmType alarmType;
-
-    @Column(name = "alarm_time", nullable = false)
-    private LocalDateTime alarmTime;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private Severity severity;
-
-    @Column(name = "action_taken", columnDefinition = "TEXT")
-    private String actionTaken;
-
-    @Column(name = "resolved_by", length = 100)
+    private Long coolingUnitId;
+    private String alarmType;
+    private String alarmDescription;
+    private String severity;
+    private LocalDateTime alarmTriggeredAt;
+    private LocalDateTime alarmResolvedAt;
+    private String status;
     private String resolvedBy;
-
-    @Column(name = "resolution_time")
-    private LocalDateTime resolutionTime;
-
-    @Column(name = "created_at", updatable = false)
+    private String resolution;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public enum AlarmType {
-        HIGH_TEMP, LOW_TEMP, GAS_LEAK, FAN_FAILURE,
-        HUMIDITY_HIGH, HUMIDITY_LOW, COMPRESSOR_FAILURE
+    // Constructors
+    public CoolingAlarmLog() {
     }
 
-    public enum Severity {
-        LOW, MEDIUM, HIGH, CRITICAL
+    public CoolingAlarmLog(Long coolingUnitId, String alarmType, String alarmDescription, String severity) {
+        this.coolingUnitId = coolingUnitId;
+        this.alarmType = alarmType;
+        this.alarmDescription = alarmDescription;
+        this.severity = severity;
+        this.status = "ACTIVE";
     }
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    // Getters and Setters
+    public Long getAlarmId() {
+        return alarmId;
+    }
+
+    public void setAlarmId(Long alarmId) {
+        this.alarmId = alarmId;
+    }
+
+    public Long getCoolingUnitId() {
+        return coolingUnitId;
+    }
+
+    public void setCoolingUnitId(Long coolingUnitId) {
+        this.coolingUnitId = coolingUnitId;
+    }
+
+    public String getAlarmType() {
+        return alarmType;
+    }
+
+    public void setAlarmType(String alarmType) {
+        this.alarmType = alarmType;
+    }
+
+    public String getAlarmDescription() {
+        return alarmDescription;
+    }
+
+    public void setAlarmDescription(String alarmDescription) {
+        this.alarmDescription = alarmDescription;
+    }
+
+    public String getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
+
+    public LocalDateTime getAlarmTriggeredAt() {
+        return alarmTriggeredAt;
+    }
+
+    public void setAlarmTriggeredAt(LocalDateTime alarmTriggeredAt) {
+        this.alarmTriggeredAt = alarmTriggeredAt;
+    }
+
+    public LocalDateTime getAlarmResolvedAt() {
+        return alarmResolvedAt;
+    }
+
+    public void setAlarmResolvedAt(LocalDateTime alarmResolvedAt) {
+        this.alarmResolvedAt = alarmResolvedAt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getResolvedBy() {
+        return resolvedBy;
+    }
+
+    public void setResolvedBy(String resolvedBy) {
+        this.resolvedBy = resolvedBy;
+    }
+
+    public String getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setResolution(LocalDateTime now) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setResolution'");
     }
 }

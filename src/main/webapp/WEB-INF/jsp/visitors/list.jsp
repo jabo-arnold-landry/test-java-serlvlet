@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,69 +11,884 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <jsp:include page="../common/styles.jsp"/>
+    <style>
+        .operational-card { border-radius: 12px; border: none; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .operational-card:hover { transform: translateY(-3px); }
+        .stat-value { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+        .stat-label { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
+        .table-container { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 24px; }
+        .nav-pills .nav-link { border-radius: 8px; font-weight: 600; padding: 10px 20px; color: #64748b; }
+        .nav-pills .nav-link.active { background-color: #3b82f6; color: white; box-shadow: 0 4px 6px rgba(59,130,246,0.2); }
+        .badge-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .bg-pending { background-color: #f59e0b; }
+        .bg-active { background-color: #10b981; }
+        .bg-closed { background-color: #64748b; }
+        
+        /* Admin Intelligence Hub Styles */
+        .intel-card { background: #ffffff; border-radius: 20px; border: 1px solid #eef2f6; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.03); transition: transform 0.3s; }
+        .intel-card:hover { transform: translateY(-5px); }
+        .intel-stat-value { font-size: 2.8rem; font-weight: 800; color: #1e293b; line-height: 1.1; }
+        .intel-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 8px; }
+        .chart-container-premium { background: white; border-radius: 24px; padding: 30px; border: 1px solid #eef2f6; }
+        .compliance-badge { background: #f8fafc; color: #334155; font-weight: 700; font-size: 0.7rem; padding: 4px 12px; border-radius: 100px; border: 1px solid #e2e8f0; }
+        .export-btn { border-radius: 12px; font-weight: 700; padding: 12px 24px; transition: all 0.3s; border: 1px solid #e2e8f0; background: white; color: #1e293b; }
+        .export-btn:hover { background: #f8fafc; border-color: #cbd5e1; transform: scale(1.02); }
+        .avatar-sq { width: 40px; height: 40px; border-radius: 10px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #475569; }
+        .intel-card.clickable { cursor: pointer; }
+    </style>
 </head>
 <body>
     <jsp:include page="../common/sidebar.jsp"/>
     <jsp:include page="../common/topbar.jsp"/>
+    
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <div><h4 style="font-weight:700;margin:0;">Visitor Management System</h4></div>
-            <a href="${pageContext.request.contextPath}/visitors/register" class="btn btn-primary"><i class="bi bi-person-plus"></i> Register Visitor</a>
+            <div>
+                <h4 class="fw-bold mb-0">Visitor Management</h4>
+                <p class="text-muted small mb-0">Operational control and access oversight</p>
+            </div>
+            <sec:authorize access="hasAnyRole('TECHNICIAN', 'ADMIN')">
+                <a href="${pageContext.request.contextPath}/visitors/register" class="btn btn-primary d-flex align-items-center gap-2">
+                    <i class="bi bi-person-plus-fill"></i> Register New Visitor
+                </a>
+            </sec:authorize>
         </div>
-        
-        <ul class="nav nav-tabs mb-4" id="visitorTabs" role="tablist">
-            <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#active">Active Visitors</button></li>
-            <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#pending">Pending Approvals</button></li>
+
+        <c:if test="${not empty success}">
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> ${success}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> ${error}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+
+        <ul class="nav nav-pills mb-4 gap-2" id="visitorTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#active-visitors"><i class="bi bi-person-walking me-2"></i> Active Visitors</button>
+            </li>
+            <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pending-approvals"><i class="bi bi-shield-check me-2"></i> Pending Approvals</button>
+                </li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('TECHNICIAN')">
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tech-dashboard"><i class="bi bi-house-door me-2"></i> My Operations</button>
+                </li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('ADMIN')">
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-intelligence"><i class="bi bi-graph-up-arrow me-2"></i> Analytics Hub</button>
+                </li>
+            </sec:authorize>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#visit-logs"><i class="bi bi-clock-history me-2"></i> Records Audit</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#incident-reporting"><i class="bi bi-exclamation-triangle-fill me-2"></i> Report Incident</button>
+            </li>
         </ul>
 
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="active">
+            <!-- 0. Admin Intelligence Hub (Analytics) -->
+            <sec:authorize access="hasRole('ADMIN')">
+            <div class="tab-pane fade" id="admin-intelligence">
+                <div class="row g-4 mb-5">
+                    <div class="col-md-3">
+                        <div class="intel-card clickable p-4" onclick="switchToTab('visit-logs')">
+                            <div class="intel-label">Global Visitors</div>
+                            <div class="intel-stat-value">${totalVisitorsCount}</div>
+                            <div class="small text-muted mt-2">All-time registration audit</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="intel-card clickable p-4 border-start border-4 border-danger" onclick="switchToTab('incident-reporting')">
+                            <div class="intel-label">Security Incidents</div>
+                            <div class="intel-stat-value text-danger">${not empty allIncidents ? fn:length(allIncidents) : 0}</div>
+                            <div class="small text-muted mt-2">Documented policy risks</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="intel-card clickable p-4" onclick="switchToTab('visit-logs')">
+                            <div class="intel-label">Frequent Guests</div>
+                            <div class="intel-stat-value">${not empty highFrequencyVisitors ? fn:length(highFrequencyVisitors) : 0}</div>
+                            <div class="small text-muted mt-2">High-frequency access profiles</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="intel-card clickable p-4 border-start border-4 border-warning" onclick="switchToTab('active-visitors')">
+                            <div class="intel-label">Overstay Alerts</div>
+                            <div class="intel-stat-value text-warning">${not empty overstayedVisitors ? fn:length(overstayedVisitors) : 0}</div>
+                            <div class="small text-muted mt-2">Current exposure risks</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-lg-8">
+                        <div class="chart-container-premium h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h6 class="fw-bold mb-0">Visitor Traffic Trend</h6>
+                                <div class="compliance-badge">COMPLIANCE VERIFIED</div>
+                            </div>
+                            <div style="height: 300px;">
+                                <canvas id="visitorTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="chart-container-premium h-100">
+                            <h6 class="fw-bold mb-4">Export Compliance Reports</h6>
+                            <div class="d-grid gap-3">
+                                <button class="export-btn d-flex align-items-center justify-content-between" onclick="exportTrafficData()">
+                                    <span><i class="bi bi-file-earmark-spreadsheet me-2 text-success"></i> Monthly Traffic</span>
+                                    <i class="bi bi-download small opacity-50"></i>
+                                </button>
+                                <button class="export-btn d-flex align-items-center justify-content-between" onclick="exportIncidentData()">
+                                    <span><i class="bi bi-shield-exclamation me-2 text-danger"></i> Incident Logs</span>
+                                    <i class="bi bi-download small opacity-50"></i>
+                                </button>
+                                <button class="export-btn d-flex align-items-center justify-content-between" onclick="exportMovementData()">
+                                    <span><i class="bi bi-clock-history me-2 text-primary"></i> Entry/Exit Audit</span>
+                                    <i class="bi bi-download small opacity-50"></i>
+                                </button>
+                                <p class="small text-muted mt-3 mb-0">Reports are generated in CSV format and include digital signatures for audit trails.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Global Incident Audit -->
+                <div class="table-container mb-5">
+                    <h6 class="fw-bold mb-4 d-flex align-items-center justify-content-between">
+                        <span><i class="bi bi-shield-alert me-2 text-danger"></i> Global Security Incident Audit</span>
+                        <a href="${pageContext.request.contextPath}/incidents" class="btn btn-sm btn-outline-secondary rounded-pill px-3">View Operations Link</a>
+                    </h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="bg-light text-muted small text-uppercase">
+                                <tr>
+                                    <th>Incident Detail</th>
+                                    <th>Severity</th>
+                                    <th>Status</th>
+                                    <th>Reporter</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="inc" items="${allIncidents}">
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold text-dark">${inc.title}</div>
+                                        <div class="small text-muted">${inc.equipmentType}</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill ${inc.severity == 'CRITICAL' ? 'bg-danger' : inc.severity == 'HIGH' ? 'bg-warning text-dark' : 'bg-info text-white'} px-3">
+                                            ${inc.severity}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge-dot ${inc.status == 'OPEN' ? 'bg-danger' : 'bg-success'}"></span>
+                                            <span class="small fw-bold">${inc.status}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-sq small uppercase">
+                                                <c:choose>
+                                                    <c:when test="${not empty inc.reportedBy}">${fn:substring(inc.reportedBy.username, 0, 1)}</c:when>
+                                                    <c:otherwise>?</c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <span class="small fw-semibold">${not empty inc.reportedBy ? inc.reportedBy.fullName : 'System'}</span>
+                                        </div>
+                                    </td>
+                                    <td class="small fw-bold text-muted text-uppercase">
+                                        ${incidentDates[inc.incidentId]}
+                                    </td>
+                                </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Entry/Exit Logs (Global) -->
                 <div class="table-container">
-                    <table class="table">
-                        <thead><tr><th>Pass #</th><th>Name</th><th>Company</th><th>Host</th><th>Check In</th><th>Action</th></tr></thead>
-                        <tbody>
-                            <c:forEach var="v" items="${activeVisitors}">
-                            <tr>
-                                <td><span class="badge bg-secondary">${v.visitor.passNumber}</span></td>
-                                <td><strong>${v.visitor.fullName}</strong></td><td>${v.visitor.company}</td>
-                                <td>${v.visitor.hostEmployee.fullName}</td>
-                                <td>${v.checkInTime}</td>
-                                <td>
-                                    <form action="${pageContext.request.contextPath}/visitors/checkout/${v.checkId}" method="post">
-                                        <input type="hidden" name="equipmentConfirmed" value="true">
-                                        <button type="submit" class="btn btn-sm btn-danger">Check Out</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
+                    <h6 class="fw-bold mb-4"><i class="bi bi-layout-text-sidebar-reverse me-2 text-primary"></i> Global Movement Audit Log</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="bg-light text-muted small text-uppercase">
+                                <tr>
+                                    <th>Visitor Detail</th>
+                                    <th>Entry Timestamp</th>
+                                    <th>Exit Timestamp</th>
+                                    <th>Escort Official</th>
+                                    <th>Compliance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="v" items="${visitHistory}">
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">${v.visitor.fullName}</div>
+                                        <div class="small text-muted">${v.visitor.company}</div>
+                                    </td>
+                                    <td class="small fw-bold text-primary">
+                                        ${historyCheckInTimes[v.checkId]}
+                                    </td>
+                                    <td class="small fw-bold text-muted">
+                                        <c:choose>
+                                            <c:when test="${not empty v.checkOutTime}">${historyCheckOutTimes[v.checkId]}</c:when>
+                                            <c:otherwise><span class="badge bg-success-subtle text-success">STILL INSIDE</span></c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td><span class="small fw-bold text-dark">${not empty v.escort ? v.escort.fullName : 'N/A'}</span></td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${v.badgeReturned && v.equipmentConfirmedOut}">
+                                                <i class="bi bi-shield-check-fill text-success" title="Fully Compliant"></i>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="bi bi-shield-exclamation text-warning" title="Partial Compliance"></i>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            
-            <div class="tab-pane fade" id="pending">
+            </sec:authorize>
+
+            <!-- 1. Technician Operational Home -->
+            <sec:authorize access="hasRole('TECHNICIAN')">
+            <div class="tab-pane fade" id="tech-dashboard">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="card operational-card bg-primary text-white p-4">
+                            <div class="stat-label">Approved Today</div>
+                            <div class="stat-value">${not empty approvedVisitsToday ? fn:length(approvedVisitsToday) : 0}</div>
+                            <div class="mt-2 small opacity-75">Ready for check-in</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card operational-card bg-success text-white p-4">
+                            <div class="stat-label">Active Inside</div>
+                            <div class="stat-value">${not empty activeVisitors ? fn:length(activeVisitors) : 0}</div>
+                            <div class="mt-2 small opacity-75">Currently escorted</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card operational-card bg-info text-white p-4">
+                            <div class="stat-label">Completed Today</div>
+                            <div class="stat-value">${completedTodayCount}</div>
+                            <div class="mt-2 small opacity-75">Safeguarded exits</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="table-container">
-                    <table class="table">
-                        <thead><tr><th>Name</th><th>Purpose</th><th>Host</th><th>Action</th></tr></thead>
-                        <tbody>
-                            <c:forEach var="a" items="${pendingApprovals}">
-                            <tr>
-                                <td>${a.visitor.fullName}</td><td>${a.visitor.purposeOfVisit}</td>
-                                <td>${a.visitor.hostEmployee.fullName}</td>
-                                <td>
-                                    <form action="${pageContext.request.contextPath}/visitors/approve/${a.approvalId}" method="post" class="d-inline">
-                                        <input type="hidden" name="managerId" value="1">
-                                        <button class="btn btn-sm btn-success">Approve</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
+                    <h6 class="fw-bold mb-4 d-flex align-items-center"><i class="bi bi-calendar-event me-2 text-primary"></i> Upcoming Visits Today</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle border-light">
+                            <thead class="bg-light">
+                                <tr class="small text-muted text-uppercase">
+                                    <th>Visitor Name</th>
+                                    <th>Company</th>
+                                    <th>Purpose</th>
+                                    <th>Arrival Time</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="a" items="${approvedVisitsToday}">
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold text-dark">${not empty a.visitor ? a.visitor.fullName : 'Unknown'}</div>
+                                        <div class="text-muted small">Pass: ${not empty a.visitor ? a.visitor.passNumber : 'N/A'}</div>
+                                    </td>
+                                    <td>${not empty a.visitor ? a.visitor.company : 'N/A'}</td>
+                                    <td><span class="text-truncate d-inline-block" style="max-width: 200px;">${not empty a.visitor ? a.visitor.purposeOfVisit : 'N/A'}</span></td>
+                                    <td><div class="fw-semibold text-primary"><i class="bi bi-clock me-1"></i> ${not empty a.visitor ? a.visitor.arrivalTime : 'N/A'}</div></td>
+                                    <td>
+                                        <c:set var="vId" value="${not empty a.visitor ? a.visitor.visitorId : ''}" />
+                                        <c:set var="vName" value="${not empty a.visitor ? a.visitor.fullName : 'Unknown'}" />
+                                        <c:set var="vEquip" value="${not empty a.visitor ? a.visitor.equipmentCarried : ''}" />
+                                        <button class="btn btn-sm btn-success px-3 rounded-pill" onclick="prepareCheckIn('${vId}', '${fn:escapeXml(vName)}', '${fn:escapeXml(vEquip)}')">
+                                            Check-In Visit
+                                        </button>
+                                    </td>
+                                </tr>
+                                </c:forEach>
+                                <c:if test="${empty approvedVisitsToday}">
+                                    <tr><td colspan="5" class="text-center py-5 text-muted">No scheduled visits for today.</td></tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </sec:authorize>
+
+            <!-- 2. Manager Analytics View (Already polished previously) -->
+            <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
+            <div class="tab-pane fade" id="manager-dashboard">
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-8">
+                        <div class="table-container h-100">
+                             <h6 class="fw-bold mb-4"><i class="bi bi-people-fill text-primary"></i> Current Occupancy</h6>
+                             <div class="table-responsive">
+                                 <table class="table align-middle">
+                                     <thead class="small text-muted text-uppercase">
+                                         <tr><th>Visitor</th><th>Checked In</th><th>Stay Duration</th><th>Status</th></tr>
+                                     </thead>
+                                     <tbody>
+                                         <c:forEach var="av" items="${activeVisitors}">
+                                         <tr>
+                                              <td>
+                                                  <div class="fw-bold">${not empty av.visitor ? av.visitor.fullName : 'Unknown'}</div>
+                                                  <div class="small text-muted">${not empty av.visitor ? av.visitor.company : 'N/A'}</div>
+                                              </td>
+                                             <td>${checkInTimes[av.checkId]}</td>
+                                             <td><span class="badge bg-light text-primary border">${durationStrings[av.checkId]}</span></td>
+                                             <td><span class="badge bg-success bg-opacity-10 text-success px-2 py-1">Inside</span></td>
+                                         </tr>
+                                         </c:forEach>
+                                     </tbody>
+                                 </table>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="table-container h-100">
+                             <h6 class="fw-bold mb-4"><i class="bi bi-graph-up-arrow text-success"></i> Top Frequent</h6>
+                             <c:forEach var="row" items="${highFrequencyVisitors}" end="4">
+                                 <div class="d-flex justify-content-between align-items-center mb-3">
+                                     <div>
+                                         <div class="fw-bold small">${not empty row[0] ? row[0].fullName : 'Unknown Visitor'}</div>
+                                         <div class="text-muted smaller" style="font-size: 0.7rem;">${not empty row[0] ? row[0].company : 'N/A'}</div>
+                                     </div>
+                                     <span class="badge bg-success bg-opacity-10 text-success rounded-pill">${row[1]} visits</span>
+                                 </div>
+                             </c:forEach>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Manager Pending Approvals -->
+            <div class="tab-pane fade" id="pending-approvals">
+                <div class="table-container">
+                    <h6 class="fw-bold mb-4">Verification Queue</h6>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="bg-light">
+                                <tr class="smaller text-muted text-uppercase">
+                                    <th>Submission</th><th>Visitor</th><th>Visit Date</th><th>Host</th><th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="p" items="${pendingApprovals}">
+                                <tr>
+                                     <td class="small">${not empty p.visitor ? p.visitor.passNumber : 'N/A'}</td>
+                                     <td class="fw-bold">${not empty p.visitor ? p.visitor.fullName : 'Unknown'}</td>
+                                     <td>${not empty p.visitor ? p.visitor.visitDate : 'N/A'}</td>
+                                     <td class="small">${not empty p.visitor and not empty p.visitor.hostEmployee ? p.visitor.hostEmployee.fullName : 'Not Assigned'}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3" 
+                                                onclick="showDetails('${p.approvalId}', '${fn:escapeXml(p.visitor.fullName)}', '${p.visitor.nationalIdPassport}', '${fn:escapeXml(p.visitor.company)}', '${fn:escapeXml(p.visitor.purposeOfVisit)}', '${fn:escapeXml(p.visitor.departmentToVisit)}', '${p.visitor.arrivalTime}', '${p.visitor.expectedDurationHours}', '${fn:escapeXml(p.visitor.hostEmployee.fullName)}', '${fn:escapeXml(p.visitor.equipmentCarried)}')">
+                                            Review Request
+                                        </button>
+                                    </td>
+                                </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </sec:authorize>
+
+            <!-- 4. Active Visitors (Default Operational Monitoring) -->
+            <div class="tab-pane fade show active" id="active-visitors">
+                <div class="table-container">
+                    <h6 class="fw-bold mb-4">Live Access Control</h6>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="bg-light">
+                                <tr class="small text-muted text-uppercase">
+                                    <th>Badge</th><th>Visitor</th><th>Assigned Escort</th><th>Stay Time</th><th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="v" items="${activeVisitors}">
+                                <tr>
+                                    <td><span class="badge bg-dark">${v.temporaryBadge}</span></td>
+                                     <td><div class="fw-bold">${not empty v.visitor ? v.visitor.fullName : 'Unknown'}</div></td>
+                                     <td>${not empty v.escort ? v.escort.fullName : 'Unassigned'}</td>
+                                    <td><span class="badge bg-light text-primary border">${durationStrings[v.checkId]}</span></td>
+                                    <td>
+                                        <sec:authorize access="hasAnyRole('TECHNICIAN', 'ADMIN')">
+                                            <button class="btn btn-sm btn-outline-danger px-3 rounded-pill" onclick="prepareCheckOut('${v.checkId}', '${fn:escapeXml(v.visitor.fullName)}', '${fn:escapeXml(v.visitor.equipmentCarried)}')">
+                                                Check-Out
+                                            </button>
+                                        </sec:authorize>
+                                    </td>
+                                </tr>
+                                </c:forEach>
+                                <c:if test="${empty activeVisitors}">
+                                    <tr><td colspan="5" class="text-center py-5 text-muted">Zero active visits inside.</td></tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Incident Reporting Tab -->
+            <div class="tab-pane fade" id="incident-reporting">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="table-container border-top border-danger border-4">
+                            <h5 class="fw-bold mb-4 text-danger"><i class="bi bi-shield-exclamation me-2"></i> Security Incident Log</h5>
+                            <form action="${pageContext.request.contextPath}/visitors/incident" method="post">
+                                <c:if test="${not empty _csrf}"><input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/></c:if>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Incident Type</label>
+                                    <select name="type" class="form-select" required>
+                                        <option value="Visitor Overstayed">Visitor Overstayed</option>
+                                        <option value="Equipment Missing">Equipment Missing / Discrepancy</option>
+                                        <option value="Unauthorized Access">Unauthorized Access Attempt</option>
+                                        <option value="Policy Violation">Security Policy Violation</option>
+                                        <option value="Other">Other Operational Issue</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold">Detailed Description</label>
+                                    <textarea name="description" class="form-control" rows="5" placeholder="Provide full details including visitor name, badge #, and time..." required></textarea>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-danger py-3 fw-bold">
+                                        <i class="bi bi-megaphone-fill me-2"></i> Submit Security Report
+                                    </button>
+                                </div>
+                                <p class="text-muted small mt-3 text-center">
+                                    <i class="bi bi-info-circle me-1"></i> Reports are immediately visible to Data Center Managers and Administrators.
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Consolidated Logs -->
+            <div class="tab-pane fade" id="visit-logs">
+                <div class="row g-4">
+                    <!-- Session History -->
+                    <div class="col-12">
+                        <div class="table-container">
+                            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-primary"><i class="bi bi-clock-history me-2"></i> Visit Sessions History</h6>
+                                    <p class="text-muted smaller mb-0">Completed entry/exit cycles for approved visitors</p>
+                                </div>
+                                <form class="d-flex gap-2 align-items-center" method="get">
+                                    <input type="date" name="startDate" class="form-control form-control-sm" value="${startDate}">
+                                    <i class="bi bi-arrow-right text-muted"></i>
+                                    <input type="date" name="endDate" class="form-control form-control-sm" value="${endDate}">
+                                    <button class="btn btn-sm btn-primary px-3" type="submit">Filter</button>
+                                </form>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="bg-light text-muted" style="font-size: 0.75rem; text-transform: uppercase;">
+                                        <tr>
+                                            <th>Visitor</th><th>Date</th><th>Entry</th><th>Exit</th><th>Staff Escort</th><th>Badge</th><th>Gear</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="font-size: 0.85rem;">
+                                        <c:forEach var="l" items="${visitHistory}">
+                                        <tr>
+                                            <td class="fw-bold">${l.visitor.fullName}</td>
+                                            <td>${l.visitor.visitDate}</td>
+                                            <td class="text-primary fw-semibold">${checkInTimes[l.checkId]}</td>
+                                            <td class="text-danger fw-semibold">${checkOutTimes[l.checkId]}</td>
+                                            <td>${l.escort.fullName}</td>
+                                            <td><span class="badge bg-light text-dark border">${l.temporaryBadge}</span></td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${l.equipmentConfirmedOut}"><span class="badge bg-success-subtle text-success">Verified</span></c:when>
+                                                    <c:otherwise><span class="text-muted">–</span></c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                        </c:forEach>
+                                        <c:if test="${empty visitHistory}">
+                                            <tr><td colspan="7" class="text-center py-4 text-muted">No completed sessions found for this period.</td></tr>
+                                        </c:if>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Approval/Rejection Decisions -->
+                    <div class="col-12">
+                        <div class="table-container">
+                            <div class="mb-4 border-bottom pb-3">
+                                <h6 class="fw-bold mb-1 text-success"><i class="bi bi-shield-check me-2"></i> Decision Audit Log</h6>
+                                <p class="text-muted smaller mb-0">Chronological list of all Approved and Rejected requests</p>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="bg-light text-muted" style="font-size: 0.75rem; text-transform: uppercase;">
+                                        <tr>
+                                            <th>Visitor</th><th>Status</th><th>Decision By</th><th>Decision Time</th><th>Remarks / Duration</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="font-size: 0.85rem;">
+                                        <c:forEach var="dh" items="${decisionHistory}">
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold">${dh.visitor.fullName}</div>
+                                                <div class="smaller text-muted">${dh.visitor.company}</div>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${dh.status == 'APPROVED'}">
+                                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Approved</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">Rejected</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>${dh.approvedBy.fullName}</td>
+                                            <td>${decisionTimes[dh.approvalId]}</td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${dh.status == 'APPROVED'}">
+                                                        <small class="text-muted">Allowed: ${dh.approvedDurationHours} Hours</small>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <small class="text-danger italic">${dh.remarks}</small>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                        </c:forEach>
+                                        <c:if test="${empty decisionHistory}">
+                                            <tr><td colspan="5" class="text-center py-4 text-muted">No historical decisions recorded.</td></tr>
+                                        </c:if>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deletion Log -->
+                    <c:if test="${not empty deletionLog}">
+                    <div class="col-12">
+                        <div class="table-container border-start border-danger border-4">
+                            <div class="mb-4 border-bottom pb-3">
+                                <h6 class="fw-bold mb-1 text-danger"><i class="bi bi-trash-fill me-2"></i> Security Deletion Archive</h6>
+                                <p class="text-muted smaller mb-0">Records permanently removed from the active system by Security</p>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="bg-light text-muted" style="font-size: 0.75rem; text-transform: uppercase;">
+                                        <tr>
+                                            <th>Visitor</th><th>Ref #</th><th>Visit Date</th><th>Deleted By</th><th>Removal Reason</th><th>Logged At</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="font-size: 0.85rem;">
+                                        <c:forEach var="log" items="${deletionLog}">
+                                        <tr>
+                                            <td class="fw-bold">${log.visitorName}</td>
+                                            <td class="text-muted">${log.visitorRef}</td>
+                                            <td>${log.visitDate}</td>
+                                            <td>${log.deletedBy != null ? log.deletedBy.fullName : 'Security System'}</td>
+                                            <td class="text-secondary italic">${log.deletionReason}</td>
+                                            <td class="smaller text-muted">${deletionDates[log.id]}</td>
+                                        </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    </c:if>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- MODALS -->
+
+    <!-- 1. Manager Review Modal -->
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-person-badge me-2"></i> Visit Request Review</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-uppercase text-muted small fw-bold mb-3 border-bottom pb-1">Visitor Identity</h6>
+                            <p class="mb-1 small">Name: <strong id="detName"></strong></p>
+                            <p class="mb-1 small">ID/Passport: <strong id="detId"></strong></p>
+                            <p class="mb-1 small">Company: <strong id="detCompany"></strong></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-uppercase text-muted small fw-bold mb-3 border-bottom pb-1">Visit Logistics</h6>
+                            <p class="mb-1 small">Department: <strong id="detDept"></strong></p>
+                            <p class="mb-1 small">Host Staff: <strong id="detHost"></strong></p>
+                            <p class="mb-1 small">Estimated Duration: <strong id="detDuration"></strong> Hours</p>
+                        </div>
+                        <div class="col-12">
+                            <h6 class="text-uppercase text-muted small fw-bold mb-3 border-bottom pb-1">Particulars</h6>
+                            <p class="mb-2 small">Purpose: <span id="detPurpose" class="fw-medium"></span></p>
+                            <p class="mb-0 small">Equipment: <span id="detEquip" class="text-muted"></span></p>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <div class="row g-3">
+                        <div class="col-md-6 px-3 border-end">
+                            <h6 class="fw-bold text-success mb-3">Approve Visit</h6>
+                            <form id="approveForm" method="post">
+                                <c:if test="${not empty _csrf}"><input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/></c:if>
+                                <div class="mb-3">
+                                    <label class="form-label small">Duration (Hours)</label>
+                                    <input type="number" name="durationHours" class="form-control" value="2" min="1" max="24" required>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100 fw-bold">Approve</button>
+                            </form>
+                        </div>
+                        <div class="col-md-6 px-3">
+                            <h6 class="fw-bold text-danger mb-3">Reject Visit</h6>
+                            <form id="rejectForm" method="post">
+                                <c:if test="${not empty _csrf}"><input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/></c:if>
+                                <div class="mb-3">
+                                    <label class="form-label small">Reason</label>
+                                    <textarea name="reason" class="form-control" rows="2" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-danger w-100 fw-bold">Reject</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Technician Check-In Modal -->
+    <div class="modal fade" id="checkInModal" tabindex="-1">
+        <div class="modal-dialog border-0">
+            <div class="modal-content rounded-4 overflow-hidden border-0 shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">Confirm Access Entry</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="${pageContext.request.contextPath}/visitors/checkin" method="post">
+                    <c:if test="${not empty _csrf}"><input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/></c:if>
+                    <input type="hidden" name="visitorId" id="ciVisitorId">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Visitor Name</label>
+                            <input type="text" id="ciName" class="form-control bg-light border-0 fw-bold" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Assign Badge Number <span class="text-danger">*</span></label>
+                            <input type="text" name="badge" class="form-control" placeholder="e.g. V102" required autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Assigned Escort <span class="text-danger">*</span></label>
+                            <select name="escortId" class="form-select" required>
+                                <option value="">Select Technician...</option>
+                                <c:forEach var="staff" items="${staffList}">
+                                    <option value="${staff.userId}">${staff.fullName}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="p-3 bg-light rounded-3">
+                            <p class="small text-muted mb-2 fw-bold text-uppercase" style="font-size: 0.65rem;">Equipment Brought In:</p>
+                            <div id="ciEquip" class="small text-dark fw-medium"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="submit" class="btn btn-success w-100 py-3 fw-bold">Confirm & Check-In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Technician Check-Out Modal -->
+    <div class="modal fade" id="checkOutModal" tabindex="-1">
+        <div class="modal-dialog border-0">
+            <div class="modal-content rounded-4 overflow-hidden border-0 shadow">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold">Confirm Access Exit</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="checkOutForm" method="post">
+                    <c:if test="${not empty _csrf}"><input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/></c:if>
+                    <div class="modal-body p-4">
+                        <div class="mb-4">
+                            <h4 class="text-center" id="coName">Visitor Name</h4>
+                            <p class="text-center text-muted small">Finalizing visit session</p>
+                        </div>
+                        <div class="bg-light p-3 rounded-3 mb-4">
+                            <h6 class="small fw-bold mb-3"><i class="bi bi-shield-check text-primary"></i> Required Verifications</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="equipmentConfirmed" value="true" id="eqCheck" required>
+                                <label class="form-check-label small" for="eqCheck">
+                                    I confirm all equipment (<span id="coEquip" class="fw-bold"></span>) has been verified and removed.
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="badgeReturned" value="true" id="badgeCheck" required>
+                                <label class="form-check-label small" for="badgeCheck">
+                                    Visitor badge has been returned and collected.
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 py-3 fw-bold">Sign-Out & Close Visit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('visitorTrendChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [<c:forEach var="entry" items="${monthlyStats}" varStatus="loop">'${entry.key}'${!loop.last ? ',' : ''}</c:forEach>],
+                        datasets: [{
+                            label: 'Monthly Visitors',
+                            data: [<c:forEach var="entry" items="${monthlyStats}" varStatus="loop">${entry.value}${!loop.last ? ',' : ''}</c:forEach>],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3b82f6',
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: true, 
+                                grid: { color: '#f1f5f9' },
+                                ticks: { font: { weight: '600' } }
+                            },
+                            x: { 
+                                grid: { display: false },
+                                ticks: { font: { weight: '600' } }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        function switchToTab(tabId) {
+            const tabEl = document.querySelector(`button[data-bs-target="#${tabId}"]`);
+            if (tabEl) {
+                bootstrap.Tab.getInstance(tabEl)?.show() || new bootstrap.Tab(tabEl).show();
+            }
+        }
+
+        function downloadCSV(filename, rows) {
+            const processRow = row => row.map(v => v === null ? '' : `"${String(v).replace(/"/g, '""')}"`).join(',');
+            const csvContent = rows.map(processRow).join('\r\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function exportTrafficData() {
+            const rows = [['Month', 'Visitor Count']];
+            <c:forEach var="entry" items="${monthlyStats}">
+                rows.push(['${entry.key}', '${entry.value}']);
+            </c:forEach>
+            downloadCSV('monthly_traffic_report.csv', rows);
+        }
+
+        function exportIncidentData() {
+            const rows = [['Title', 'Severity', 'Status', 'Reporter', 'Date']];
+            <c:forEach var="inc" items="${allIncidents}">
+                rows.push(['${fn:escapeXml(inc.title)}', '${inc.severity}', '${inc.status}', '${not empty inc.reportedBy ? fn:escapeXml(inc.reportedBy.fullName) : "System"}', '${incidentCsvDates[inc.incidentId]}']);
+            </c:forEach>
+            downloadCSV('security_incident_log.csv', rows);
+        }
+
+        function exportMovementData() {
+            const rows = [['Visitor', 'Company', 'Entry', 'Exit', 'Escort']];
+            <c:forEach var="v" items="${visitHistory}">
+                rows.push(['${not empty v.visitor ? fn:escapeXml(v.visitor.fullName) : "N/A"}', '${not empty v.visitor ? fn:escapeXml(v.visitor.company) : "N/A"}', '${historyCsvIn[v.checkId]}', '${not empty v.checkOutTime ? historyCsvOut[v.checkId] : "STILL INSIDE"}', '${not empty v.escort ? fn:escapeXml(v.escort.fullName) : "N/A"}']);
+            </c:forEach>
+            downloadCSV('movement_audit_log.csv', rows);
+        }
+
+        function showDetails(id, name, nid, company, purpose, dept, time, duration, host, equip) {
+            document.getElementById('detName').innerText = name;
+            document.getElementById('detId').innerText = nid || 'N/A';
+            document.getElementById('detCompany').innerText = company || 'N/A';
+            document.getElementById('detPurpose').innerText = purpose;
+            document.getElementById('detDept').innerText = dept || 'General';
+            document.getElementById('detDuration').innerText = duration || '0';
+            document.getElementById('detHost').innerText = host;
+            document.getElementById('detEquip').innerText = equip || 'No equipment declared';
+            document.getElementById('approveForm').action = '${pageContext.request.contextPath}/visitors/approve/' + id;
+            document.getElementById('rejectForm').action = '${pageContext.request.contextPath}/visitors/reject/' + id;
+            new bootstrap.Modal(document.getElementById('detailModal')).show();
+        }
+
+        function prepareCheckIn(id, name, equip) {
+            document.getElementById('ciVisitorId').value = id;
+            document.getElementById('ciName').value = name;
+            document.getElementById('ciEquip').innerText = equip || 'None';
+            new bootstrap.Modal(document.getElementById('checkInModal')).show();
+        }
+
+        function prepareCheckOut(id, name, equip) {
+            document.getElementById('coName').innerText = name;
+            document.getElementById('coEquip').innerText = equip || 'None';
+            document.getElementById('checkOutForm').action = '${pageContext.request.contextPath}/visitors/checkout/' + id;
+            new bootstrap.Modal(document.getElementById('checkOutModal')).show();
+        }
+    </script>
 </body>
 </html>

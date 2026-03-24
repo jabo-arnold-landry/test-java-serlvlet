@@ -23,6 +23,22 @@
             <a href="${pageContext.request.contextPath}/reports" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
         </div>
 
+        <div class="alert alert-info mb-4" role="alert">
+            <h6 class="fw-bold mb-2"><i class="bi bi-info-circle"></i> Quick Guide</h6>
+            <p class="mb-2">Use this page to understand service health and SLA direction quickly.</p>
+            <p class="mb-1"><strong>Downtime Trend:</strong> negative % means improvement, positive % means downtime increased.</p>
+            <p class="mb-1"><strong>UPS Load Trend:</strong> watch for frequent values near 100%.</p>
+            <p class="mb-1"><strong>Temperature Trend:</strong> values above 28C can indicate cooling risk.</p>
+            <p class="mb-0"><strong>If charts are empty:</strong> generate daily reports first from the Daily Report page so trend data is available.</p>
+        </div>
+
+        <c:if test="${empty loadTrend}">
+            <div class="alert alert-warning mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle"></i>
+                No trend records found yet. Go to Daily Report and generate reports for recent dates, then return here.
+            </div>
+        </c:if>
+
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <div class="stat-card text-center">

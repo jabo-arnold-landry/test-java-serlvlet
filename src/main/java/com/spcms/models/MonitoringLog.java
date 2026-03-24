@@ -6,9 +6,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "monitoring_log")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Table(name = "monitoring_logs")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class MonitoringLog {
 
@@ -18,55 +20,38 @@ public class MonitoringLog {
     private Long logId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "equipment_type", nullable = false, length = 10)
+    @Column(nullable = false)
     private EquipmentType equipmentType;
 
-    @Column(name = "equipment_id", nullable = false)
+    @Column(name = "equipment_id")
     private Long equipmentId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recorded_by")
-    private User recordedBy;
-
-    // === UPS Readings ===
-
-    @Column(name = "input_voltage", precision = 10, scale = 2)
-    private BigDecimal inputVoltage;
-
-    @Column(name = "output_voltage", precision = 10, scale = 2)
-    private BigDecimal outputVoltage;
-
-    @Column(name = "battery_status", length = 50)
-    private String batteryStatus;
-
-    @Column(name = "load_percentage", precision = 5, scale = 2)
-    private BigDecimal loadPercentage;
-
-    @Column(precision = 5, scale = 2)
+    @Column(name = "temperature")
     private BigDecimal temperature;
 
-    @Column(name = "runtime_remaining")
-    private Integer runtimeRemaining;
+    @Column(name = "humidity")
+    private BigDecimal humidity;
 
-    // === Cooling Readings ===
+    @Column(name = "battery_level")
+    private BigDecimal batteryLevel;
 
-    @Column(name = "supply_air_temp", precision = 5, scale = 2)
-    private BigDecimal supplyAirTemp;
+    @Column(name = "load_percentage")
+    private BigDecimal loadPercentage;
 
-    @Column(name = "return_air_temp", precision = 5, scale = 2)
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "return_air_temp")
     private BigDecimal returnAirTemp;
 
-    @Column(name = "humidity_percent", precision = 5, scale = 2)
-    private BigDecimal humidityPercent;
+    @Column(name = "supply_air_temp")
+    private BigDecimal supplyAirTemp;
 
-    @Column(name = "cooling_performance", length = 100)
-    private String coolingPerformance;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    @Column(name = "reading_time")
-    private LocalDateTime readingTime;
-
-    @Column(columnDefinition = "TEXT")
-    private String notes;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public enum EquipmentType {
         UPS, COOLING
@@ -74,6 +59,118 @@ public class MonitoringLog {
 
     @PrePersist
     protected void onCreate() {
-        readingTime = LocalDateTime.now();
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    // Explicit Getter and Setter Methods
+    public Long getLogId() {
+        return logId;
+    }
+
+    public void setLogId(Long logId) {
+        this.logId = logId;
+    }
+
+    public EquipmentType getEquipmentType() {
+        return equipmentType;
+    }
+
+    public void setEquipmentType(EquipmentType equipmentType) {
+        this.equipmentType = equipmentType;
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    public BigDecimal getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(BigDecimal temperature) {
+        this.temperature = temperature;
+    }
+
+    public BigDecimal getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(BigDecimal humidity) {
+        this.humidity = humidity;
+    }
+
+    public BigDecimal getBatteryLevel() {
+        return batteryLevel;
+    }
+
+    public void setBatteryLevel(BigDecimal batteryLevel) {
+        this.batteryLevel = batteryLevel;
+    }
+
+    public BigDecimal getLoadPercentage() {
+        return loadPercentage;
+    }
+
+    public void setLoadPercentage(BigDecimal loadPercentage) {
+        this.loadPercentage = loadPercentage;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    // Additional getter methods
+    public BigDecimal getHumidityPercent() {
+        return humidity;
+    }
+
+    public void setHumidityPercent(BigDecimal humidity) {
+        this.humidity = humidity;
+    }
+
+    public BigDecimal getReturnAirTemp() {
+        return returnAirTemp;
+    }
+
+    public void setReturnAirTemp(BigDecimal returnAirTemp) {
+        this.returnAirTemp = returnAirTemp;
+    }
+
+    public BigDecimal getSupplyAirTemp() {
+        return supplyAirTemp;
+    }
+
+    public void setSupplyAirTemp(BigDecimal supplyAirTemp) {
+        this.supplyAirTemp = supplyAirTemp;
     }
 }
