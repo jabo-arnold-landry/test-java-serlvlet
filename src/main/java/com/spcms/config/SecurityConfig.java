@@ -2,9 +2,11 @@ package com.spcms.config;
 
 import com.spcms.models.User;
 import com.spcms.repositories.UserRepository;
+import com.spcms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,6 +23,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.DispatcherType;
 import java.util.Collections;
 
 /**
@@ -39,18 +42,23 @@ public class SecurityConfig {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    @Lazy
+    private UserService userService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
+                // Allow JSP Forwards and Errors (Spring Boot 3 / Security 6 requirement)
+                .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
+                
                 // Public access - MUST come first
                 .requestMatchers(
-                    new AntPathRequestMatcher("/login"),
-                    new AntPathRequestMatcher("/login/**"),
-                    new AntPathRequestMatcher("/perform_login"),
-                    new AntPathRequestMatcher("/error"),
-                    new AntPathRequestMatcher("/error/**"),
+                    new AntPathRequestMatcher("/login**"),
+                    new AntPathRequestMatcher("/perform_login**"),
+                    new AntPathRequestMatcher("/error**"),
                     new AntPathRequestMatcher("/css/**"),
                     new AntPathRequestMatcher("/js/**"),
                     new AntPathRequestMatcher("/images/**"),
@@ -61,7 +69,20 @@ public class SecurityConfig {
                 // User management - ADMIN only
                 .requestMatchers(new AntPathRequestMatcher("/users/**")).hasRole("ADMIN")
 
-                // Visitor approval - MANAGER or ADMIN
+                // Visitor Portal - SECURITY, TECHNICIAN, MANAGER, ADMIN
+                .requestMatchers(new AntPathRequestMatcher("/visitor-portal/**")).hasAnyRole("SECURITY", "TECHNICIAN", "MANAGER", "ADMIN")
+
+                // Visitor registration and checking - TECHNICIAN or ADMIN
+                .requestMatchers(
+                    new AntPathRequestMatcher("/visitors/register/**"),
+                    new AntPathRequestMatcher("/visitors/checkin/**"),
+                    new AntPathRequestMatcher("/visitors/checkout/**")
+                ).hasAnyRole("TECHNICIAN", "ADMIN")
+
+                // legacy Visitor Management Dashboard
+                .requestMatchers(new AntPathRequestMatcher("/visitors")).hasAnyRole("MANAGER", "ADMIN")
+
+                // Visitor approval and dashboard - MANAGER or ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/visitors/approve/**"),
                     new AntPathRequestMatcher("/visitors/reject/**")
@@ -70,7 +91,9 @@ public class SecurityConfig {
                 // Reports generation - MANAGER or ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/reports/generate/**"),
-                    new AntPathRequestMatcher("/reports/downtime-trend/**")
+                    new AntPathRequestMatcher("/reports/downtime-trend/**"),
+                    new AntPathRequestMatcher("/reports/project/**"),
+                    new AntPathRequestMatcher("/reports/sla-compliance/**")
                 ).hasAnyRole("MANAGER", "ADMIN")
 
                 // Maintenance - TECHNICIAN, MANAGER, ADMIN
@@ -79,21 +102,23 @@ public class SecurityConfig {
                 // Monitoring - TECHNICIAN, MANAGER, ADMIN
                 .requestMatchers(new AntPathRequestMatcher("/monitoring/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
 
-                // Incidents - TECHNICIAN, MANAGER, ADMIN
-                .requestMatchers(new AntPathRequestMatcher("/incidents/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
+                // Incidents - TECHNICIAN, MANAGER, ADMIN, SECURITY
+                .requestMatchers(new AntPathRequestMatcher("/incidents/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN", "SECURITY")
 
-                // Shift reports - TECHNICIAN, MANAGER, ADMIN
-                .requestMatchers(new AntPathRequestMatcher("/shift-reports/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
+                // Shift reports - TECHNICIAN, MANAGER, ADMIN, SECURITY
+                .requestMatchers(new AntPathRequestMatcher("/shift-reports/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN", "SECURITY")
 
                 // Alerts - All authenticated
                 .requestMatchers(new AntPathRequestMatcher("/alerts/**")).authenticated()
 
-                // Equipment, UPS, Cooling CRUD - TECHNICIAN, MANAGER, ADMIN
+                // Equipment, UPS, Cooling CRUD & UPS Reports - TECHNICIAN, MANAGER, ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/ups/new"),
                     new AntPathRequestMatcher("/ups/save"),
                     new AntPathRequestMatcher("/ups/edit/**"),
-                    new AntPathRequestMatcher("/ups/delete/**")
+                    new AntPathRequestMatcher("/ups/delete/**"),
+                    new AntPathRequestMatcher("/ups/reports"),
+                    new AntPathRequestMatcher("/ups/reports/**")
                 ).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
                 .requestMatchers(
                     new AntPathRequestMatcher("/cooling/new"),
@@ -118,7 +143,6 @@ public class SecurityConfig {
                 .failureUrl("/login?error=true")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
@@ -136,6 +160,13 @@ public class SecurityConfig {
         return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
             String targetUrl = request.getContextPath() + "/dashboard";
 
+            // Record login event and update lastLogin timestamp
+            String username = authentication.getName();
+            String ipAddress = request.getRemoteAddr();
+            userRepository.findByUsername(username).ifPresent(user ->
+                userService.recordLogin(user.getUserId(), ipAddress)
+            );
+
             for (GrantedAuthority authority : authentication.getAuthorities()) {
                 String role = authority.getAuthority();
                 switch (role) {
@@ -148,8 +179,11 @@ public class SecurityConfig {
                     case "ROLE_TECHNICIAN":
                         targetUrl = request.getContextPath() + "/monitoring";
                         break;
+                    case "ROLE_SECURITY":
+                        targetUrl = request.getContextPath() + "/visitor-portal";
+                        break;
                     case "ROLE_VIEWER":
-                        targetUrl = request.getContextPath() + "/dashboard";
+                        targetUrl = request.getContextPath() + "/visitor-portal";
                         break;
                 }
             }

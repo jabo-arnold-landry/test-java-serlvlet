@@ -29,24 +29,32 @@ public class UserService {
     // ==================== CRUD ====================
 
     public User createUser(User user) {
+        return createUser(user, null);
+    }
+
+    public User createUser(User user, String ipAddress) {
         // Hash the password before saving; only hash if not already hashed
         if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         User saved = userRepository.save(user);
         logActivity(saved.getUserId(), "CREATE_USER", "User", saved.getUserId(),
-                "Created user: " + saved.getUsername());
+                "Created user: " + saved.getUsername(), ipAddress);
         return saved;
     }
 
     public User updateUser(User user) {
+        return updateUser(user, null);
+    }
+
+    public User updateUser(User user, String ipAddress) {
         // Only re-hash if the password field was changed (doesn't look like a bcrypt hash)
         if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         User updated = userRepository.save(user);
         logActivity(updated.getUserId(), "UPDATE_USER", "User", updated.getUserId(),
-                "Updated user: " + updated.getUsername());
+                "Updated user: " + updated.getUsername(), ipAddress);
         return updated;
     }
 
@@ -80,7 +88,17 @@ public class UserService {
         });
     }
 
+    public void reactivateUser(Long userId) {
+        userRepository.findById(userId).ifPresent(user -> {
+            user.setIsActive(true);
+            userRepository.save(user);
+            logActivity(userId, "REACTIVATE_USER", "User", userId,
+                    "Reactivated user: " + user.getUsername());
+        });
+    }
+
     public void deleteUser(Long userId) {
+        activityLogRepository.deleteByUser_UserId(userId);
         userRepository.deleteById(userId);
     }
 
@@ -99,10 +117,14 @@ public class UserService {
     // ==================== Authentication Helpers ====================
 
     public void recordLogin(Long userId) {
+        recordLogin(userId, null);
+    }
+
+    public void recordLogin(Long userId, String ipAddress) {
         userRepository.findById(userId).ifPresent(user -> {
             user.setLastLogin(LocalDateTime.now());
             userRepository.save(user);
-            logActivity(userId, "LOGIN", "User", userId, "User logged in");
+            logActivity(userId, "LOGIN", "User", userId, "User logged in", ipAddress);
         });
     }
 
@@ -110,12 +132,18 @@ public class UserService {
 
     public void logActivity(Long userId, String action, String entityType,
                             Long entityId, String details) {
+        logActivity(userId, action, entityType, entityId, details, null);
+    }
+
+    public void logActivity(Long userId, String action, String entityType,
+                            Long entityId, String details, String ipAddress) {
         ActivityLog log = ActivityLog.builder()
                 .user(userRepository.findById(userId).orElse(null))
                 .action(action)
                 .entityType(entityType)
                 .entityId(entityId)
                 .details(details)
+                .ipAddress(ipAddress)
                 .build();
         activityLogRepository.save(log);
     }

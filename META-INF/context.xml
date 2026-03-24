@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <Resources>
+        <!-- The base is the project source webapp folder -->
+        <PreResources className="org.apache.catalina.webresources.DirResourceSet"
+                      base="C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps\test-java-serlvlet\src\main\webapp"
+                      internalPath="/"
+                      webAppMount="/" />
+                      
+        <!-- Add compiled classes -->
+        <PreResources className="org.apache.catalina.webresources.DirResourceSet"
+                      base="C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps\test-java-serlvlet\target\classes"
+                      internalPath="/"
+                      webAppMount="/WEB-INF/classes" />
+                      
+        <!-- Add dependencies -->
+        <PreResources className="org.apache.catalina.webresources.DirResourceSet"
+                      base="C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps\test-java-serlvlet\target\test-java-serlvlet\WEB-INF\lib"
+                      internalPath="/"
+                      webAppMount="/WEB-INF/lib" />
+    </Resources>
+</Context>

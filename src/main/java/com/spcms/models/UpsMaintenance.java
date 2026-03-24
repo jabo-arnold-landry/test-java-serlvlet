@@ -2,8 +2,10 @@ package com.spcms.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "ups_maintenance")
@@ -26,9 +28,11 @@ public class UpsMaintenance {
     private MaintenanceType maintenanceType;
 
     @Column(name = "maintenance_date", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate maintenanceDate;
 
     @Column(name = "next_due_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate nextDueDate;
 
     @Column(length = 100)
@@ -40,11 +44,22 @@ public class UpsMaintenance {
     @Column(name = "spare_parts_used", columnDefinition = "TEXT")
     private String sparePartsUsed;
 
+    @Column(name = "maintenance_cost", precision = 15, scale = 2)
+    private BigDecimal maintenanceCost;
+
+    @Column(name = "parts_cost", precision = 15, scale = 2)
+    private BigDecimal partsCost;
+
+    @Column(name = "labor_cost", precision = 15, scale = 2)
+    private BigDecimal laborCost;
+
     @Column(columnDefinition = "TEXT")
     private String remarks;
 
     @Column(name = "service_report_path", length = 500)
     private String serviceReportPath;
+    @Column(name = "maintenance_cost", precision = 15, scale = 2)
+    private java.math.BigDecimal maintenanceCost;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

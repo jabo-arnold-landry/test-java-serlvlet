@@ -1,5 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="org.springframework.context.ApplicationContext" %>
+<%@ page import="com.spcms.repositories.UpsRepository" %>
+<%
+    ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+    UpsRepository upsRepo = ctx.getBean(UpsRepository.class);
+    request.setAttribute("upsList", upsRepo.findAll());
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,11 +31,16 @@
             <a href="${pageContext.request.contextPath}/maintenance" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
         </div>
         <div class="stat-card">
-            <form action="${pageContext.request.contextPath}/maintenance/ups/save" method="post" enctype="multipart/form-data">
+            <form action="${pageContext.request.contextPath}/maintenance/ups/save" method="post">
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
-                        <label class="form-label">UPS ID <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="ups.upsId" value="${upsMaintenance.ups != null ? upsMaintenance.ups.upsId : ''}" required/>
+                        <label class="form-label">Select UPS <span class="text-danger">*</span></label>
+                        <select class="form-select" name="ups.upsId" required>
+                            <option value="">-- Choose UPS --</option>
+                            <c:forEach var="u" items="${upsList}">
+                                <option value="${u.upsId}" ${upsMaintenance.ups != null && upsMaintenance.ups.upsId == u.upsId ? 'selected' : ''}>${u.assetTag} - ${u.upsName}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Maintenance Type <span class="text-danger">*</span></label>
@@ -73,8 +86,13 @@
             <form action="${pageContext.request.contextPath}/maintenance/ups/schedule-quarterly" method="post">
                 <div class="row g-3 mb-3">
                     <div class="col-md-4">
-                        <label class="form-label">UPS ID <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="upsId" required/>
+                        <label class="form-label">Select UPS <span class="text-danger">*</span></label>
+                        <select class="form-select" name="upsId" required>
+                            <option value="">-- Choose UPS --</option>
+                            <c:forEach var="u" items="${upsList}">
+                                <option value="${u.upsId}">${u.assetTag}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Technician <span class="text-danger">*</span></label>

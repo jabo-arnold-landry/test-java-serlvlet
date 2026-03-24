@@ -98,6 +98,10 @@
                         <label class="form-label">Rack Unit Position</label>
                         <input type="text" class="form-control" name="rackUnitPosition" value="${equipment.rackUnitPosition}" placeholder="e.g., U12"/>
                     </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Google Maps Location</label>
+                        <input type="url" class="form-control" name="googleMapsLocation" value="${equipment.googleMapsLocation}" placeholder="https://maps.google.com/..."/>
+                    </div>
                 </div>
 
                 <h6 class="fw-bold mb-3">Technical Specifications</h6>

@@ -1,5 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="org.springframework.context.ApplicationContext" %>
+<%@ page import="com.spcms.repositories.CoolingUnitRepository" %>
+<%
+    ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+    CoolingUnitRepository coolRepo = ctx.getBean(CoolingUnitRepository.class);
+    request.setAttribute("coolingList", coolRepo.findAll());
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +34,13 @@
             <form action="${pageContext.request.contextPath}/maintenance/cooling/save" method="post">
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
-                        <label class="form-label">Cooling Unit ID <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="coolingUnit.coolingId" value="${coolingMaintenance.coolingUnit != null ? coolingMaintenance.coolingUnit.coolingId : ''}" required/>
+                        <label class="form-label">Select Cooling Unit <span class="text-danger">*</span></label>
+                        <select class="form-select" name="coolingUnit.coolingId" required>
+                            <option value="">-- Choose Cooling Unit --</option>
+                            <c:forEach var="c" items="${coolingList}">
+                                <option value="${c.coolingId}" ${coolingMaintenance.coolingUnit != null && coolingMaintenance.coolingUnit.coolingId == c.coolingId ? 'selected' : ''}>${c.assetTag} - ${c.unitName}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Maintenance Type <span class="text-danger">*</span></label>

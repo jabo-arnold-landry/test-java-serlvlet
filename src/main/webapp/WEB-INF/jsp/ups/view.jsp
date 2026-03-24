@@ -21,6 +21,7 @@
                 <p class="text-muted mb-0" style="font-size:14px;">Asset Tag: ${ups.assetTag} | Serial: ${ups.serialNumber}</p>
             </div>
             <div class="d-flex gap-2">
+                <a href="${pageContext.request.contextPath}/ups/reports" class="btn btn-outline-info" title="View Reports for this UPS"><i class="bi bi-bar-chart"></i> Reports</a>
                 <a href="${pageContext.request.contextPath}/ups/edit/${ups.upsId}" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a>
                 <a href="${pageContext.request.contextPath}/ups" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
             </div>

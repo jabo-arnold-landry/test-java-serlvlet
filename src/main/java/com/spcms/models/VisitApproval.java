@@ -24,6 +24,7 @@ public class VisitApproval {
     @JoinColumn(name = "approved_by")
     private User approvedBy;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private ApprovalStatus status = ApprovalStatus.PENDING;
@@ -31,9 +32,13 @@ public class VisitApproval {
     @Column(name = "decision_time")
     private LocalDateTime decisionTime;
 
+    @Column(name = "approved_duration_hours")
+    private Integer approvedDurationHours;
+
     @Column(columnDefinition = "TEXT")
     private String remarks;
 
+    @Builder.Default
     @Column(name = "notification_sent")
     private Boolean notificationSent = false;
 
@@ -41,7 +46,7 @@ public class VisitApproval {
     private LocalDateTime createdAt;
 
     public enum ApprovalStatus {
-        PENDING, APPROVED, REJECTED
+        PENDING, APPROVED, REJECTED, MORE_INFO
     }
 
     @PrePersist
