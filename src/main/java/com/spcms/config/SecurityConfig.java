@@ -44,6 +44,9 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
+                // Allow all internal forwards and errors - CRITICAL for JSP rendering in Spring Security 6
+                .dispatcherTypeMatchers(jakarta.servlet.DispatcherType.FORWARD, jakarta.servlet.DispatcherType.ERROR).permitAll()
+                
                 // Public access - MUST come first
                 .requestMatchers(
                     new AntPathRequestMatcher("/login"),

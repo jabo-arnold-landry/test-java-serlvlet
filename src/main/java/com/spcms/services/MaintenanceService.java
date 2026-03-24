@@ -40,6 +40,10 @@ public class MaintenanceService {
         return upsMaintenanceRepository.findOverdue(LocalDate.now());
     }
 
+    public List<UpsMaintenance> getAllUpsMaintenance() {
+        return upsMaintenanceRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "maintenanceDate"));
+    }
+
     public List<UpsMaintenance> getUpsMaintenanceByDateRange(LocalDate start, LocalDate end) {
         return upsMaintenanceRepository.findByMaintenanceDateBetween(start, end);
     }
@@ -64,6 +68,10 @@ public class MaintenanceService {
 
     public List<CoolingMaintenance> getOverdueCoolingMaintenance() {
         return coolingMaintenanceRepository.findOverdue(LocalDate.now());
+    }
+
+    public List<CoolingMaintenance> getAllCoolingMaintenance() {
+        return coolingMaintenanceRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "maintenanceDate"));
     }
 
     public List<CoolingMaintenance> getCoolingMaintenanceByDateRange(LocalDate start, LocalDate end) {
