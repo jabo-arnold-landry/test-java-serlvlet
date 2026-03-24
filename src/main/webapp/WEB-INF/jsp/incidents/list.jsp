@@ -15,22 +15,91 @@
     <jsp:include page="../common/topbar.jsp"/>
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <div><h4 style="font-weight:700;margin:0;">Incident Logger</h4></div>
-            <a href="${pageContext.request.contextPath}/incidents/new" class="btn btn-danger"><i class="bi bi-plus-lg"></i> Report Incident</a>
+            <div><h4 style="font-weight:700;margin:0;">${pageTitle}</h4></div>
+            <div class="d-flex gap-2">
+                <c:choose>
+                    <c:when test="${showResolved}">
+                        <a href="${pageContext.request.contextPath}/incidents" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to All
+                        </a>
+                        <a href="${pageContext.request.contextPath}/incidents/in-progress" class="btn btn-outline-warning">
+                            <i class="bi bi-hourglass-split"></i> In Progress Incidents
+                        </a>
+                    </c:when>
+                    <c:when test="${showInProgress}">
+                        <a href="${pageContext.request.contextPath}/incidents" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to All
+                        </a>
+                        <a href="${pageContext.request.contextPath}/incidents/solved" class="btn btn-outline-success">
+                            <i class="bi bi-check2-circle"></i> Resolved Incidents
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${pageContext.request.contextPath}/incidents/in-progress" class="btn btn-outline-warning">
+                            <i class="bi bi-hourglass-split"></i> In Progress Incidents
+                        </a>
+                        <a href="${pageContext.request.contextPath}/incidents/solved" class="btn btn-outline-success">
+                            <i class="bi bi-check2-circle"></i> Resolved Incidents
+                        </a>
+                    </c:otherwise>
+                </c:choose>
+                <a href="${pageContext.request.contextPath}/incidents/report" class="btn btn-outline-primary">
+                    <i class="bi bi-file-earmark-text"></i> Generate Report
+                </a>
+                <a href="${pageContext.request.contextPath}/incidents/new" class="btn btn-danger">
+                    <i class="bi bi-plus-lg"></i> Report Incident
+                </a>
+            </div>
         </div>
         <div class="table-container">
             <table class="table table-hover">
-                <thead><tr><th>ID</th><th>Title</th><th>Type</th><th>Severity</th><th>Status</th><th>Downtime (min)</th><th>Actions</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Downtime (min)</th>
+                        <th>Assigned To</th>
+                        <c:if test="${showResolved}">
+                            <th>Resolved By</th>
+                            <th>Resolved At</th>
+                        </c:if>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <c:forEach var="inc" items="${incidents}">
                     <tr>
                         <td>#INC-${inc.incidentId}</td>
                         <td>${inc.title}</td><td>${inc.equipmentType}</td>
                         <td><span class="badge ${inc.severity == 'CRITICAL' ? 'bg-danger' : inc.severity == 'HIGH' ? 'bg-warning text-dark' : 'bg-secondary'}">${inc.severity}</span></td>
-                        <td><span class="badge ${inc.status == 'OPEN' ? 'bg-danger' : inc.status == 'RESOLVED' ? 'bg-success' : 'bg-primary'}">${inc.status}</span></td>
+                        <td><span class="badge ${inc.status == 'RESOLVED' ? 'bg-success' : 'bg-warning text-dark'}">${inc.status}</span></td>
                         <td>${inc.downtimeMinutes != null ? inc.downtimeMinutes : '-'}</td>
                         <td>
-                            <a href="${pageContext.request.contextPath}/incidents/view/${inc.incidentId}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i> View</a>
+                            <c:choose>
+                                <c:when test="${inc.assignedTo != null}">
+                                    ${inc.assignedTo.fullName}
+                                    <c:if test="${currentUsername != null && inc.assignedTo.username == currentUsername}">
+                                        <span class="badge bg-primary ms-1">You</span>
+                                    </c:if>
+                                </c:when>
+                                <c:otherwise>Unassigned</c:otherwise>
+                            </c:choose>
+                        </td>
+                        <c:if test="${showResolved}">
+                            <td>${inc.resolvedBy != null ? inc.resolvedBy.username : 'N/A'}</td>
+                            <td>${inc.resolvedAt != null ? inc.resolvedAt : '-'}</td>
+                        </c:if>
+                        <td>
+                            <a href="${pageContext.request.contextPath}/incidents/view/${inc.incidentId}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                            <a href="${pageContext.request.contextPath}/incidents/edit/${inc.incidentId}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                            <form action="${pageContext.request.contextPath}/incidents/delete/${inc.incidentId}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this incident?')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     </c:forEach>

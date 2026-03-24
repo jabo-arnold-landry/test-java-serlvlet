@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPCMS - Log Incident</title>
+    <title>SPCMS - ${incident.incidentId != null ? 'Edit' : 'Log'} Incident</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -17,13 +17,19 @@
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h4 style="font-weight:700;margin:0;">Log New Incident</h4>
-                <p class="text-muted mb-0" style="font-size:14px;">Report equipment failures and incidents</p>
+                <h4 style="font-weight:700;margin:0;">${incident.incidentId != null ? 'Edit Incident' : 'Log New Incident'}</h4>
+                <p class="text-muted mb-0" style="font-size:14px;">
+                    ${incident.incidentId != null ? 'Update incident details and status' : 'Report equipment failures and incidents'}
+                </p>
             </div>
             <a href="${pageContext.request.contextPath}/incidents" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
         </div>
         <div class="stat-card">
-            <form action="${pageContext.request.contextPath}/incidents/save" method="post" enctype="multipart/form-data">
+            <c:set var="formAction" value="${pageContext.request.contextPath}/incidents/save"/>
+            <c:if test="${incident.incidentId != null}">
+                <c:set var="formAction" value="${pageContext.request.contextPath}/incidents/update/${incident.incidentId}"/>
+            </c:if>
+            <form action="${formAction}" method="post" enctype="multipart/form-data">
                 <h6 class="fw-bold mb-3">Incident Details</h6>
                 <div class="row g-3 mb-4">
                     <div class="col-md-8">
@@ -53,7 +59,7 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Reported By (User ID)</label>
-                        <input type="number" class="form-control" name="reportedBy.userId"/>
+                        <input type="number" class="form-control" name="reportedBy.userId" value="${incident.reportedBy != null ? incident.reportedBy.userId : ''}"/>
                     </div>
                     <div class="col-12">
                         <label class="form-label">Description</label>
@@ -64,17 +70,25 @@
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <label class="form-label">Downtime Start</label>
-                        <input type="datetime-local" class="form-control" name="downtimeStart"/>
+                        <input type="datetime-local" class="form-control" name="downtimeStart" value="${downtimeStartValue}"/>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Downtime End</label>
+                        <input type="datetime-local" class="form-control" name="downtimeEnd" value="${downtimeEndValue}"/>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Status</label>
                         <select class="form-select" name="status">
-                            <option value="OPEN" selected>Open</option>
+                            <option value="IN_PROGRESS" ${incident.status == 'IN_PROGRESS' || incident.status == null ? 'selected' : ''}>In Progress</option>
+                            <option value="RESOLVED" ${incident.status == 'RESOLVED' ? 'selected' : ''}>Resolved</option>
                         </select>
                     </div>
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-danger"><i class="bi bi-exclamation-triangle"></i> Log Incident</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        ${incident.incidentId != null ? 'Update Incident' : 'Log Incident'}
+                    </button>
                     <a href="${pageContext.request.contextPath}/incidents" class="btn btn-outline-secondary">Cancel</a>
                 </div>
             </form>

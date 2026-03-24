@@ -37,7 +37,7 @@ public class Incident {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 15)
-    private IncidentStatus status = IncidentStatus.OPEN;
+    private IncidentStatus status = IncidentStatus.IN_PROGRESS;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_by")
@@ -62,6 +62,13 @@ public class Incident {
     @Column(name = "action_taken", columnDefinition = "TEXT")
     private String actionTaken;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resolved_by")
+    private User resolvedBy;
+
+    @Column(name = "resolved_at")
+    private LocalDateTime resolvedAt;
+
     @Column(name = "attachment_path", length = 500)
     private String attachmentPath;
 
@@ -80,7 +87,7 @@ public class Incident {
     }
 
     public enum IncidentStatus {
-        OPEN, IN_PROGRESS, RESOLVED, CLOSED
+        IN_PROGRESS, RESOLVED
     }
 
     @PrePersist

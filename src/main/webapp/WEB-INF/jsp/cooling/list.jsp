@@ -20,7 +20,12 @@
                 <h4 style="font-weight:700;margin:0;">Cooling Units</h4>
                 <p class="text-muted mb-0" style="font-size:14px;">Manage precision cooling and air conditioning</p>
             </div>
-            <a href="${pageContext.request.contextPath}/cooling/new" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Cooling Unit</a>
+            <div class="d-flex gap-2">
+                <a href="${pageContext.request.contextPath}/cooling/report" class="btn btn-outline-primary">
+                    <i class="bi bi-file-earmark-text"></i> Monitoring Summary
+                </a>
+                <a href="${pageContext.request.contextPath}/cooling/new" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Cooling Unit</a>
+            </div>
         </div>
 
         <div class="table-container">

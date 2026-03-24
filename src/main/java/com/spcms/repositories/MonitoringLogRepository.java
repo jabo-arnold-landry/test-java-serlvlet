@@ -9,6 +9,8 @@ import java.util.List;
 
 @Repository
 public interface MonitoringLogRepository extends JpaRepository<MonitoringLog, Long> {
+    long countByEquipmentTypeAndEquipmentId(MonitoringLog.EquipmentType type, Long equipmentId);
+
     List<MonitoringLog> findByEquipmentTypeAndEquipmentIdOrderByReadingTimeDesc(
             MonitoringLog.EquipmentType type, Long equipmentId);
 
