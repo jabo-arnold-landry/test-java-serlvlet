@@ -1,25 +1,26 @@
 package com.spcms.services;
 
 import com.spcms.models.DailyConsolidatedReport;
-import com.spcms.models.BranchPerformanceReport;
-import com.spcms.models.CostAnalysisReport;
 import com.spcms.models.MonitoringLog;
 import com.spcms.models.Incident;
-import com.spcms.models.UpsMaintenance;
-import com.spcms.models.CoolingMaintenance;
+import com.spcms.models.SlaCheckResult;
+import com.spcms.models.SlaComplianceSummary;
 import com.spcms.repositories.*;
 import com.spcms.util.ReportCalculationUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,11 +35,20 @@ import java.util.stream.Collectors;
 @Transactional
 public class ReportService {
 
-    @Autowired
-    private DailyConsolidatedReportRepository dailyReportRepository;
+        @Value("${spcms.sla.availability.target-percent:99.90}")
+        private BigDecimal availabilityTargetPercent;
+
+        @Value("${spcms.sla.temperature.max-c:28}")
+        private BigDecimal temperatureSlaMaxC;
+
+        @Value("${spcms.sla.downtime.monthly-max-minutes:60}")
+        private int monthlyDowntimeSlaMinutes;
+
+        @Value("${spcms.sla.response.max-minutes:15}")
+        private int responseSlaMinutes;
 
     @Autowired
-    private BranchPerformanceReportRepository branchPerformanceReportRepository;
+    private DailyConsolidatedReportRepository dailyReportRepository;
 
     @Autowired
     private MonitoringLogRepository monitoringLogRepository;
@@ -55,17 +65,11 @@ public class ReportService {
     @Autowired
     private VisitorCheckInOutRepository visitorCheckInOutRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UpsMaintenanceRepository upsMaintenanceRepository;
 
-    @Autowired
-    private CostAnalysisReportRepository costAnalysisReportRepository;
-
-    @Autowired
-    private UpsMaintenanceRepository upsMaintenanceRepository;
-
-    @Autowired
-    private CoolingMaintenanceRepository coolingMaintenanceRepository;
+        @Autowired
+        private CoolingMaintenanceRepository coolingMaintenanceRepository;
 
     // ==================== Daily Consolidated Report ====================
 
@@ -74,10 +78,19 @@ public class ReportService {
      * This auto-calculates MTTR, MTBF, average load, temperature, etc.
      */
     public DailyConsolidatedReport generateDailyReport(LocalDate date) {
-        // Check if report already exists
+        return generateDailyReport(date, false);
+    }
+
+    /**
+         * Generate daily report. If force is true, the existing report is recalculated and updated.
+     */
+    public DailyConsolidatedReport generateDailyReport(LocalDate date, boolean force) {
+                // Check if report already exists.
         Optional<DailyConsolidatedReport> existing = dailyReportRepository.findByReportDate(date);
         if (existing.isPresent()) {
-            return existing.get();
+                        if (!force) {
+                return existing.get();
+            }
         }
 
         LocalDateTime dayStart = date.atStartOfDay();
@@ -117,19 +130,18 @@ public class ReportService {
         // === Active Visitors ===
         int totalVisitors = visitorCheckInOutRepository.findActiveVisitors().size();
 
-        // === Build report ===
-        DailyConsolidatedReport report = DailyConsolidatedReport.builder()
-                .reportDate(date)
-                .avgDailyLoad(avgDailyLoad)
-                .totalUpsAlarms(totalAlarms)
-                .avgRoomTemperature(avgRoomTemp)
-                .highestTempRecorded(highestTemp)
-                .totalIncidents(totalIncidents)
-                .totalDowntimeMin(downtimeMin)
-                .mttrMinutes(mttr)
-                .mtbfHours(mtbf)
-                .totalVisitors(totalVisitors)
-                .build();
+        // === Build or update report ===
+        DailyConsolidatedReport report = existing.orElseGet(DailyConsolidatedReport::new);
+        report.setReportDate(date);
+        report.setAvgDailyLoad(avgDailyLoad);
+        report.setTotalUpsAlarms(totalAlarms);
+        report.setAvgRoomTemperature(avgRoomTemp);
+        report.setHighestTempRecorded(highestTemp);
+        report.setTotalIncidents(totalIncidents);
+        report.setTotalDowntimeMin(downtimeMin);
+        report.setMttrMinutes(mttr);
+        report.setMtbfHours(mtbf);
+        report.setTotalVisitors(totalVisitors);
 
         return dailyReportRepository.save(report);
     }
@@ -171,427 +183,145 @@ public class ReportService {
         return dailyReportRepository.findByReportDateBetweenOrderByReportDateDesc(start, end);
     }
 
-    // ==================== Branch Performance Report ====================
+    public SlaComplianceSummary buildSlaComplianceSummary(int days) {
+        LocalDate today = LocalDate.now();
+        LocalDate currentStart = today.minusDays(days - 1L);
+        LocalDateTime rangeStart = currentStart.atStartOfDay();
+        LocalDateTime rangeEnd = today.atTime(LocalTime.MAX);
 
-    /**
-     * Generate a branch performance report for a specific branch and date.
-     */
-    public BranchPerformanceReport generateBranchPerformanceReport(String branch, LocalDate date) {
-        // Check if already exists
-        Optional<BranchPerformanceReport> existing = branchPerformanceReportRepository
-                .findByBranchAndReportDate(branch, date);
-        if (existing.isPresent()) {
-            return existing.get();
+        List<DailyConsolidatedReport> reports = getReportsInRange(currentStart, today);
+        int totalDowntimeMinutes = reports.stream()
+                .map(DailyConsolidatedReport::getTotalDowntimeMin)
+                .filter(Objects::nonNull)
+                .mapToInt(Integer::intValue)
+                .sum();
+
+        BigDecimal totalWindowMinutes = BigDecimal.valueOf(days)
+                .multiply(BigDecimal.valueOf(24L * 60L));
+        BigDecimal uptimeMinutes = totalWindowMinutes.subtract(BigDecimal.valueOf(totalDowntimeMinutes));
+        if (uptimeMinutes.compareTo(BigDecimal.ZERO) < 0) {
+            uptimeMinutes = BigDecimal.ZERO;
         }
+        BigDecimal availabilityCompliance = uptimeMinutes
+                .multiply(BigDecimal.valueOf(100))
+                .divide(totalWindowMinutes, 2, RoundingMode.HALF_UP);
 
-        LocalDateTime dayStart = date.atStartOfDay();
-        LocalDateTime dayEnd = date.atTime(LocalTime.MAX);
+        BigDecimal downtimeTrend = getDowntimeTrend(
+                today.minusDays(days * 2L), today.minusDays(days),
+                currentStart, today);
 
-        // === Get users for this branch ===
-        List<Long> branchUserIds = userRepository.findByBranch(branch).stream()
-                .map(u -> u.getUserId())
-                .collect(Collectors.toList());
-        int userCount = branchUserIds.size();
+        BigDecimal allowedDowntimeMinutes = BigDecimal.valueOf(monthlyDowntimeSlaMinutes)
+                .multiply(BigDecimal.valueOf(days))
+                .divide(BigDecimal.valueOf(30), 2, RoundingMode.HALF_UP);
+        boolean downtimeCompliant = BigDecimal.valueOf(totalDowntimeMinutes).compareTo(allowedDowntimeMinutes) <= 0;
 
-        // === UPS metrics (filtered by branch users) ===
-        List<MonitoringLog> branchUpsLogs = monitoringLogRepository.findByTypeAndDateRange(
-                MonitoringLog.EquipmentType.UPS, dayStart, dayEnd).stream()
-                .filter(log -> log.getRecordedBy() != null && branchUserIds.contains(log.getRecordedBy().getUserId()))
+        List<MonitoringLog> logs = monitoringLogRepository.findByReadingTimeBetweenOrderByReadingTimeDesc(rangeStart, rangeEnd);
+        List<BigDecimal> temperatureReadings = logs.stream()
+                .flatMap(log -> java.util.stream.Stream.of(log.getTemperature(), log.getSupplyAirTemp(), log.getReturnAirTemp()))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        List<BigDecimal> loadReadings = branchUpsLogs.stream()
-                .map(MonitoringLog::getLoadPercentage)
-                .filter(java.util.Objects::nonNull)
-                .collect(Collectors.toList());
-        BigDecimal avgDailyLoad = ReportCalculationUtil.calculateDailyAverageLoad(loadReadings);
-        BigDecimal peakLoad = ReportCalculationUtil.findMax(loadReadings);
 
-        // === Cooling metrics (filtered by branch users) ===
-        List<MonitoringLog> branchCoolingLogs = monitoringLogRepository.findByTypeAndDateRange(
-                MonitoringLog.EquipmentType.COOLING, dayStart, dayEnd).stream()
-                .filter(log -> log.getRecordedBy() != null && branchUserIds.contains(log.getRecordedBy().getUserId()))
-                .collect(Collectors.toList());
-        List<BigDecimal> temperatures = branchCoolingLogs.stream()
-                .map(MonitoringLog::getTemperature)
-                .filter(java.util.Objects::nonNull)
-                .collect(Collectors.toList());
-        BigDecimal avgRoomTemp = ReportCalculationUtil.calculateAverageTemperature(temperatures);
-        BigDecimal highestTemp = ReportCalculationUtil.findMax(temperatures);
-
-        // === Incident metrics (filtered by branch users) ===
-        List<Incident> branchIncidents = incidentRepository.findByCreatedAtBetween(dayStart, dayEnd).stream()
-                .filter(inc -> (inc.getReportedBy() != null && branchUserIds.contains(inc.getReportedBy().getUserId())) ||
-                               (inc.getAssignedTo() != null && branchUserIds.contains(inc.getAssignedTo().getUserId())))
-                .collect(Collectors.toList());
-        int totalIncidents = branchIncidents.size();
-        int criticalIncidents = (int) branchIncidents.stream()
-                .filter(inc -> inc.getSeverity() != null && inc.getSeverity().equals(Incident.Severity.CRITICAL))
+        BigDecimal maxTemperature = ReportCalculationUtil.findMax(temperatureReadings).setScale(2, RoundingMode.HALF_UP);
+        long temperatureViolations = temperatureReadings.stream()
+                .filter(temp -> temp.compareTo(temperatureSlaMaxC) > 0)
                 .count();
-        Integer totalDowntime = incidentRepository.sumDowntimeMinutes(dayStart, dayEnd);
-        int downtimeMin = totalDowntime != null ? totalDowntime : 0;
+        boolean temperatureCompliant = temperatureViolations == 0;
 
-        BigDecimal mttr = ReportCalculationUtil.calculateMTTR(downtimeMin, totalIncidents);
-        BigDecimal mtbf = ReportCalculationUtil.calculateMTBF(24.0, downtimeMin, totalIncidents);
+        List<Incident> incidents = incidentRepository.findByCreatedAtBetween(rangeStart, rangeEnd);
+        LocalDateTime now = LocalDateTime.now();
+        long responseViolations = 0;
 
-        // === Cooling Alarms ===
-        int totalAlarms = coolingAlarmLogRepository.findByAlarmTimeBetween(dayStart, dayEnd).size();
-
-        // === Visitors (global, but will be associated with records) ===
-        int totalVisitors = visitorCheckInOutRepository.findActiveVisitors().size();
-
-        // === Build branch report ===
-        BranchPerformanceReport report = BranchPerformanceReport.builder()
-                .branch(branch)
-                .reportDate(date)
-                .avgDailyLoad(avgDailyLoad)
-                .peakLoad(peakLoad)
-                .totalUpsAlarms(totalAlarms)
-                .avgRoomTemperature(avgRoomTemp)
-                .highestTempRecorded(highestTemp)
-                .totalIncidents(totalIncidents)
-                .criticalIncidents(criticalIncidents)
-                .totalDowntimeMin(downtimeMin)
-                .mttrMinutes(mttr)
-                .mtbfHours(mtbf)
-                .totalVisitors(totalVisitors)
-                .userCount(userCount)
-                .build();
-
-        return branchPerformanceReportRepository.save(report);
-    }
-
-    /**
-     * Get all available branches
-     */
-    public List<String> getAllBranches() {
-        return userRepository.findAll().stream()
-                .map(u -> u.getBranch())
-                .distinct()
-                .filter(b -> b != null && !b.isBlank())
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Get branch performance report for a specific date and branch
-     */
-    public Optional<BranchPerformanceReport> getBranchPerformanceReport(String branch, LocalDate date) {
-        return branchPerformanceReportRepository.findByBranchAndReportDate(branch, date);
-    }
-
-    /**
-     * Get branch performance reports in a date range
-     */
-    public List<BranchPerformanceReport> getBranchPerformanceReportsInRange(String branch, LocalDate start, LocalDate end) {
-        return branchPerformanceReportRepository
-                .findByBranchAndReportDateBetweenOrderByReportDateDesc(branch, start, end);
-    }
-
-    /**
-     * Get all branch reports for a specific date (for comparison)
-     */
-    public List<BranchPerformanceReport> getBranchPerformanceReportsByDate(LocalDate date) {
-        return branchPerformanceReportRepository.findByReportDate(date);
-    }
-
-    // ==================== Cost Analysis Report ====================
-
-    /**
-     * Generate a comprehensive cost analysis report for a given date and optional branch.
-     * Includes maintenance costs, repair costs, and downtime cost analysis.
-     */
-    public CostAnalysisReport generateCostAnalysisReport(LocalDate date, String branch) {
-        try {
-            // Check if already exists
-            Optional<CostAnalysisReport> existing = branch != null && !branch.isBlank() ?
-                    costAnalysisReportRepository.findByBranchAndReportDate(branch, date) :
-                    costAnalysisReportRepository.findByReportDate(date);
-
-            if (existing.isPresent()) {
-                return existing.get();
+        for (Incident incident : incidents) {
+            if (incident.getCreatedAt() == null) {
+                continue;
             }
 
-            // Normalize branch to null if blank
-            if (branch != null && branch.isBlank()) {
-                branch = null;
+            if (incident.getAssignedTo() == null && incident.getStatus() == Incident.IncidentStatus.OPEN) {
+                long openMinutes = ChronoUnit.MINUTES.between(incident.getCreatedAt(), now);
+                                if (openMinutes > responseSlaMinutes) {
+                    responseViolations++;
+                }
+                continue;
             }
 
-            LocalDateTime dayStart = date.atStartOfDay();
-            LocalDateTime dayEnd = date.atTime(LocalTime.MAX);
-
-            // === Get users for branch filter ===
-            List<Long> branchUserIds = new java.util.ArrayList<>();
-            if (branch != null) {
-                try {
-                    branchUserIds = userRepository.findByBranch(branch).stream()
-                            .map(u -> u.getUserId())
-                            .collect(Collectors.toList());
-                } catch (Exception e) {
-                    System.out.println("Error fetching users for branch: " + branch + " - " + e.getMessage());
-                    branchUserIds = new java.util.ArrayList<>();
+            if (incident.getUpdatedAt() != null) {
+                long responseMinutes = ChronoUnit.MINUTES.between(incident.getCreatedAt(), incident.getUpdatedAt());
+                                if (responseMinutes > responseSlaMinutes) {
+                    responseViolations++;
                 }
             }
-
-        // === Maintenance Costs ===
-        BigDecimal upsMaintenanceCost = calculateUpsMaintenanceCost(dayStart, dayEnd, branchUserIds);
-        BigDecimal coolingMaintenanceCost = calculateCoolingMaintenanceCost(dayStart, dayEnd, branchUserIds);
-        BigDecimal totalMaintenanceCost = upsMaintenanceCost.add(coolingMaintenanceCost);
-
-        // === Preventive vs Corrective ===
-        BigDecimal preventiveMaintenanceCost = calculatePreventiveMaintenanceCost(dayStart, dayEnd, branchUserIds);
-        BigDecimal correctiveMaintenanceCost = calculateCorrectiveMaintenanceCost(dayStart, dayEnd, branchUserIds);
-
-        // === Repair Costs from Incidents ===
-        BigDecimal totalRepairCost = calculateIncidentRepairCost(dayStart, dayEnd, branchUserIds);
-        BigDecimal criticalIncidentCost = calculateCriticalIncidentCost(dayStart, dayEnd, branchUserIds);
-
-        // === Downtime Analysis ===
-        Integer totalDowntimeMinutes = calculateTotalDowntime(dayStart, dayEnd, branchUserIds);
-        BigDecimal costPerHourLoss = BigDecimal.valueOf(500); // Default: $500/hour downtime cost
-        BigDecimal totalDowntimeCost = calculateDowntimeCost(totalDowntimeMinutes, costPerHourLoss);
-
-        // === Summary ===
-        BigDecimal totalOperationalCost = totalMaintenanceCost.add(totalRepairCost).add(totalDowntimeCost);
-        BigDecimal maintenanceCostPerHour = calculateMaintenanceCostPerHour(totalMaintenanceCost);
-
-        // === Incident Count ===
-        int totalIncidents = countIncidents(dayStart, dayEnd, branchUserIds);
-        int maintenanceEvents = countMaintenanceEvents(dayStart, dayEnd, branchUserIds);
-
-        // === Build report ===
-        CostAnalysisReport report = CostAnalysisReport.builder()
-                .reportDate(date)
-                .branch(branch)
-                .totalMaintenanceCost(totalMaintenanceCost != null ? totalMaintenanceCost : BigDecimal.ZERO)
-                .upsMaintenanceCost(upsMaintenanceCost != null ? upsMaintenanceCost : BigDecimal.ZERO)
-                .coolingMaintenanceCost(coolingMaintenanceCost != null ? coolingMaintenanceCost : BigDecimal.ZERO)
-                .preventiveMaintenanceCost(preventiveMaintenanceCost != null ? preventiveMaintenanceCost : BigDecimal.ZERO)
-                .correctiveMaintenanceCost(correctiveMaintenanceCost != null ? correctiveMaintenanceCost : BigDecimal.ZERO)
-                .totalRepairCost(totalRepairCost != null ? totalRepairCost : BigDecimal.ZERO)
-                .criticalIncidentCost(criticalIncidentCost != null ? criticalIncidentCost : BigDecimal.ZERO)
-                .totalDowntimeMinutes(totalDowntimeMinutes != null ? totalDowntimeMinutes : 0)
-                .costPerHourLoss(costPerHourLoss)
-                .totalDowntimeCost(totalDowntimeCost != null ? totalDowntimeCost : BigDecimal.ZERO)
-                .totalOperationalCost(totalOperationalCost != null ? totalOperationalCost : BigDecimal.ZERO)
-                .maintenanceCostPerHour(maintenanceCostPerHour != null ? maintenanceCostPerHour : BigDecimal.ZERO)
-                .totalIncidents(totalIncidents)
-                .maintenanceEvents(maintenanceEvents)
-                .build();
-
-            try {
-                return costAnalysisReportRepository.save(report);
-            } catch (Exception saveError) {
-                System.out.println("Error saving cost analysis report: " + saveError.getMessage());
-                saveError.printStackTrace();
-                // Return the report without saving (for now)
-                return report;
-            }
-        } catch (Exception e) {
-            System.out.println("Error generating cost analysis report: " + e.getMessage());
-            e.printStackTrace();
-            // Return a basic report with calculated zeros
-            return CostAnalysisReport.builder()
-                    .reportDate(date)
-                    .branch(branch)
-                    .totalMaintenanceCost(BigDecimal.ZERO)
-                    .upsMaintenanceCost(BigDecimal.ZERO)
-                    .coolingMaintenanceCost(BigDecimal.ZERO)
-                    .preventiveMaintenanceCost(BigDecimal.ZERO)
-                    .correctiveMaintenanceCost(BigDecimal.ZERO)
-                    .totalRepairCost(BigDecimal.ZERO)
-                    .criticalIncidentCost(BigDecimal.ZERO)
-                    .totalDowntimeMinutes(0)
-                    .costPerHourLoss(BigDecimal.valueOf(500))
-                    .totalDowntimeCost(BigDecimal.ZERO)
-                    .totalOperationalCost(BigDecimal.ZERO)
-                    .maintenanceCostPerHour(BigDecimal.ZERO)
-                    .totalIncidents(0)
-                    .maintenanceEvents(0)
-                    .build();
-        }
-    }
-
-    private BigDecimal calculateUpsMaintenanceCost(LocalDateTime start, LocalDateTime end, List<Long> userIds) {
-        List<UpsMaintenance> records = upsMaintenanceRepository.findAll().stream()
-                .filter(m -> m.getMaintenanceDate() != null && 
-                        !m.getMaintenanceDate().isBefore(start.toLocalDate()) && 
-                        !m.getMaintenanceDate().isAfter(end.toLocalDate()))
-                .collect(Collectors.toList());
-
-        return records.stream()
-                .map(m -> m.getMaintenanceCost() != null ? m.getMaintenanceCost() : BigDecimal.ZERO)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private BigDecimal calculateCoolingMaintenanceCost(LocalDateTime start, LocalDateTime end, List<Long> userIds) {
-        List<CoolingMaintenance> records = coolingMaintenanceRepository.findAll().stream()
-                .filter(m -> m.getMaintenanceDate() != null && 
-                        !m.getMaintenanceDate().isBefore(start.toLocalDate()) && 
-                        !m.getMaintenanceDate().isAfter(end.toLocalDate()))
-                .collect(Collectors.toList());
-
-        return records.stream()
-                .map(m -> m.getMaintenanceCost() != null ? m.getMaintenanceCost() : BigDecimal.ZERO)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private BigDecimal calculatePreventiveMaintenanceCost(LocalDateTime start, LocalDateTime end, List<Long> userIds) {
-        List<UpsMaintenance> upsMaint = upsMaintenanceRepository.findAll().stream()
-                .filter(m -> m.getMaintenanceType() != null && m.getMaintenanceType().equals(UpsMaintenance.MaintenanceType.PREVENTIVE) &&
-                        m.getMaintenanceDate() != null && 
-                        !m.getMaintenanceDate().isBefore(start.toLocalDate()) && 
-                        !m.getMaintenanceDate().isAfter(end.toLocalDate()))
-                .collect(Collectors.toList());
-
-        List<CoolingMaintenance> coolingMaint = coolingMaintenanceRepository.findAll().stream()
-                .filter(m -> m.getMaintenanceType() != null && m.getMaintenanceType().equals(CoolingMaintenance.MaintenanceType.PREVENTIVE) &&
-                        m.getMaintenanceDate() != null && 
-                        !m.getMaintenanceDate().isBefore(start.toLocalDate()) && 
-                        !m.getMaintenanceDate().isAfter(end.toLocalDate()))
-                .collect(Collectors.toList());
-
-        BigDecimal upsCost = upsMaint.stream()
-                .map(m -> m.getMaintenanceCost() != null ? m.getMaintenanceCost() : BigDecimal.ZERO)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal coolingCost = coolingMaint.stream()
-                .map(m -> m.getMaintenanceCost() != null ? m.getMaintenanceCost() : BigDecimal.ZERO)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return upsCost.add(coolingCost);
-    }
-
-    private BigDecimal calculateCorrectiveMaintenanceCost(LocalDateTime start, LocalDateTime end, List<Long> userIds) {
-        List<UpsMaintenance> upsMaint = upsMaintenanceRepository.findAll().stream()
-                .filter(m -> m.getMaintenanceType() != null && m.getMaintenanceType().equals(UpsMaintenance.MaintenanceType.CORRECTIVE) &&
-                        m.getMaintenanceDate() != null && 
-                        !m.getMaintenanceDate().isBefore(start.toLocalDate()) && 
-                        !m.getMaintenanceDate().isAfter(end.toLocalDate()))
-                .collect(Collectors.toList());
-
-        List<CoolingMaintenance> coolingMaint = coolingMaintenanceRepository.findAll().stream()
-                .filter(m -> m.getMaintenanceType() != null && m.getMaintenanceType().equals(CoolingMaintenance.MaintenanceType.CORRECTIVE) &&
-                        m.getMaintenanceDate() != null && 
-                        !m.getMaintenanceDate().isBefore(start.toLocalDate()) && 
-                        !m.getMaintenanceDate().isAfter(end.toLocalDate()))
-                .collect(Collectors.toList());
-
-        BigDecimal upsCost = upsMaint.stream()
-                .map(m -> m.getMaintenanceCost() != null ? m.getMaintenanceCost() : BigDecimal.ZERO)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal coolingCost = coolingMaint.stream()
-                .map(m -> m.getMaintenanceCost() != null ? m.getMaintenanceCost() : BigDecimal.ZERO)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return upsCost.add(coolingCost);
-    }
-
-    private BigDecimal calculateIncidentRepairCost(LocalDateTime start, LocalDateTime end, List<Long> userIds) {
-        List<Incident> incidents = incidentRepository.findByCreatedAtBetween(start, end);
-
-        if (!userIds.isEmpty()) {
-            incidents = incidents.stream()
-                    .filter(i -> (i.getReportedBy() != null && userIds.contains(i.getReportedBy().getUserId())) ||
-                                 (i.getAssignedTo() != null && userIds.contains(i.getAssignedTo().getUserId())))
-                    .collect(Collectors.toList());
         }
 
-        return incidents.stream()
-                .map(i -> i.getRepairCost() != null ? i.getRepairCost() : BigDecimal.ZERO)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
+        long incidentsEvaluated = incidents.size();
+        boolean responseCompliant = responseViolations == 0;
+        BigDecimal responseCompliance = incidentsEvaluated == 0
+                ? BigDecimal.valueOf(100).setScale(2, RoundingMode.HALF_UP)
+                : BigDecimal.valueOf((double) (incidentsEvaluated - responseViolations) * 100d / incidentsEvaluated)
+                .setScale(2, RoundingMode.HALF_UP);
 
-    private BigDecimal calculateCriticalIncidentCost(LocalDateTime start, LocalDateTime end, List<Long> userIds) {
-        List<Incident> incidents = incidentRepository.findByCreatedAtBetween(start, end).stream()
-                .filter(i -> i.getSeverity() != null && i.getSeverity().equals(Incident.Severity.CRITICAL))
-                .collect(Collectors.toList());
+        int overdueUps = upsMaintenanceRepository.findOverdue(today).size();
+        int overdueCooling = coolingMaintenanceRepository.findOverdue(today).size();
+        int totalOverdueMaintenance = overdueUps + overdueCooling;
+        boolean maintenanceCompliant = totalOverdueMaintenance == 0;
 
-        if (!userIds.isEmpty()) {
-            incidents = incidents.stream()
-                    .filter(i -> (i.getReportedBy() != null && userIds.contains(i.getReportedBy().getUserId())) ||
-                                 (i.getAssignedTo() != null && userIds.contains(i.getAssignedTo().getUserId())))
-                    .collect(Collectors.toList());
-        }
+        List<SlaCheckResult> checks = new ArrayList<>();
+        checks.add(new SlaCheckResult(
+                "Temperature",
+                "Maximum temperature",
+                "<= " + temperatureSlaMaxC.setScale(2, RoundingMode.HALF_UP) + "C",
+                maxTemperature + "C",
+                temperatureCompliant,
+                temperatureViolations + " violation(s)"
+        ));
+        checks.add(new SlaCheckResult(
+                "Downtime",
+                "Maximum allowed downtime",
+                allowedDowntimeMinutes + " min / " + days + " day(s)",
+                totalDowntimeMinutes + " min",
+                downtimeCompliant,
+                "Based on monthly SLA of " + monthlyDowntimeSlaMinutes + " min"
+        ));
+        checks.add(new SlaCheckResult(
+                "Response Time",
+                "Technician response time",
+                "<= " + responseSlaMinutes + " min",
+                responseCompliance + "% within SLA",
+                responseCompliant,
+                responseViolations + " incident(s) exceeded response SLA"
+        ));
+        checks.add(new SlaCheckResult(
+                "Maintenance",
+                "Preventive maintenance schedule",
+                "No overdue tasks",
+                totalOverdueMaintenance + " overdue",
+                maintenanceCompliant,
+                "UPS overdue: " + overdueUps + ", Cooling overdue: " + overdueCooling
+        ));
 
-        return incidents.stream()
-                .map(i -> i.getRepairCost() != null ? i.getRepairCost() : BigDecimal.ZERO)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
+        long violatedRules = checks.stream().filter(check -> !check.isCompliant()).count();
+        long compliantRules = checks.size() - violatedRules;
 
-    private Integer calculateTotalDowntime(LocalDateTime start, LocalDateTime end, List<Long> userIds) {
-        Integer totalDowntime = incidentRepository.sumDowntimeMinutes(start, end);
-        return totalDowntime != null ? totalDowntime : 0;
-    }
-
-    private BigDecimal calculateDowntimeCost(Integer downtimeMinutes, BigDecimal costPerHourLoss) {
-        if (downtimeMinutes == null || downtimeMinutes == 0) {
-            return BigDecimal.ZERO;
-        }
-        double downtimeHours = downtimeMinutes / 60.0;
-        return costPerHourLoss.multiply(BigDecimal.valueOf(downtimeHours));
-    }
-
-    private BigDecimal calculateMaintenanceCostPerHour(BigDecimal totalMaintenanceCost) {
-        if (totalMaintenanceCost == null || totalMaintenanceCost.compareTo(BigDecimal.ZERO) == 0) {
-            return BigDecimal.ZERO;
-        }
-        return totalMaintenanceCost.divide(BigDecimal.valueOf(24), 2, java.math.RoundingMode.HALF_UP);
-    }
-
-    private int countIncidents(LocalDateTime start, LocalDateTime end, List<Long> userIds) {
-        List<Incident> incidents = incidentRepository.findByCreatedAtBetween(start, end);
-
-        if (!userIds.isEmpty()) {
-            incidents = incidents.stream()
-                    .filter(i -> (i.getReportedBy() != null && userIds.contains(i.getReportedBy().getUserId())) ||
-                                 (i.getAssignedTo() != null && userIds.contains(i.getAssignedTo().getUserId())))
-                    .collect(Collectors.toList());
-        }
-
-        return incidents.size();
-    }
-
-    private int countMaintenanceEvents(LocalDateTime start, LocalDateTime end, List<Long> userIds) {
-        List<UpsMaintenance> upsMaint = upsMaintenanceRepository.findAll().stream()
-                .filter(m -> m.getMaintenanceDate() != null && 
-                        !m.getMaintenanceDate().isBefore(start.toLocalDate()) && 
-                        !m.getMaintenanceDate().isAfter(end.toLocalDate()))
-                .collect(Collectors.toList());
-
-        List<CoolingMaintenance> coolingMaint = coolingMaintenanceRepository.findAll().stream()
-                .filter(m -> m.getMaintenanceDate() != null && 
-                        !m.getMaintenanceDate().isBefore(start.toLocalDate()) && 
-                        !m.getMaintenanceDate().isAfter(end.toLocalDate()))
-                .collect(Collectors.toList());
-
-        return upsMaint.size() + coolingMaint.size();
-    }
-
-    /**
-     * Get cost analysis report for a specific date
-     */
-    public Optional<CostAnalysisReport> getCostAnalysisReport(LocalDate date) {
-        return costAnalysisReportRepository.findByReportDate(date);
-    }
-
-    /**
-     * Get cost analysis report for a branch and date
-     */
-    public Optional<CostAnalysisReport> getCostAnalysisReport(String branch, LocalDate date) {
-        return costAnalysisReportRepository.findByBranchAndReportDate(branch, date);
-    }
-
-    /**
-     * Get cost analysis reports in a date range
-     */
-    public List<CostAnalysisReport> getCostAnalysisReportsInRange(LocalDate start, LocalDate end) {
-        return costAnalysisReportRepository.findByReportDateBetweenOrderByReportDateDesc(start, end);
-    }
-
-    /**
-     * Get cost analysis reports for a branch in a date range
-     */
-    public List<CostAnalysisReport> getCostAnalysisReportsInRange(String branch, LocalDate start, LocalDate end) {
-        return costAnalysisReportRepository.findByBranchAndReportDateBetweenOrderByReportDateDesc(branch, start, end);
+        return new SlaComplianceSummary(
+                days,
+                reports.size(),
+                availabilityCompliance,
+                downtimeTrend,
+                totalDowntimeMinutes,
+                allowedDowntimeMinutes,
+                maxTemperature,
+                temperatureReadings.size(),
+                temperatureViolations,
+                incidentsEvaluated,
+                responseViolations,
+                responseCompliance,
+                totalOverdueMaintenance,
+                compliantRules,
+                violatedRules,
+                                availabilityTargetPercent,
+                                temperatureSlaMaxC,
+                                responseSlaMinutes,
+                                monthlyDowntimeSlaMinutes,
+                checks
+        );
     }
 }
