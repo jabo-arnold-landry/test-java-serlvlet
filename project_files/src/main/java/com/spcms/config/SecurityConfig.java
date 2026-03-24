@@ -66,11 +66,11 @@ public class SecurityConfig {
                 // User management - ADMIN only
                 .requestMatchers(new AntPathRequestMatcher("/users/**")).hasRole("ADMIN")
 
-                // Visitor approval - MANAGER or ADMIN
+                // Visitor approval - TECHNICIAN, MANAGER, or ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/visitors/approve/**"),
                     new AntPathRequestMatcher("/visitors/reject/**")
-                ).hasAnyRole("MANAGER", "ADMIN")
+                ).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
 
                 // Reports generation - MANAGER or ADMIN
                 .requestMatchers(
