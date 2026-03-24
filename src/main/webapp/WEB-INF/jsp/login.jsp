@@ -6,241 +6,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPCMS - Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-primary: #0a0f1e;
-            --bg-secondary: #111827;
-            --border-color: rgba(255,255,255,0.08);
-            --accent-blue: #3b82f6;
-            --accent-green: #10b981;
-            --text-primary: #f1f5f9;
-            --text-muted: #94a3b8;
-        }
-        * { box-sizing: border-box; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            background: #0c1121;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image:
-                radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(16,185,129,0.06) 0%, transparent 50%);
         }
-        .login-container {
+
+        .login-wrapper {
             width: 100%;
-            max-width: 440px;
+            max-width: 380px;
             padding: 20px;
-        }
-        .login-brand {
             text-align: center;
-            margin-bottom: 32px;
         }
-        .login-brand .logo {
-            width: 56px; height: 56px;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+
+        .logo-icon {
+            width: 56px;
+            height: 56px;
             border-radius: 16px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            margin-bottom: 16px;
-            box-shadow: 0 0 30px rgba(59,130,246,0.3);
+            margin-bottom: 14px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(33, 150, 243, 0.3);
         }
-        .login-brand h4 {
-            font-weight: 700;
-            font-size: 22px;
-            margin: 0 0 4px 0;
+
+        .logo-icon svg {
+            width: 56px;
+            height: 56px;
         }
-        .login-brand p {
-            color: var(--text-muted);
+
+        .brand-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .brand-sub {
             font-size: 13px;
-            margin: 0;
+            color: #5b6785;
+            margin-bottom: 24px;
         }
+
         .login-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+            background: #131929;
             border-radius: 16px;
-            padding: 32px;
+            padding: 24px 24px 28px;
+            text-align: left;
         }
-        .form-label {
-            color: var(--text-muted);
+
+        .alert {
+            border-radius: 8px;
+            font-size: 12px;
+            padding: 9px 12px;
+            margin-bottom: 16px;
+        }
+        .alert-danger  { background: rgba(239,68,68,0.1);  border: 1px solid rgba(239,68,68,0.25);  color: #f87171; }
+        .alert-success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #34d399; }
+        .alert-warning { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); color: #fbbf24; }
+
+        .field-group { margin-bottom: 16px; }
+
+        .field-label {
+            display: block;
             font-size: 13px;
             font-weight: 500;
+            color: #c9d1e0;
             margin-bottom: 6px;
         }
-        .form-control {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
+
+        .field-input {
+            width: 100%;
+            background: #0d1322;
+            border: 1.5px solid #1e2a40;
             border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 14px;
+            padding: 11px 14px;
+            font-size: 13px;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
             transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .form-control:focus {
-            background: rgba(255,255,255,0.06);
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-            color: var(--text-primary);
             outline: none;
         }
-        .form-control::placeholder { color: var(--text-muted); }
-        .input-group-text {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border-color);
-            border-right: none;
-            color: var(--text-muted);
-            border-radius: 10px 0 0 10px;
+
+        .field-input::placeholder { color: #3a4a65; }
+
+        .field-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
         }
-        .input-group .form-control {
-            border-left: none;
-            border-radius: 0 10px 10px 0;
-        }
-        .btn-login {
+
+        .btn-signin {
             width: 100%;
-            background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+            background: linear-gradient(135deg, #4d8ef9 0%, #2563eb 100%);
             border: none;
-            color: white;
-            font-weight: 600;
-            padding: 12px;
             border-radius: 10px;
+            padding: 13px;
             font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
             cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.2s;
-            margin-top: 8px;
+            font-family: 'Inter', sans-serif;
+            margin-top: 6px;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
         }
-        .btn-login:hover {
+
+        .btn-signin:hover {
+            opacity: 0.9;
             transform: translateY(-1px);
-            box-shadow: 0 6px 24px rgba(59,130,246,0.35);
+            box-shadow: 0 6px 22px rgba(59,130,246,0.38);
         }
-        .btn-login:active { transform: translateY(0); }
-        .alert {
-            border-radius: 10px;
-            font-size: 13px;
-            padding: 10px 14px;
-            margin-bottom: 16px;
-        }
-        .alert-danger {
-            background: rgba(239,68,68,0.08);
-            border: 1px solid rgba(239,68,68,0.25);
-            color: #f87171;
-        }
-        .alert-success {
-            background: rgba(16,185,129,0.08);
-            border: 1px solid rgba(16,185,129,0.25);
-            color: #34d399;
-        }
-        .alert-warning {
-            background: rgba(245,158,11,0.08);
-            border: 1px solid rgba(245,158,11,0.25);
-            color: #fbbf24;
-        }
-        .role-badges {
-            display: flex;
-            gap: 6px;
-            justify-content: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        .role-badge {
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.06);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-        }
-        .divider {
-            text-align: center;
-            position: relative;
-            margin: 20px 0 16px;
-            color: var(--text-muted);
-            font-size: 12px;
-        }
-        .divider::before, .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 38%;
-            height: 1px;
-            background: var(--border-color);
-        }
-        .divider::before { left: 0; }
-        .divider::after { right: 0; }
+
+        .btn-signin:active { transform: translateY(0); }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-brand">
-            <div class="logo">⚡</div>
-            <h4>SmartPower &amp; Cooling</h4>
-            <p>Management System — SPCMS v1.0</p>
+    <div class="login-wrapper">
+        <div class="logo-icon">
+            <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="bgGrad" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#2196f3"/>
+                        <stop offset="45%" stop-color="#1e88e5"/>
+                        <stop offset="100%" stop-color="#ff6d00"/>
+                    </linearGradient>
+                </defs>
+                <!-- Background rounded rect -->
+                <rect width="56" height="56" rx="14" fill="url(#bgGrad)"/>
+                <!-- Lightning bolt -->
+                <polygon points="31,10 18,30 27,30 25,46 38,26 29,26" fill="white" opacity="0.97"/>
+            </svg>
         </div>
+        <h1 class="brand-title">SmartPower &amp; Cooling</h1>
+        <p class="brand-sub">Management System - SPCMS v1.0</p>
 
         <div class="login-card">
             <c:if test="${param.error != null}">
-                <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-circle"></i>
-                    Invalid username or password. Please try again.
-                </div>
+                <div class="alert alert-danger">Invalid username or password. Please try again.</div>
             </c:if>
             <c:if test="${param.logout != null}">
-                <div class="alert alert-success">
-                    <i class="bi bi-check-circle"></i>
-                    You have been successfully logged out.
-                </div>
+                <div class="alert alert-success">You have been successfully logged out.</div>
             </c:if>
             <c:if test="${param.expired != null}">
-                <div class="alert alert-warning">
-                    <i class="bi bi-clock"></i>
-                    Your session has expired. Please log in again.
-                </div>
+                <div class="alert alert-warning">Your session has expired. Please log in again.</div>
             </c:if>
 
             <form action="${pageContext.request.contextPath}/perform_login" method="post">
-                <%-- CSRF token for Spring Security --%>
                 <c:if test="${not empty _csrf}">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </c:if>
 
-                <div class="mb-3">
-                    <label class="form-label">Username</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person"></i></span>
-                        <input type="text" class="form-control" name="username"
-                               placeholder="Enter your username" required autofocus>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" name="password"
-                               placeholder="Enter your password" required>
-                    </div>
+                <div class="field-group">
+                    <label class="field-label" for="username">Username</label>
+                    <input id="username" type="text" class="field-input" name="username"
+                           placeholder="Enter your username" required autofocus>
                 </div>
 
-                <button type="submit" class="btn-login">
-                    <i class="bi bi-box-arrow-in-right"></i> Sign In
-                </button>
+                <div class="field-group">
+                    <label class="field-label" for="password">Password</label>
+                    <input id="password" type="password" class="field-input" name="password"
+                           placeholder="Enter your password" required>
+                </div>
 
+                <button type="submit" class="btn-signin">Sign In</button>
             </form>
-
-            <div class="divider">Authorized Access Only</div>
-            <div class="role-badges">
-                <span class="role-badge">🛡 Admin</span>
-                <span class="role-badge">👮 Security</span>
-                <span class="role-badge">👷 Technician</span>
-                <span class="role-badge">📊 Manager</span>
-            </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "cooling_maintenance")
@@ -27,15 +28,19 @@ public class CoolingMaintenance {
     private MaintenanceType maintenanceType;
 
     @Column(name = "maintenance_date", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate maintenanceDate;
 
     @Column(name = "filter_cleaning_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate filterCleaningDate;
 
     @Column(name = "gas_refill_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate gasRefillDate;
 
     @Column(name = "next_maintenance_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate nextMaintenanceDate;
 
     @Column(length = 100)

@@ -24,4 +24,11 @@
     .table-container .table td { padding:12px 16px;font-size:14px;vertical-align:middle; }
     .user-avatar { width:35px;height:35px;border-radius:50%;background:linear-gradient(135deg,var(--accent-blue),#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:14px; }
     @media (max-width:768px) { .sidebar{transform:translateX(-100%);} .topbar{left:0;} .main-content{margin-left:0;} }
+    @media print {
+        .sidebar, .topbar, .btn { display: none !important; }
+        .main-content { margin: 0 !important; padding: 0 !important; }
+        .table-container { border: none !important; box-shadow: none !important; }
+        body { background: #fff !important; }
+        @page { size: landscape; margin: 10mm; }
+    }
 </style>

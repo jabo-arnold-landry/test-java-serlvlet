@@ -1,6 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="org.springframework.context.ApplicationContext" %>
+<%@ page import="com.spcms.repositories.UpsMaintenanceRepository" %>
+<%@ page import="com.spcms.repositories.CoolingMaintenanceRepository" %>
+<%@ page import="org.springframework.data.domain.Sort" %>
+<%
+    ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+    UpsMaintenanceRepository upsRepo = ctx.getBean(UpsMaintenanceRepository.class);
+    CoolingMaintenanceRepository coolRepo = ctx.getBean(CoolingMaintenanceRepository.class);
+    request.setAttribute("allUpsMaintenance", upsRepo.findAll(Sort.by(Sort.Direction.DESC, "maintenanceDate")));
+    request.setAttribute("allCoolingMaintenance", coolRepo.findAll(Sort.by(Sort.Direction.DESC, "maintenanceDate")));
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,11 +27,12 @@
     <jsp:include page="../common/topbar.jsp"/>
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <div><h4 style="font-weight:700;margin:0;">Maintenance Scheduler</h4></div>
+            <div><h4 style="font-weight:700;margin:0;">Maintenance Schedule Report</h4></div>
             <div>
                 <a href="${pageContext.request.contextPath}/maintenance/ups/new" class="btn btn-outline-primary shadow-sm me-2"><i class="bi bi-battery-charging"></i> Log UPS Maint</a>
                 <a href="${pageContext.request.contextPath}/maintenance/cooling/new" class="btn btn-outline-info shadow-sm me-2"><i class="bi bi-snow2"></i> Log Cooling Maint</a>
-                <a href="${pageContext.request.contextPath}/maintenance/cost-analysis" class="btn btn-outline-success shadow-sm"><i class="bi bi-graph-up"></i> Cost Analysis & Report</a>
+                <a href="${pageContext.request.contextPath}/maintenance/cost-analysis" class="btn btn-outline-success shadow-sm me-2"><i class="bi bi-graph-up"></i> Cost Analysis & Report</a>
+                <button onclick="window.print()" class="btn btn-secondary shadow-sm"><i class="bi bi-printer"></i> Generate Report</button>
             </div>
         </div>
 
@@ -30,7 +43,7 @@
                     <tr><th>UPS ID</th><th>Type</th><th>Maintenance Date</th><th>Next Due Date</th><th>Technician</th><th>Vendor</th><th>Cost (RWF)</th></tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="m" items="${overdueUps}">
+                    <c:forEach var="m" items="${allUpsMaintenance}">
                     <tr class="table-warning">
                         <td><strong>${m.ups.assetTag}</strong></td>
                         <td>${m.maintenanceType}</td>
@@ -41,8 +54,8 @@
                         <td><fmt:formatNumber value="${m.maintenanceCost}" type="number" minFractionDigits="2"/></td>
                     </tr>
                     </c:forEach>
-                    <c:if test="${empty overdueUps}">
-                        <tr><td colspan="7" class="text-center text-muted">No overdue UPS maintenance.</td></tr>
+                    <c:if test="${empty allUpsMaintenance}">
+                        <tr><td colspan="7" class="text-center text-muted">No UPS maintenance records found.</td></tr>
                     </c:if>
                 </tbody>
             </table>
