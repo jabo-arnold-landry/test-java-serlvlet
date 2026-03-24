@@ -37,6 +37,13 @@
                     <div class="stat-label">Location</div>
                     <div style="font-size:16px;font-weight:600;margin-top:8px;">${equipment.rackNumber} - ${equipment.rackUnitPosition}</div>
                     <div class="text-muted" style="font-size:12px;">${equipment.dataCenterName} / ${equipment.roomName}</div>
+                    <c:if test="${not empty equipment.googleMapsLocation}">
+                        <div class="mt-2">
+                            <a href="${equipment.googleMapsLocation}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-geo-alt"></i> Open Google Map
+                            </a>
+                        </div>
+                    </c:if>
                 </div>
             </div>
             <div class="col-md-3">
