@@ -91,7 +91,8 @@ public class SecurityConfig {
                 .requestMatchers(
                     new AntPathRequestMatcher("/reports/generate/**"),
                     new AntPathRequestMatcher("/reports/downtime-trend/**"),
-                    new AntPathRequestMatcher("/reports/project/**")
+                    new AntPathRequestMatcher("/reports/project/**"),
+                    new AntPathRequestMatcher("/reports/sla-compliance/**")
                 ).hasAnyRole("MANAGER", "ADMIN")
 
                 // Maintenance - TECHNICIAN, MANAGER, ADMIN

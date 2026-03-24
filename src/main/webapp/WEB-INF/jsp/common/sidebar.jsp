@@ -63,7 +63,9 @@
         </sec:authorize>
 
         <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
-            <div class="nav-section-label">Reports</div>
+            <div class="nav-section-label">Reporting &amp; Analysis</div>
+            <a href="${pageContext.request.contextPath}/reports/sla-compliance" class="nav-link"><i class="bi bi-clipboard-data"></i> Monitor SLA compliance</a>
+            <a href="${pageContext.request.contextPath}/reports/downtime-trend" class="nav-link"><i class="bi bi-graph-up-arrow"></i> Trends Dashboard</a>
             <a href="${pageContext.request.contextPath}/reports" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Daily Report</a>
             <a href="${pageContext.request.contextPath}/reports/project" class="nav-link"><i class="bi bi-file-earmark-text"></i> Full Project Report</a>
             <a href="${pageContext.request.contextPath}/reports/branch-performance" class="nav-link"><i class="bi bi-diagram-3"></i> Branch Performance</a>
