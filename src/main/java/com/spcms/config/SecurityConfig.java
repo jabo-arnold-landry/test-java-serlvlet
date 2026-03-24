@@ -54,7 +54,8 @@ public class SecurityConfig {
                     new AntPathRequestMatcher("/css/**"),
                     new AntPathRequestMatcher("/js/**"),
                     new AntPathRequestMatcher("/images/**"),
-                    new AntPathRequestMatcher("/webjars/**")
+                    new AntPathRequestMatcher("/webjars/**"),
+                    new AntPathRequestMatcher("/uploads/**")
                 ).permitAll()
 
                 // User management - ADMIN only

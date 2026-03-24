@@ -186,6 +186,12 @@
                                                     <div class="detail-value">${incident.reportedBy != null ?
                                                         incident.reportedBy.fullName : 'N/A'}</div>
                                                 </div>
+                                                <c:if test="${incident.status == 'RESOLVED' || incident.status == 'CLOSED'}">
+                                                    <div class="detail-row">
+                                                        <div class="detail-label">Resolved By</div>
+                                                        <div class="detail-value">${incident.resolvedBy != null ? incident.resolvedBy.fullName : '—'}</div>
+                                                    </div>
+                                                </c:if>
                                                 <div class="detail-row">
                                                     <div class="detail-label">Last Updated</div>
                                                     <div class="detail-value">${incident.updatedAt}</div>
@@ -205,7 +211,7 @@
                                                                             <div
                                                                                 style="font-weight:600;font-size:13px;">
                                                                                 Photo Attachment</div>
-                                                                            <a href="${incident.attachmentPath}"
+                                                                            <a href="${pageContext.request.contextPath}${incident.attachmentPath}"
                                                                                 target="_blank" class="text-primary"
                                                                                 style="font-size:12px;">
                                                                                 <i
@@ -213,9 +219,9 @@
                                                                                 Photo
                                                                             </a>
                                                                         </div>
-                                                                        <a href="${incident.attachmentPath}"
+                                                                        <a href="${pageContext.request.contextPath}${incident.attachmentPath}"
                                                                             target="_blank" class="ms-auto">
-                                                                            <img src="${incident.attachmentPath}"
+                                                                            <img src="${pageContext.request.contextPath}${incident.attachmentPath}"
                                                                                 alt="Attachment preview"
                                                                                 style="max-height:60px;max-width:120px;border-radius:6px;object-fit:cover;"
                                                                                 onerror="this.style.display='none'" />
@@ -228,7 +234,7 @@
                                                                             <div
                                                                                 style="font-weight:600;font-size:13px;">
                                                                                 PDF Report</div>
-                                                                            <a href="${incident.attachmentPath}"
+                                                                            <a href="${pageContext.request.contextPath}${incident.attachmentPath}"
                                                                                 target="_blank" class="text-primary"
                                                                                 style="font-size:12px;">
                                                                                 <i
@@ -244,7 +250,7 @@
                                                                             <div
                                                                                 style="font-weight:600;font-size:13px;">
                                                                                 Document</div>
-                                                                            <a href="${incident.attachmentPath}"
+                                                                            <a href="${pageContext.request.contextPath}${incident.attachmentPath}"
                                                                                 target="_blank" class="text-primary"
                                                                                 style="font-size:12px;">
                                                                                 <i
@@ -264,7 +270,7 @@
                                             <div class="col-md-4">
                                                 <%-- Assign --%>
                                                     <c:if
-                                                        test="${incident.status == 'OPEN' || incident.status == 'IN_PROGRESS'}">
+                                                        test="${(incident.status == 'OPEN' || incident.status == 'IN_PROGRESS') && pageContext.request.isUserInRole('TECHNICIAN')}">
                                                         <div class="stat-card mb-3">
                                                             <h6 class="fw-bold mb-3"><i
                                                                     class="bi bi-person-check me-2"></i>Assign Incident
@@ -273,11 +279,15 @@
                                                                 action="${pageContext.request.contextPath}/incidents/assign/${incident.incidentId}"
                                                                 method="post">
                                                                 <div class="mb-3">
-                                                                    <label class="form-label">Assign to User ID</label>
-                                                                    <input type="number" class="form-control"
-                                                                        name="assigneeId"
-                                                                        value="${incident.assignedTo != null ? incident.assignedTo.userId : ''}"
-                                                                        placeholder="Enter user ID" required />
+                                                                    <label class="form-label">Assign to Technician</label>
+                                                                    <select class="form-select" name="assigneeId" required>
+                                                                        <option value="" disabled ${incident.assignedTo == null ? 'selected' : ''}>Select a technician</option>
+                                                                        <c:forEach var="tech" items="${technicians}">
+                                                                            <option value="${tech.userId}" ${incident.assignedTo != null && incident.assignedTo.userId == tech.userId ? 'selected' : ''}>
+                                                                                ${tech.fullName}
+                                                                            </option>
+                                                                        </c:forEach>
+                                                                    </select>
                                                                 </div>
                                                                 <button type="submit"
                                                                     class="btn btn-primary btn-sm w-100">
@@ -289,14 +299,28 @@
 
                                                     <%-- Resolve --%>
                                                         <c:if
-                                                            test="${incident.status == 'OPEN' || incident.status == 'IN_PROGRESS'}">
+                                                            test="${(incident.status == 'OPEN' || incident.status == 'IN_PROGRESS') && pageContext.request.isUserInRole('TECHNICIAN')}">
                                                             <div class="stat-card mb-3">
                                                                 <h6 class="fw-bold mb-3"><i
-                                                                        class="bi bi-check-circle me-2"></i>Resolve
-                                                                    Incident</h6>
+                                                                        class="bi bi-gear-fill me-2"></i>Update Status</h6>
                                                                 <form
                                                                     action="${pageContext.request.contextPath}/incidents/resolve/${incident.incidentId}"
                                                                     method="post">
+                                                                    <div class="mb-2">
+                                                                        <label class="form-label">Technician (Logger)</label>
+                                                                        <select class="form-select" name="resolverId" required>
+                                                                            <option value="" disabled ${incident.resolvedBy == null ? 'selected' : ''}>Select a technician</option>
+                                                                            <c:forEach var="tech" items="${technicians}">
+                                                                                <option value="${tech.userId}" ${incident.assignedTo != null && incident.assignedTo.userId == tech.userId ? 'selected' : ''}>
+                                                                                    ${tech.fullName}
+                                                                                </option>
+                                                                            </c:forEach>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="mb-2">
+                                                                        <label class="form-label">Downtime Start</label>
+                                                                        <input type="datetime-local" class="form-control" name="downtimeStart" value="${incident.downtimeStart}" required />
+                                                                    </div>
                                                                     <div class="mb-2">
                                                                         <label class="form-label">Root Cause</label>
                                                                         <textarea class="form-control" name="rootCause"
@@ -309,9 +333,17 @@
                                                                             name="actionTaken" rows="2"
                                                                             placeholder="Steps taken...">${incident.actionTaken}</textarea>
                                                                     </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Status</label>
+                                                                        <select class="form-select" name="newStatus" required>
+                                                                            <option value="IN_PROGRESS" ${incident.status == 'IN_PROGRESS' ? 'selected' : ''}>🔵 In Progress</option>
+                                                                            <option value="RESOLVED" ${incident.status == 'RESOLVED' ? 'selected' : ''}>🟢 Resolved</option>
+                                                                            <option value="CLOSED" ${incident.status == 'CLOSED' ? 'selected' : ''}>⚫ Closed</option>
+                                                                        </select>
+                                                                    </div>
                                                                     <button type="submit"
                                                                         class="btn btn-success btn-sm w-100">
-                                                                        <i class="bi bi-check-lg"></i> Mark as Resolved
+                                                                        <i class="bi bi-arrow-clockwise"></i> Update Log
                                                                     </button>
                                                                 </form>
                                                             </div>

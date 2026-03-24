@@ -42,13 +42,17 @@ public class Incident {
     @Column(nullable = false, length = 15)
     private IncidentStatus status = IncidentStatus.OPEN;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "reported_by")
     private User reportedBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_to")
     private User assignedTo;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "resolved_by")
+    private User resolvedBy;
 
     @Column(name = "downtime_start")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")

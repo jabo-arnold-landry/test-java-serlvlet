@@ -130,30 +130,37 @@
                         <input type="number" class="form-control" name="equipmentId"
                                value="${incident.equipmentId}" placeholder="e.g. 101"/>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Status</label>
-                        <select class="form-select" name="status">
-                            <option value="OPEN"        ${incident.status == 'OPEN'        ? 'selected' : ''}>🔴 Open</option>
-                            <option value="IN_PROGRESS" ${incident.status == 'IN_PROGRESS' ? 'selected' : ''}>🔵 In Progress</option>
-                            <option value="RESOLVED"    ${incident.status == 'RESOLVED'    ? 'selected' : ''}>🟢 Resolved</option>
-                            <option value="CLOSED"      ${incident.status == 'CLOSED'      ? 'selected' : ''}>⚫ Closed</option>
-                        </select>
-                    </div>
+                    <c:if test="${isEdit && pageContext.request.isUserInRole('TECHNICIAN')}">
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="status">
+                                <option value="OPEN"        ${incident.status == 'OPEN'        ? 'selected' : ''}>🔴 Open</option>
+                                <option value="IN_PROGRESS" ${incident.status == 'IN_PROGRESS' ? 'selected' : ''}>🔵 In Progress</option>
+                                <option value="RESOLVED"    ${incident.status == 'RESOLVED'    ? 'selected' : ''}>🟢 Resolved</option>
+                                <option value="CLOSED"      ${incident.status == 'CLOSED'      ? 'selected' : ''}>⚫ Closed</option>
+                            </select>
+                        </div>
+                    </c:if>
+                    <c:if test="${!isEdit || !pageContext.request.isUserInRole('TECHNICIAN')}">
+                        <input type="hidden" name="status" value="${incident.status != null ? incident.status : 'OPEN'}" />
+                    </c:if>
                     <div class="col-12">
                         <label class="form-label">Description</label>
                         <textarea class="form-control" name="description" rows="3"
                                   placeholder="Detailed description of the incident, symptoms, and impact...">${incident.description}</textarea>
                     </div>
-                    <div class="col-12">
-                        <label class="form-label">Root Cause</label>
-                        <textarea class="form-control" name="rootCause" rows="2"
-                                  placeholder="Known or suspected root cause...">${incident.rootCause}</textarea>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Action Taken</label>
-                        <textarea class="form-control" name="actionTaken" rows="2"
-                                  placeholder="Steps taken to resolve or mitigate the incident...">${incident.actionTaken}</textarea>
-                    </div>
+                    <c:if test="${isEdit && pageContext.request.isUserInRole('TECHNICIAN')}">
+                        <div class="col-12">
+                            <label class="form-label">Root Cause</label>
+                            <textarea class="form-control" name="rootCause" rows="2"
+                                      placeholder="Known or suspected root cause...">${incident.rootCause}</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Action Taken</label>
+                            <textarea class="form-control" name="actionTaken" rows="2"
+                                      placeholder="Steps taken to resolve or mitigate the incident...">${incident.actionTaken}</textarea>
+                        </div>
+                    </c:if>
                 </div>
 
                 <%-- ===== DOWNTIME TRACKING ===== --%>
@@ -189,7 +196,7 @@
                             <i class="bi bi-file-earmark-check text-success fs-5"></i>
                             <div>
                                 <div style="font-weight:600;">Current Attachment</div>
-                                <a href="${incident.attachmentPath}" target="_blank" class="text-primary" style="font-size:12px;">
+                                <a href="${pageContext.request.contextPath}${incident.attachmentPath}" target="_blank" class="text-primary" style="font-size:12px;">
                                     ${incident.attachmentPath}
                                 </a>
                             </div>

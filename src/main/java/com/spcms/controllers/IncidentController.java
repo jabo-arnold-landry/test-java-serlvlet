@@ -2,6 +2,8 @@ package com.spcms.controllers;
 
 import com.spcms.models.Incident;
 import com.spcms.services.IncidentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -24,8 +26,12 @@ import java.util.UUID;
 @RequestMapping("/incidents")
 public class IncidentController {
 
+    private static final Logger log = LoggerFactory.getLogger(IncidentController.class);
     @Autowired
     private IncidentService incidentService;
+
+    @Autowired
+    private com.spcms.services.UserService userService;
 
     @Value("${file.upload-dir:./uploads}")
     private String uploadDir;
@@ -111,10 +117,15 @@ public class IncidentController {
         }
         
         try {
+            log.info("Saving incident - title: {}, hasAttachment: {}",
+                    incident.getTitle(),
+                    (attachmentFile != null && !attachmentFile.isEmpty()));
             handleFileUpload(attachmentFile, incident);
+            log.info("Before save - attachmentPath: {}", incident.getAttachmentPath());
             incidentService.logIncident(incident);
             redirectAttributes.addFlashAttribute("success", "Incident logged successfully!");
         } catch (Exception e) {
+            log.error("Error saving incident: {}", e.getMessage(), e);
             redirectAttributes.addFlashAttribute("error", "Error saving incident: " + e.getMessage());
         }
         return "redirect:/incidents";
@@ -126,6 +137,7 @@ public class IncidentController {
     public String view(@PathVariable Long id, Model model) {
         model.addAttribute("incident", incidentService.getIncidentById(id)
                 .orElseThrow(() -> new RuntimeException("Incident not found")));
+        model.addAttribute("technicians", userService.getUsersByRole(com.spcms.models.User.Role.TECHNICIAN));
         return "incidents/view";
     }
 
@@ -188,16 +200,39 @@ public class IncidentController {
     public String resolve(@PathVariable Long id,
             @RequestParam String rootCause,
             @RequestParam String actionTaken,
-            RedirectAttributes redirectAttributes) {
-        incidentService.resolveIncident(id, rootCause, actionTaken);
-        redirectAttributes.addFlashAttribute("success", "Incident resolved successfully!");
+            @RequestParam(required = false) Long resolverId,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime downtimeStart,
+            @RequestParam(required = false) Incident.IncidentStatus newStatus,
+            RedirectAttributes redirectAttributes,
+            jakarta.servlet.http.HttpServletRequest request,
+            java.security.Principal principal) {
+        if (!request.isUserInRole("TECHNICIAN")) {
+            redirectAttributes.addFlashAttribute("error", "Only technicians can resolve incidents.");
+            return "redirect:/incidents/view/" + id;
+        }
+        com.spcms.models.User resolver;
+        if (resolverId != null) {
+            resolver = userService.getUserById(resolverId).orElse(null);
+        } else {
+            resolver = userService.getUserByUsername(principal.getName())
+                    .orElseThrow(() -> new RuntimeException("Resolver missing"));
+        }
+        
+        Long finalResolverId = (resolver != null) ? resolver.getUserId() : null;
+        incidentService.resolveIncident(id, rootCause, actionTaken, finalResolverId, downtimeStart, newStatus);
+        redirectAttributes.addFlashAttribute("success", "Incident status updated successfully!");
         return "redirect:/incidents/view/" + id;
     }
 
     @PostMapping("/assign/{id}")
     public String assign(@PathVariable Long id,
             @RequestParam Long assigneeId,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            jakarta.servlet.http.HttpServletRequest request) {
+        if (!request.isUserInRole("TECHNICIAN")) {
+            redirectAttributes.addFlashAttribute("error", "Only technicians can assign incidents.");
+            return "redirect:/incidents/view/" + id;
+        }
         incidentService.assignIncident(id, assigneeId);
         redirectAttributes.addFlashAttribute("success", "Incident assigned successfully!");
         return "redirect:/incidents/view/" + id;
@@ -206,20 +241,34 @@ public class IncidentController {
     // ==================== HELPER ====================
 
     private void handleFileUpload(MultipartFile file, Incident incident) {
-        if (file == null || file.isEmpty())
+        if (file == null || file.isEmpty()) {
+            log.debug("No attachment file provided or file is empty");
             return;
+        }
         try {
-            Path uploadPath = Paths.get(uploadDir, "incidents");
+            log.info("Uploading file: {} (size: {} bytes, type: {})",
+                    file.getOriginalFilename(), file.getSize(), file.getContentType());
+
+            // Resolve to absolute path so it works with external Tomcat
+            Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize().resolve("incidents");
             Files.createDirectories(uploadPath);
+            log.info("Upload directory resolved to: {}", uploadPath);
+
             String originalName = file.getOriginalFilename();
             String ext = (originalName != null && originalName.contains("."))
                     ? originalName.substring(originalName.lastIndexOf("."))
                     : "";
             String fileName = UUID.randomUUID() + ext;
             Path filePath = uploadPath.resolve(fileName);
-            file.transferTo(filePath.toFile());
-            incident.setAttachmentPath("/uploads/incidents/" + fileName);
+
+            // Use Files.copy for more reliable file transfer
+            Files.copy(file.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+            String attachmentUrl = "/uploads/incidents/" + fileName;
+            incident.setAttachmentPath(attachmentUrl);
+            log.info("File uploaded successfully: {} -> DB path: {}", filePath, attachmentUrl);
         } catch (IOException e) {
+            log.error("Failed to upload file: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to upload file: " + e.getMessage(), e);
         }
     }

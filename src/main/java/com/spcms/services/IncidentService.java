@@ -64,18 +64,39 @@ public class IncidentService {
         return incidentRepository.save(incident);
     }
 
-    public Incident resolveIncident(Long incidentId, String rootCause, String actionTaken) {
+    public Incident resolveIncident(Long incidentId, String rootCause, String actionTaken, Long resolverId, LocalDateTime downtimeStart, Incident.IncidentStatus status) {
         Incident incident = incidentRepository.findById(incidentId)
                 .orElseThrow(() -> new RuntimeException("Incident not found: " + incidentId));
-        incident.setStatus(Incident.IncidentStatus.RESOLVED);
+        
+        if (status != null) {
+            incident.setStatus(status);
+        } else {
+            incident.setStatus(Incident.IncidentStatus.RESOLVED);
+        }
+
         incident.setRootCause(rootCause);
         incident.setActionTaken(actionTaken);
-        incident.setDowntimeEnd(LocalDateTime.now());
+        
+        if (downtimeStart != null) {
+            incident.setDowntimeStart(downtimeStart);
+        }
+
+        if (incident.getStatus() == Incident.IncidentStatus.RESOLVED || incident.getStatus() == Incident.IncidentStatus.CLOSED) {
+            if (incident.getDowntimeEnd() == null) {
+                incident.setDowntimeEnd(LocalDateTime.now());
+            }
+        }
+
+        if (resolverId != null) {
+            var resolver = new com.spcms.models.User();
+            resolver.setUserId(resolverId);
+            incident.setResolvedBy(resolver);
+        }
 
         // Calculate downtime
-        if (incident.getDowntimeStart() != null) {
+        if (incident.getDowntimeStart() != null && incident.getDowntimeEnd() != null) {
             long minutes = ChronoUnit.MINUTES.between(incident.getDowntimeStart(), incident.getDowntimeEnd());
-            incident.setDowntimeMinutes((int) minutes);
+            incident.setDowntimeMinutes((int) Math.max(0, minutes));
         }
 
         return incidentRepository.save(incident);

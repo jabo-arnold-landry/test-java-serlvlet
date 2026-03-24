@@ -219,6 +219,7 @@
                                             <th>Type</th>
                                             <th>Severity</th>
                                             <th>Status</th>
+                                            <th>Resolved By</th>
                                             <th>Downtime</th>
                                         </tr>
                                     </thead>
@@ -253,6 +254,7 @@
                                                         ${inc.status}
                                                     </span>
                                                 </td>
+                                                <td>${inc.resolvedBy != null ? inc.resolvedBy.fullName : '—'}</td>
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${inc.downtimeMinutes != null}">
@@ -353,6 +355,7 @@
                                             <th>Severity</th>
                                             <th>Root Cause</th>
                                             <th>Action Taken</th>
+                                             <th>Resolved By</th>
                                             <th>Downtime</th>
                                         </tr>
                                     </thead>
@@ -389,7 +392,8 @@
                                                         ${not empty inc.actionTaken ? inc.actionTaken : '—'}
                                                     </span>
                                                 </td>
-                                                <td>
+                                                <td>${inc.resolvedBy != null ? inc.resolvedBy.fullName : '—'}</td>
+                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${inc.downtimeMinutes != null}">
                                                             <strong class="text-success">${inc.downtimeMinutes}</strong>

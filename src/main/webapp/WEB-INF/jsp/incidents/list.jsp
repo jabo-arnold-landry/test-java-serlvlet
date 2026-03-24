@@ -74,6 +74,7 @@
                                         <th>Type</th>
                                         <th>Severity</th>
                                         <th>Status</th>
+                                        <th>Resolved By</th>
                                         <th>Downtime (min)</th>
                                         <th>Attachment</th>
                                         <th>Actions</th>
@@ -107,6 +108,7 @@
                                                     ${inc.status}
                                                 </span>
                                             </td>
+                                            <td>${inc.resolvedBy != null ? inc.resolvedBy.fullName : '—'}</td>
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${inc.downtimeMinutes != null}">
@@ -119,7 +121,7 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${not empty inc.attachmentPath}">
-                                                        <a href="${inc.attachmentPath}" target="_blank"
+                                                        <a href="${pageContext.request.contextPath}${inc.attachmentPath}" target="_blank"
                                                             class="btn btn-sm btn-outline-secondary"
                                                             title="View Attachment">
                                                             <i class="bi bi-paperclip"></i>
