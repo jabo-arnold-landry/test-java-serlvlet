@@ -1,8 +1,13 @@
 package com.spcms.services;
 
+import com.spcms.dto.EquipmentHealthRow;
+import com.spcms.dto.MaintenanceHistoryRow;
+import com.spcms.models.CoolingMaintenance;
 import com.spcms.models.DailyConsolidatedReport;
-import com.spcms.models.MonitoringLog;
+import com.spcms.models.Equipment;
 import com.spcms.models.Incident;
+import com.spcms.models.MonitoringLog;
+import com.spcms.models.UpsMaintenance;
 import com.spcms.repositories.*;
 import com.spcms.util.ReportCalculationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -44,8 +52,19 @@ public class ReportService {
 
         @Autowired
         private VisitorCheckInOutRepository visitorCheckInOutRepository;
+    @Autowired
+    private VisitorCheckInOutRepository visitorCheckInOutRepository;
 
-        // ==================== Daily Consolidated Report ====================
+    @Autowired
+    private EquipmentRepository equipmentRepository;
+
+    @Autowired
+    private UpsMaintenanceRepository upsMaintenanceRepository;
+
+    @Autowired
+    private CoolingMaintenanceRepository coolingMaintenanceRepository;
+
+    // ==================== Daily Consolidated Report ====================
 
         /**
          * Generate or retrieve the daily consolidated report for a given date.
@@ -176,10 +195,149 @@ public class ReportService {
 
         // ==================== Load Trend ====================
 
-        /**
-         * Get average daily load for a date range (for graphing UPS Load Trend).
-         */
-        public List<DailyConsolidatedReport> getLoadTrend(LocalDate start, LocalDate end) {
-                return dailyReportRepository.findByReportDateBetweenOrderByReportDateDesc(start, end);
+    /**
+     * Get average daily load for a date range (for graphing UPS Load Trend).
+     */
+    public List<DailyConsolidatedReport> getLoadTrend(LocalDate start, LocalDate end) {
+        return dailyReportRepository.findByReportDateBetweenOrderByReportDateDesc(start, end);
+    }
+
+    // ==================== Equipment Health Report ====================
+
+    public List<EquipmentHealthRow> getEquipmentHealthReport(LocalDate asOfDate) {
+        LocalDate today = asOfDate != null ? asOfDate : LocalDate.now();
+        LocalDateTime incidentStart = today.minusDays(30).atStartOfDay();
+        LocalDateTime incidentEnd = today.atTime(LocalTime.MAX);
+
+        List<Equipment> equipment = equipmentRepository.findAll();
+        List<EquipmentHealthRow> rows = new ArrayList<>(equipment.size());
+
+        for (Equipment e : equipment) {
+            boolean maintenanceOverdue = isDateBefore(e.getNextMaintenanceDue(), today);
+            boolean warrantyExpired = isDateBefore(e.getWarrantyExpiryDate(), today);
+            boolean warrantyExpiring = isDateWithin(e.getWarrantyExpiryDate(), today, 30);
+            boolean endOfLife = isDateBefore(e.getEndOfLife(), today);
+            boolean endOfLifeSoon = isDateWithin(e.getEndOfLife(), today, 90);
+
+            long incidentsLast30Days = 0;
+            if (e.getEquipmentId() != null) {
+                Long count = incidentRepository.countByEquipmentTypeAndEquipmentIdAndCreatedAtBetween(
+                        Incident.EquipmentType.OTHER, e.getEquipmentId(), incidentStart, incidentEnd);
+                incidentsLast30Days = count != null ? count : 0;
+            }
+
+            String healthStatus = deriveEquipmentHealthStatus(
+                    e.getMaintenanceStatus(), maintenanceOverdue, warrantyExpired, endOfLife, incidentsLast30Days);
+
+            rows.add(new EquipmentHealthRow(
+                    e,
+                    healthStatus,
+                    maintenanceOverdue,
+                    warrantyExpired,
+                    warrantyExpiring,
+                    endOfLife,
+                    endOfLifeSoon,
+                    incidentsLast30Days,
+                    daysBetween(today, e.getNextMaintenanceDue()),
+                    daysBetween(today, e.getWarrantyExpiryDate()),
+                    daysBetween(today, e.getEndOfLife())
+            ));
         }
+
+        rows.sort(Comparator
+                .comparingInt(this::healthRank)
+                .thenComparing(r -> r.getEquipment().getEquipmentName() != null ? r.getEquipment().getEquipmentName() : ""));
+        return rows;
+    }
+
+    // ==================== Maintenance History Report ====================
+
+    public List<MaintenanceHistoryRow> getMaintenanceHistory(LocalDate start, LocalDate end) {
+        LocalDate startDate = start != null ? start : LocalDate.now().minusDays(30);
+        LocalDate endDate = end != null ? end : LocalDate.now();
+        if (startDate.isAfter(endDate)) {
+            LocalDate tmp = startDate;
+            startDate = endDate;
+            endDate = tmp;
+        }
+
+        List<MaintenanceHistoryRow> rows = new ArrayList<>();
+
+        for (UpsMaintenance m : upsMaintenanceRepository.findByMaintenanceDateBetween(startDate, endDate)) {
+            String assetTag = m.getUps() != null ? m.getUps().getAssetTag() : "Unknown";
+            String assetName = m.getUps() != null ? m.getUps().getUpsName() : "Unknown";
+            rows.add(new MaintenanceHistoryRow(
+                    "UPS",
+                    assetTag,
+                    assetName,
+                    m.getMaintenanceType() != null ? m.getMaintenanceType().name() : "N/A",
+                    m.getMaintenanceDate(),
+                    m.getNextDueDate(),
+                    m.getTechnician(),
+                    m.getVendor(),
+                    m.getRemarks()
+            ));
+        }
+
+        for (CoolingMaintenance m : coolingMaintenanceRepository.findByMaintenanceDateBetween(startDate, endDate)) {
+            String assetTag = m.getCoolingUnit() != null ? m.getCoolingUnit().getAssetTag() : "Unknown";
+            String assetName = m.getCoolingUnit() != null ? m.getCoolingUnit().getUnitName() : "Unknown";
+            rows.add(new MaintenanceHistoryRow(
+                    "Cooling",
+                    assetTag,
+                    assetName,
+                    m.getMaintenanceType() != null ? m.getMaintenanceType().name() : "N/A",
+                    m.getMaintenanceDate(),
+                    m.getNextMaintenanceDate(),
+                    m.getTechnician(),
+                    m.getVendor(),
+                    m.getRemarks()
+            ));
+        }
+
+        rows.sort(Comparator.comparing(MaintenanceHistoryRow::getMaintenanceDate,
+                Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+        return rows;
+    }
+
+    private boolean isDateBefore(LocalDate date, LocalDate reference) {
+        return date != null && date.isBefore(reference);
+    }
+
+    private boolean isDateWithin(LocalDate date, LocalDate reference, int days) {
+        return date != null && !date.isBefore(reference) && !date.isAfter(reference.plusDays(days));
+    }
+
+    private Long daysBetween(LocalDate from, LocalDate to) {
+        return to == null ? null : ChronoUnit.DAYS.between(from, to);
+    }
+
+    private String deriveEquipmentHealthStatus(Equipment.MaintenanceStatus status,
+                                               boolean maintenanceOverdue,
+                                               boolean warrantyExpired,
+                                               boolean endOfLife,
+                                               long incidentsLast30Days) {
+        if (status == Equipment.MaintenanceStatus.DECOMMISSIONED) {
+            return "Decommissioned";
+        }
+        if (status == Equipment.MaintenanceStatus.FAULTY) {
+            return "Critical";
+        }
+        if (status == Equipment.MaintenanceStatus.UNDER_REPAIR) {
+            return "At Risk";
+        }
+        if (maintenanceOverdue || warrantyExpired || endOfLife || incidentsLast30Days >= 3) {
+            return "Needs Attention";
+        }
+        return "Healthy";
+    }
+
+    private int healthRank(EquipmentHealthRow row) {
+        String status = row.getHealthStatus();
+        if ("Critical".equals(status)) return 1;
+        if ("At Risk".equals(status)) return 2;
+        if ("Needs Attention".equals(status)) return 3;
+        if ("Healthy".equals(status)) return 4;
+        return 5;
+    }
 }
