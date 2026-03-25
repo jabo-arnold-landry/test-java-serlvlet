@@ -2,7 +2,6 @@ package com.spcms.services;
 
 import com.spcms.models.Incident;
 import com.spcms.repositories.IncidentRepository;
-import com.spcms.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +18,14 @@ public class IncidentService {
     @Autowired
     private IncidentRepository incidentRepository;
 
-    @Autowired
-    private UserRepository userRepository;
     // ==================== CRUD ====================
 
     public Incident logIncident(Incident incident) {
         return incidentRepository.save(incident);
+    }
+
+    public void deleteIncident(Long id) {
+        incidentRepository.deleteById(id);
     }
 
     public Optional<Incident> getIncidentById(Long id) {
@@ -51,63 +52,51 @@ public class IncidentService {
         return incidentRepository.findByCreatedAtBetween(start, end);
     }
 
-    public List<Incident> getResolvedIncidents() {
-        return incidentRepository.findByStatusInOrderByUpdatedAtDesc(
-                List.of(Incident.IncidentStatus.RESOLVED));
-    }
-
-    public void deleteIncident(Long id) {
-        incidentRepository.deleteById(id);
-    }
-
     // ==================== Status Management ====================
 
-    public Incident assignIncident(Long incidentId, String assigneeUsername) {
+    public Incident assignIncident(Long incidentId, Long assigneeId) {
         Incident incident = incidentRepository.findById(incidentId)
                 .orElseThrow(() -> new RuntimeException("Incident not found: " + incidentId));
-        if (incident.getStatus() == Incident.IncidentStatus.RESOLVED) {
-            throw new IllegalStateException("Incident is already solved and cannot be assigned.");
-        }
-        if (incident.getAssignedTo() != null) {
-            throw new IllegalStateException("Incident is already assigned and cannot be reassigned.");
-        }
-        var user = userRepository.findByUsername(assigneeUsername)
-                .orElseThrow(() -> new RuntimeException("User not found: " + assigneeUsername));
+        var user = new com.spcms.models.User();
+        user.setUserId(assigneeId);
         incident.setAssignedTo(user);
         incident.setStatus(Incident.IncidentStatus.IN_PROGRESS);
         return incidentRepository.save(incident);
     }
 
-    public Incident resolveIncident(Long incidentId,
-                                    String rootCause,
-                                    String actionTaken,
-                                    String resolvedByUsername,
-                                    LocalDateTime resolvedAt) {
+    public Incident resolveIncident(Long incidentId, String rootCause, String actionTaken, Long resolverId, LocalDateTime downtimeStart, Incident.IncidentStatus status) {
         Incident incident = incidentRepository.findById(incidentId)
                 .orElseThrow(() -> new RuntimeException("Incident not found: " + incidentId));
-        if (incident.getAssignedTo() == null
-                || resolvedByUsername == null
-                || !incident.getAssignedTo().getUsername().equals(resolvedByUsername)) {
-            throw new IllegalStateException("Only the assigned user can resolve this incident.");
+        
+        if (status != null) {
+            incident.setStatus(status);
+        } else {
+            incident.setStatus(Incident.IncidentStatus.RESOLVED);
         }
-        if (incident.getStatus() == Incident.IncidentStatus.RESOLVED) {
-            throw new IllegalStateException("Incident is already solved.");
-        }
-        incident.setStatus(Incident.IncidentStatus.RESOLVED);
+
         incident.setRootCause(rootCause);
         incident.setActionTaken(actionTaken);
-        LocalDateTime resolvedTime = resolvedAt != null ? resolvedAt : LocalDateTime.now();
-        incident.setDowntimeEnd(resolvedTime);
-        incident.setResolvedAt(resolvedTime);
+        
+        if (downtimeStart != null) {
+            incident.setDowntimeStart(downtimeStart);
+        }
 
-        var user = userRepository.findByUsername(resolvedByUsername)
-                .orElseThrow(() -> new RuntimeException("User not found: " + resolvedByUsername));
-        incident.setResolvedBy(user);
+        if (incident.getStatus() == Incident.IncidentStatus.RESOLVED || incident.getStatus() == Incident.IncidentStatus.CLOSED) {
+            if (incident.getDowntimeEnd() == null) {
+                incident.setDowntimeEnd(LocalDateTime.now());
+            }
+        }
+
+        if (resolverId != null) {
+            var resolver = new com.spcms.models.User();
+            resolver.setUserId(resolverId);
+            incident.setResolvedBy(resolver);
+        }
 
         // Calculate downtime
-        if (incident.getDowntimeStart() != null) {
+        if (incident.getDowntimeStart() != null && incident.getDowntimeEnd() != null) {
             long minutes = ChronoUnit.MINUTES.between(incident.getDowntimeStart(), incident.getDowntimeEnd());
-            incident.setDowntimeMinutes((int) minutes);
+            incident.setDowntimeMinutes((int) Math.max(0, minutes));
         }
 
         return incidentRepository.save(incident);
@@ -116,7 +105,7 @@ public class IncidentService {
     public Incident closeIncident(Long incidentId) {
         Incident incident = incidentRepository.findById(incidentId)
                 .orElseThrow(() -> new RuntimeException("Incident not found: " + incidentId));
-        incident.setStatus(Incident.IncidentStatus.RESOLVED);
+        incident.setStatus(Incident.IncidentStatus.CLOSED);
         return incidentRepository.save(incident);
     }
 
@@ -129,5 +118,20 @@ public class IncidentService {
 
     public Long getCriticalIncidentCount(LocalDateTime start, LocalDateTime end) {
         return incidentRepository.countCriticalIncidents(start, end);
+    }
+
+    // ==================== Incident Report ====================
+
+    public List<Incident> getIncidentsForDate(LocalDateTime start, LocalDateTime end) {
+        return incidentRepository.findByCreatedAtBetween(start, end);
+    }
+
+    public List<Incident> getResolvedIncidentsForDate(LocalDateTime start, LocalDateTime end) {
+        return incidentRepository.findByStatusAndCreatedAtBetween(
+                Incident.IncidentStatus.RESOLVED, start, end);
+    }
+
+    public List<Object[]> getIncidentCountByEquipmentType(LocalDateTime start, LocalDateTime end) {
+        return incidentRepository.countByEquipmentType(start, end);
     }
 }

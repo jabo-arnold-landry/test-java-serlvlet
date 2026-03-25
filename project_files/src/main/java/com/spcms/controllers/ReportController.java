@@ -1,6 +1,6 @@
 package com.spcms.controllers;
 
-import com.spcms.models.SlaComplianceSummary;
+import com.spcms.models.MaintenanceHistoryRecord;
 import com.spcms.services.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,10 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.StringJoiner;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/reports")
@@ -24,64 +27,21 @@ public class ReportController {
 
     @GetMapping
     public String dailyReport(Model model) {
-        LocalDate today = LocalDate.now();
-        model.addAttribute("report", reportService.getDailyReport(today).orElse(null));
-        model.addAttribute("selectedDate", today);
+        model.addAttribute("report", reportService.getDailyReport(LocalDate.now()).orElse(null));
         return "reports/daily";
     }
 
     @GetMapping("/generate")
-    public String generateReport(@RequestParam(required = false) String date,
-                                  @RequestParam(defaultValue = "false") boolean force,
-                                  Model model) {
-        LocalDate selectedDate;
-        try {
-            selectedDate = (date == null || date.trim().isEmpty()) ? LocalDate.now() : LocalDate.parse(date.trim());
-        } catch (DateTimeParseException ex) {
-            selectedDate = LocalDate.now();
-        }
-
-        model.addAttribute("report", reportService.generateDailyReport(selectedDate, force));
-        model.addAttribute("selectedDate", selectedDate);
-        model.addAttribute("reportStatus", force ? "Report re-generated successfully." : "Report generated successfully.");
+    public String generateReport(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            Model model) {
+        model.addAttribute("report", reportService.generateDailyReport(date));
         return "reports/daily";
-    }
-
-    @GetMapping("/export/csv")
-    public ResponseEntity<String> exportDailyReportCsv(@RequestParam(required = false) String date) {
-        LocalDate selectedDate;
-        try {
-            selectedDate = (date == null || date.trim().isEmpty()) ? LocalDate.now() : LocalDate.parse(date.trim());
-        } catch (DateTimeParseException ex) {
-            selectedDate = LocalDate.now();
-        }
-
-        var report = reportService.getDailyReport(selectedDate)
-                .orElseGet(() -> reportService.generateDailyReport(selectedDate));
-
-        StringJoiner csv = new StringJoiner("\n");
-        csv.add("Metric,Value");
-        csv.add("Report Date," + selectedDate);
-        csv.add("MTTR (min)," + (report.getMttrMinutes() != null ? report.getMttrMinutes() : "0"));
-        csv.add("MTBF (hrs)," + (report.getMtbfHours() != null ? report.getMtbfHours() : "0"));
-        csv.add("Average Daily Load (%)," + (report.getAvgDailyLoad() != null ? report.getAvgDailyLoad() : "0"));
-        csv.add("Max Temperature (C)," + (report.getHighestTempRecorded() != null ? report.getHighestTempRecorded() : "0"));
-        csv.add("Total Incidents," + (report.getTotalIncidents() != null ? report.getTotalIncidents() : "0"));
-        csv.add("Total Downtime (min)," + (report.getTotalDowntimeMin() != null ? report.getTotalDowntimeMin() : "0"));
-        csv.add("Total Visitors," + (report.getTotalVisitors() != null ? report.getTotalVisitors() : "0"));
-        csv.add("Overstayed Visitors," + (report.getOverstayedVisitors() != null ? report.getOverstayedVisitors() : "0"));
-
-        String filename = "daily-report-" + selectedDate + ".csv";
-        return ResponseEntity.ok()
-                .contentType(MediaType.TEXT_PLAIN)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                .body(csv.toString());
     }
 
     @GetMapping("/range")
     public String reportRange(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
-                               Model model) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
+            Model model) {
         model.addAttribute("reports", reportService.getReportsInRange(start, end));
         return "reports/range";
     }
@@ -97,13 +57,122 @@ public class ReportController {
         return "reports/trends";
     }
 
-    @GetMapping("/sla-compliance")
-    public String slaCompliance(@RequestParam(defaultValue = "7") int windowDays, Model model) {
-        int days = Math.max(1, Math.min(windowDays, 30));
-        SlaComplianceSummary summary = reportService.buildSlaComplianceSummary(days);
+    @GetMapping("/equipment-health")
+    public String equipmentHealth(Model model) {
+        LocalDate today = LocalDate.now();
+        model.addAttribute("report", reportService.generateEquipmentHealthReport(today.minusDays(30), today));
+        return "reports/equipment-health";
+    }
 
-        model.addAttribute("windowDays", days);
-        model.addAttribute("summary", summary);
-        return "reports/sla-compliance";
+    @GetMapping("/cost-of-maintenance")
+    public String costOfMaintenance(Model model) {
+        LocalDate today = LocalDate.now();
+        model.addAttribute("report", reportService.generateCostOfMaintenanceReport(today.minusDays(30), today));
+        return "reports/cost-of-maintenance";
+    }
+
+    @GetMapping("/downtime-analysis")
+    public String downtimeAnalysis(Model model) {
+        LocalDate today = LocalDate.now();
+        model.addAttribute("report", reportService.generateDowntimeAnalysisReport(today.minusDays(30), today));
+        return "reports/downtime-analysis";
+    }
+
+    @GetMapping("/monthly-quarterly")
+    public String monthlyQuarterly(@RequestParam(defaultValue = "MONTH") String period, Model model) {
+        model.addAttribute("report", reportService.generateMonthlyQuarterlyReports(period));
+        model.addAttribute("period", period);
+        return "reports/monthly-quarterly";
+    }
+
+    @GetMapping("/maintenance-history")
+    public String maintenanceHistory(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(required = false) String assetId,
+            @RequestParam(defaultValue = "ALL") String equipmentType,
+            @RequestParam(required = false) String technicianName,
+            @RequestParam(defaultValue = "ALL") String maintenanceCategory,
+            @RequestParam(defaultValue = "ALL") String status,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "newest") String sort,
+            Model model) {
+
+        Map<String, Object> report = reportService.generateMaintenanceHistoryReport(
+                fromDate,
+                toDate,
+                assetId,
+                equipmentType,
+                technicianName,
+                maintenanceCategory,
+                status,
+                keyword,
+                sort);
+
+        model.addAttribute("report", report);
+        model.addAttribute("records", report.get("records"));
+
+        model.addAttribute("fromDate", report.get("fromDate"));
+        model.addAttribute("toDate", report.get("toDate"));
+        model.addAttribute("assetId", report.get("assetId"));
+        model.addAttribute("equipmentType", report.get("equipmentType"));
+        model.addAttribute("technicianName", report.get("technicianName"));
+        model.addAttribute("maintenanceCategory", report.get("maintenanceCategory"));
+        model.addAttribute("status", report.get("status"));
+        model.addAttribute("keyword", report.get("keyword"));
+        model.addAttribute("sort", report.get("sort"));
+
+        return "reports/maintenance-history";
+    }
+
+    @GetMapping("/maintenance-history/{equipmentType}/{maintenanceId}")
+    public String maintenanceHistoryDetail(@PathVariable String equipmentType,
+            @PathVariable Long maintenanceId,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<MaintenanceHistoryRecord> detail = reportService.getMaintenanceHistoryDetail(equipmentType, maintenanceId);
+        if (detail.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Maintenance history record not found.");
+            return "redirect:/reports/maintenance-history";
+        }
+
+        model.addAttribute("record", detail.get());
+        return "reports/maintenance-history-detail";
+    }
+
+    @GetMapping("/maintenance-history/export")
+    public ResponseEntity<byte[]> exportMaintenanceHistory(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(required = false) String assetId,
+            @RequestParam(defaultValue = "ALL") String equipmentType,
+            @RequestParam(required = false) String technicianName,
+            @RequestParam(defaultValue = "ALL") String maintenanceCategory,
+            @RequestParam(defaultValue = "ALL") String status,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "newest") String sort) {
+
+        List<MaintenanceHistoryRecord> records = reportService.getMaintenanceHistoryRecords(
+                fromDate,
+                toDate,
+                assetId,
+                equipmentType,
+                technicianName,
+                maintenanceCategory,
+                status,
+                keyword,
+                sort);
+
+        String csv = reportService.buildMaintenanceHistoryCsv(records);
+        byte[] content = csv.getBytes(StandardCharsets.UTF_8);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("text/csv"));
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=maintenance-history-report.csv");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(content);
     }
 }

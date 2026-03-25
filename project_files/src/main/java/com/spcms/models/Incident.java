@@ -3,13 +3,16 @@ package com.spcms.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "incidents")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Incident {
 
@@ -41,18 +44,24 @@ public class Incident {
     @Column(nullable = false, length = 15)
     private IncidentStatus status = IncidentStatus.IN_PROGRESS;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "reported_by")
     private User reportedBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_to")
     private User assignedTo;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "resolved_by")
+    private User resolvedBy;
+
     @Column(name = "downtime_start")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime downtimeStart;
 
     @Column(name = "downtime_end")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime downtimeEnd;
 
     @Column(name = "downtime_minutes")
@@ -66,10 +75,6 @@ public class Incident {
 
     @Column(name = "action_taken", columnDefinition = "TEXT")
     private String actionTaken;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resolved_by")
-    private User resolvedBy;
 
     @Column(name = "resolved_at")
     private LocalDateTime resolvedAt;

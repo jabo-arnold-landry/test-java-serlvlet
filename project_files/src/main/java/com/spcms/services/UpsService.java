@@ -54,7 +54,10 @@ public class UpsService {
     }
 
     public void deleteUps(Long id) {
-        upsRepository.deleteById(id);
+        upsRepository.findById(id).ifPresent(ups -> {
+            upsRepository.delete(ups);
+            upsRepository.flush();
+        });
     }
 
     // ==================== Overload Detection ====================

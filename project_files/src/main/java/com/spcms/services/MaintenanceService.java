@@ -4,6 +4,7 @@ import com.spcms.models.UpsMaintenance;
 import com.spcms.models.CoolingMaintenance;
 import com.spcms.repositories.UpsMaintenanceRepository;
 import com.spcms.repositories.CoolingMaintenanceRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +33,16 @@ public class MaintenanceService {
         return upsMaintenanceRepository.findById(id);
     }
 
+    public List<UpsMaintenance> getAllUpsMaintenance() {
+        return upsMaintenanceRepository.findAllByOrderByMaintenanceDateDesc();
+    }
+
     public List<UpsMaintenance> getUpsMaintenanceHistory(Long upsId) {
         return upsMaintenanceRepository.findByUps_UpsIdOrderByMaintenanceDateDesc(upsId);
+    }
+
+    public List<UpsMaintenance> getAllUpsMaintenance() {
+        return upsMaintenanceRepository.findAll(Sort.by(Sort.Direction.DESC, "maintenanceDate"));
     }
 
     public List<UpsMaintenance> getOverdueUpsMaintenance() {
@@ -48,6 +57,10 @@ public class MaintenanceService {
         return upsMaintenanceRepository.save(maintenance);
     }
 
+    public void deleteUpsMaintenance(Long id) {
+        upsMaintenanceRepository.deleteById(id);
+    }
+
     // ==================== Cooling Maintenance ====================
 
     public CoolingMaintenance scheduleCoolingMaintenance(CoolingMaintenance maintenance) {
@@ -58,8 +71,16 @@ public class MaintenanceService {
         return coolingMaintenanceRepository.findById(id);
     }
 
+    public List<CoolingMaintenance> getAllCoolingMaintenance() {
+        return coolingMaintenanceRepository.findAllByOrderByMaintenanceDateDesc();
+    }
+
     public List<CoolingMaintenance> getCoolingMaintenanceHistory(Long coolingId) {
         return coolingMaintenanceRepository.findByCoolingUnit_CoolingIdOrderByMaintenanceDateDesc(coolingId);
+    }
+
+    public List<CoolingMaintenance> getAllCoolingMaintenance() {
+        return coolingMaintenanceRepository.findAll(Sort.by(Sort.Direction.DESC, "maintenanceDate"));
     }
 
     public List<CoolingMaintenance> getOverdueCoolingMaintenance() {
@@ -72,6 +93,40 @@ public class MaintenanceService {
 
     public CoolingMaintenance updateCoolingMaintenance(CoolingMaintenance maintenance) {
         return coolingMaintenanceRepository.save(maintenance);
+    }
+
+    public List<CoolingMaintenance> getAllCoolingMaintenance() {
+        return coolingMaintenanceRepository.findAll();
+    }
+
+    public void deleteCoolingMaintenance(Long id) {
+        coolingMaintenanceRepository.deleteById(id);
+    }
+
+    // ==================== Report Statistics ====================
+
+    public long getTotalUpsMaintenanceCount() {
+        return upsMaintenanceRepository.count();
+    }
+
+    public long getTotalCoolingMaintenanceCount() {
+        return coolingMaintenanceRepository.count();
+    }
+
+    public long getUpsPreventiveCount() {
+        return upsMaintenanceRepository.countByMaintenanceType(UpsMaintenance.MaintenanceType.PREVENTIVE);
+    }
+
+    public long getUpsCorrectiveCount() {
+        return upsMaintenanceRepository.countByMaintenanceType(UpsMaintenance.MaintenanceType.CORRECTIVE);
+    }
+
+    public long getCoolingPreventiveCount() {
+        return coolingMaintenanceRepository.countByMaintenanceType(CoolingMaintenance.MaintenanceType.PREVENTIVE);
+    }
+
+    public long getCoolingCorrectiveCount() {
+        return coolingMaintenanceRepository.countByMaintenanceType(CoolingMaintenance.MaintenanceType.CORRECTIVE);
     }
 
 
@@ -157,3 +212,4 @@ maintenance.setUps(ups);
                 .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
     }
 }
+

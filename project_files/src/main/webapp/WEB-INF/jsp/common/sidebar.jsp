@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <nav class="sidebar">
     <div class="sidebar-brand">
         <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
@@ -25,51 +23,19 @@
         
         <a href="${pageContext.request.contextPath}/alerts" class="nav-link"><i class="bi bi-bell-fill"></i> Alerts</a>
         
-        <!-- 1. ADMIN: Intelligence Dashboard -->
-        <sec:authorize access="hasRole('ADMIN')">
-            <div class="nav-section-label">Global Intelligence</div>
-            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-cpu"></i> Intelligence Hub</a>
-            <a href="${pageContext.request.contextPath}/visitors" class="nav-link"><i class="bi bi-shield-lock"></i> Security Dashboard</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="nav-link"><i class="bi bi-journals"></i> System Audit Log</a>
+        <sec:authorize access="hasAnyRole('TECHNICIAN', 'MANAGER', 'ADMIN')">
+            <div class="nav-section-label">Visitors</div>
+            <a href="${pageContext.request.contextPath}/visitors" class="nav-link"><i class="bi bi-person-badge"></i> Visitor Management</a>
         </sec:authorize>
 
-        <!-- 2. MANAGER: Governance & Oversight -->
-        <sec:authorize access="hasRole('MANAGER')">
-            <div class="nav-section-label">Management Governance</div>
-            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-window-stack"></i> Governance Dashboard</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="nav-link"><i class="bi bi-file-earmark-check"></i> Approval Pipeline</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/active" class="nav-link"><i class="bi bi-door-open"></i> Live Traffic Monitor</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/history" class="nav-link"><i class="bi bi-clock-history"></i> Security Audit Logs</a>
-        </sec:authorize>
-
-        <!-- 3. SECURITY: Receptionist Desk -->
-        <sec:authorize access="hasRole('SECURITY')">
-            <div class="nav-section-label">Receptionist Desk</div>
-            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-speedometer2"></i> Security Dashboard</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/request" class="nav-link"><i class="bi bi-person-plus"></i> Register Arrival</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="nav-link"><i class="bi bi-list-check"></i> Visitor Tracking</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/active" class="nav-link"><i class="bi bi-door-closed"></i> Live Escorts</a>
-        </sec:authorize>
-
-        <!-- 4. TECHNICIAN: Operational Terminal -->
-        <sec:authorize access="hasRole('TECHNICIAN')">
-            <div class="nav-section-label">Operational Terminal</div>
-            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-speedometer2"></i> Tech Dashboard</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="nav-link"><i class="bi bi-list-task"></i> My Escort Assignments</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/active" class="nav-link"><i class="bi bi-person-badge"></i> Active Escorts</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/report-incident" class="nav-link"><i class="bi bi-exclamation-octagon"></i> Incident Reports</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/history" class="nav-link"><i class="bi bi-clock-history"></i> My Visit History</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/notifications" class="nav-link"><i class="bi bi-bell"></i> Notifications</a>
-        </sec:authorize>
-
-        <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
-            <div class="nav-section-label">Reporting &amp; Analysis</div>
-            <a href="${pageContext.request.contextPath}/reports/sla-compliance" class="nav-link"><i class="bi bi-clipboard-data"></i> Monitor SLA compliance</a>
-            <a href="${pageContext.request.contextPath}/reports/downtime-trend" class="nav-link"><i class="bi bi-graph-up-arrow"></i> Trends Dashboard</a>
+        <sec:authorize access="hasAnyRole('VIEWER', 'TECHNICIAN', 'MANAGER', 'ADMIN')">
+            <div class="nav-section-label">Reports</div>
             <a href="${pageContext.request.contextPath}/reports" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Daily Report</a>
-            <a href="${pageContext.request.contextPath}/reports/project" class="nav-link"><i class="bi bi-file-earmark-text"></i> Full Project Report</a>
-            <a href="${pageContext.request.contextPath}/reports/branch-performance" class="nav-link"><i class="bi bi-diagram-3"></i> Branch Performance</a>
-            <a href="${pageContext.request.contextPath}/reports/cost-analysis" class="nav-link"><i class="bi bi-cash-coin"></i> Cost Analysis</a>
+            <a href="${pageContext.request.contextPath}/reports/equipment-health" class="nav-link"><i class="bi bi-hdd-rack"></i> Equipment Health</a>
+            <a href="${pageContext.request.contextPath}/reports/cost-of-maintenance" class="nav-link"><i class="bi bi-calculator"></i> Maintenance Costs</a>
+            <a href="${pageContext.request.contextPath}/reports/downtime-analysis" class="nav-link"><i class="bi bi-graph-up"></i> Downtime Analysis</a>
+            <a href="${pageContext.request.contextPath}/reports/monthly-quarterly" class="nav-link"><i class="bi bi-calendar-month"></i> Monthly/Quarterly</a>
+                    <a href="${pageContext.request.contextPath}/reports/maintenance-history" class="nav-link"><i class="bi bi-clock-history"></i> Maintenance History</a>
         </sec:authorize>
         
         <sec:authorize access="hasAnyRole('TECHNICIAN', 'MANAGER', 'ADMIN')">

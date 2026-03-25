@@ -31,6 +31,8 @@ import java.util.Set;
  *
  * Change these credentials immediately after first login via /users.
  */
+import java.util.Optional;
+
 @Component
 @Order(1)
 public class DataInitializer implements CommandLineRunner {

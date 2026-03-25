@@ -88,8 +88,17 @@ public class MonitoringService {
         return monitoringLogRepository.findByTypeAndDateRange(type, start, end);
     }
 
+    public MonitoringLog updateReading(MonitoringLog log) {
+        MonitoringLog saved = monitoringLogRepository.save(log);
+        checkThresholdsAndAlert(saved);
+        return saved;
+    }
+
     public void deleteReading(Long id) {
-        monitoringLogRepository.deleteById(id);
+        monitoringLogRepository.findById(id).ifPresent(log -> {
+            monitoringLogRepository.delete(log);
+            monitoringLogRepository.flush();
+        });
     }
 
     public List<MonitoringLog> getReadingsForUps(Long upsId) {

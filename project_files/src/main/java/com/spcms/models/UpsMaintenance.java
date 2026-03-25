@@ -5,6 +5,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "ups_maintenance")
@@ -22,14 +23,16 @@ public class UpsMaintenance {
     @JoinColumn(name = "ups_id", nullable = false)
     private Ups ups;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = MaintenanceTypeConverter.class)
     @Column(name = "maintenance_type", nullable = false, length = 15)
     private MaintenanceType maintenanceType;
 
     @Column(name = "maintenance_date", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate maintenanceDate;
 
     @Column(name = "next_due_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate nextDueDate;
 
     @Column(length = 100)
@@ -68,5 +71,24 @@ public class UpsMaintenance {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+
+    public static class MaintenanceTypeConverter implements AttributeConverter<MaintenanceType, String> {
+        @Override
+        public String convertToDatabaseColumn(MaintenanceType attribute) {
+            return attribute == null ? null : attribute.name();
+        }
+
+        @Override
+        public MaintenanceType convertToEntityAttribute(String dbData) {
+            if (dbData == null || dbData.trim().isEmpty()) {
+                return null;
+            }
+            try {
+                return MaintenanceType.valueOf(dbData.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return MaintenanceType.PREVENTIVE; // Fallback for invalid DB string
+            }
+        }
     }
 }

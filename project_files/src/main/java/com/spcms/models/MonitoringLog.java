@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "monitoring_logs")
+@Table(name = "monitoring_log")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -50,8 +51,12 @@ public class MonitoringLog {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "reading_time")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime readingTime;
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
 
     public enum EquipmentType {
         UPS, COOLING

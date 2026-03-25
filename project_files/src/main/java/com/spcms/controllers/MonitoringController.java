@@ -2,6 +2,8 @@ package com.spcms.controllers;
 
 import com.spcms.models.MonitoringLog;
 import com.spcms.models.User;
+import com.spcms.repositories.UserRepository;
+import com.spcms.models.User;
 import com.spcms.services.MonitoringService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,9 @@ public class MonitoringController {
 
     @Autowired
     private MonitoringService monitoringService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping
     public String list(Model model) {
@@ -35,48 +40,49 @@ public class MonitoringController {
     private com.spcms.repositories.UserRepository userRepository;
 
     @PostMapping("/save")
-    public String save(@ModelAttribute MonitoringLog log, org.springframework.validation.BindingResult result, RedirectAttributes redirectAttributes, Model model) {
-        if (result.hasErrors()) {
-            StringBuilder errors = new StringBuilder("Binding errors: ");
-            result.getAllErrors().forEach(e -> errors.append(e.getDefaultMessage()).append("; "));
-            model.addAttribute("errorMsg", errors.toString());
-            model.addAttribute("monitoringLog", log);
-            return "monitoring/form";
+    public String save(@ModelAttribute MonitoringLog log,
+            @RequestParam(value = "recordedByUserId", required = false) Long recordedByUserId,
+            RedirectAttributes redirectAttributes) {
+        if (recordedByUserId != null) {
+            User user = userRepository.findById(recordedByUserId).orElse(null);
+            log.setRecordedBy(user);
         }
-        
-        try {
-            if (log.getRecordedBy() != null && log.getRecordedBy().getUserId() != null) {
-                User user = userRepository.findById(log.getRecordedBy().getUserId()).orElse(null);
-                if (user == null) {
-                    throw new RuntimeException("User ID " + log.getRecordedBy().getUserId() + " does not exist.");
-                }
-                log.setRecordedBy(user);
-            } else {
-                log.setRecordedBy(null);
-            }
+        if (log.getLogId() != null) {
+            monitoringService.updateReading(log);
+            redirectAttributes.addFlashAttribute("success", "Reading updated successfully");
+        } else {
             monitoringService.recordReading(log);
             redirectAttributes.addFlashAttribute("success", "Reading recorded successfully");
-            return "redirect:/monitoring";
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("errorMsg", "Error saving reading: " + e.getMessage());
-            model.addAttribute("monitoringLog", log);
-            return "monitoring/form"; // Stay on the form and display error
         }
+        return "redirect:/monitoring";
+    }
+
+    @GetMapping("/view/{id}")
+    public String view(@PathVariable Long id, Model model) {
+        model.addAttribute("monitoringLog", monitoringService.getReadingById(id)
+                .orElseThrow(() -> new RuntimeException("Reading not found")));
+        model.addAttribute("viewMode", true);
+        return "monitoring/form";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
-        MonitoringLog log = monitoringService.getReadingById(id).orElse(null);
-        if (log == null) return "redirect:/monitoring";
-        model.addAttribute("monitoringLog", log);
+        model.addAttribute("monitoringLog", monitoringService.getReadingById(id)
+                .orElseThrow(() -> new RuntimeException("Reading not found")));
         return "monitoring/form";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        monitoringService.deleteReading(id);
-        redirectAttributes.addFlashAttribute("success", "Reading deleted successfully");
+        System.out.println("DEBUG: Deleting monitoring reading with ID: " + id);
+        try {
+            monitoringService.deleteReading(id);
+            redirectAttributes.addFlashAttribute("success", "Reading deleted successfully");
+            System.out.println("DEBUG: Delete successful for ID: " + id);
+        } catch (Exception e) {
+            System.err.println("DEBUG: Error deleting reading ID " + id + ": " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error deleting reading: " + e.getMessage());
+        }
         return "redirect:/monitoring";
     }
 }

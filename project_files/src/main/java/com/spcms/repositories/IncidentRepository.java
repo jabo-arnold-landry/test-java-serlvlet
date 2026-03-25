@@ -21,4 +21,7 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
 
     @Query("SELECT COUNT(i) FROM Incident i WHERE i.severity = 'CRITICAL' AND i.createdAt BETWEEN :start AND :end")
     Long countCriticalIncidents(LocalDateTime start, LocalDateTime end);
+
+    @Query("SELECT COUNT(i) FROM Incident i WHERE i.equipmentType = :type AND i.equipmentId = :equipmentId AND i.createdAt BETWEEN :start AND :end")
+    Long countByEquipmentTypeAndEquipmentIdAndCreatedAtBetween(Incident.EquipmentType type, Long equipmentId, LocalDateTime start, LocalDateTime end);
 }

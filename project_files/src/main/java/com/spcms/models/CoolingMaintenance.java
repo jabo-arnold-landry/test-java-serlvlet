@@ -5,6 +5,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "cooling_maintenance")
@@ -22,20 +23,24 @@ public class CoolingMaintenance {
     @JoinColumn(name = "cooling_id", nullable = false)
     private CoolingUnit coolingUnit;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = MaintenanceTypeConverter.class)
     @Column(name = "maintenance_type", nullable = false, length = 15)
     private MaintenanceType maintenanceType;
 
     @Column(name = "maintenance_date", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate maintenanceDate;
 
     @Column(name = "filter_cleaning_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate filterCleaningDate;
 
     @Column(name = "gas_refill_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate gasRefillDate;
 
     @Column(name = "next_maintenance_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate nextMaintenanceDate;
 
     @Column(length = 100)
@@ -72,5 +77,24 @@ public class CoolingMaintenance {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+
+    public static class MaintenanceTypeConverter implements AttributeConverter<MaintenanceType, String> {
+        @Override
+        public String convertToDatabaseColumn(MaintenanceType attribute) {
+            return attribute == null ? null : attribute.name();
+        }
+
+        @Override
+        public MaintenanceType convertToEntityAttribute(String dbData) {
+            if (dbData == null || dbData.trim().isEmpty()) {
+                return null;
+            }
+            try {
+                return MaintenanceType.valueOf(dbData.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return MaintenanceType.PREVENTIVE; // Fallback for invalid DB string
+            }
+        }
     }
 }

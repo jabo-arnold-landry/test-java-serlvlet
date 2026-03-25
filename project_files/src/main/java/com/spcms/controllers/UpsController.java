@@ -51,8 +51,15 @@ public class UpsController {
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        upsService.deleteUps(id);
-        redirectAttributes.addFlashAttribute("success", "UPS deleted successfully");
+        System.out.println("DEBUG: Deleting UPS with ID: " + id);
+        try {
+            upsService.deleteUps(id);
+            redirectAttributes.addFlashAttribute("success", "UPS deleted successfully");
+            System.out.println("DEBUG: UPS delete successful for ID: " + id);
+        } catch (Exception e) {
+            System.err.println("DEBUG: Error deleting UPS ID " + id + ": " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error deleting UPS: " + e.getMessage());
+        }
         return "redirect:/ups";
     }
 }

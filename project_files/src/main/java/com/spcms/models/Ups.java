@@ -42,7 +42,7 @@ public class Ups {
     @Column(name = "capacity_kva", precision = 10, scale = 2)
     private BigDecimal capacityKva;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = PhaseConverter.class)
     @Column(length = 20)
     private Phase phase = Phase.SINGLE_PHASE;
 
@@ -58,7 +58,7 @@ public class Ups {
     @Column(name = "location_zone", length = 50)
     private String locationZone;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = UpsStatusConverter.class)
     @Column(length = 25)
     private UpsStatus status = UpsStatus.ACTIVE;
 
@@ -136,5 +136,43 @@ public class Ups {
 
     public void setUpsId(Long upsId) {
         this.upsId = upsId;
+    }
+
+    public static class PhaseConverter implements AttributeConverter<Phase, String> {
+        @Override
+        public String convertToDatabaseColumn(Phase attribute) {
+            return attribute == null ? null : attribute.name();
+        }
+
+        @Override
+        public Phase convertToEntityAttribute(String dbData) {
+            if (dbData == null || dbData.trim().isEmpty()) {
+                return null;
+            }
+            try {
+                return Phase.valueOf(dbData.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return Phase.SINGLE_PHASE; // Fallback for invalid DB string
+            }
+        }
+    }
+
+    public static class UpsStatusConverter implements AttributeConverter<UpsStatus, String> {
+        @Override
+        public String convertToDatabaseColumn(UpsStatus attribute) {
+            return attribute == null ? null : attribute.name();
+        }
+
+        @Override
+        public UpsStatus convertToEntityAttribute(String dbData) {
+            if (dbData == null || dbData.trim().isEmpty()) {
+                return null;
+            }
+            try {
+                return UpsStatus.valueOf(dbData.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return UpsStatus.ACTIVE; // Fallback for invalid DB string
+            }
+        }
     }
 }
