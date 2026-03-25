@@ -51,6 +51,8 @@ public class DashboardController {
 
         // Alerts
         model.addAttribute("unacknowledgedAlerts", alertService.getUnacknowledgedAlerts().size());
+        model.addAttribute("latestAlertId",
+                alertService.getLatestAlertAfter(null).map(Alert::getAlertId).orElse(0L));
 
         // Visitors
         model.addAttribute("activeVisitors", visitorService.getActiveVisitors().size());

@@ -12,10 +12,9 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
     List<Alert> findByIsSentFalse();
 
     List<Alert> findByIsAcknowledgedFalse();
-
     long countByIsAcknowledgedFalse();
-
-    Optional<Alert> findFirstByAlertIdGreaterThanOrderByAlertIdDesc(Long afterId);
-
-    Optional<Alert> findFirstByOrderByAlertIdDesc();
+    List<Alert> findByAlertType(Alert.AlertType alertType);
+    List<Alert> findByEquipmentTypeAndEquipmentId(Alert.EquipmentCategory type, Long equipmentId);
+    java.util.Optional<Alert> findFirstByOrderByAlertIdDesc();
+    java.util.Optional<Alert> findFirstByAlertIdGreaterThanOrderByAlertIdDesc(Long alertId);
 }

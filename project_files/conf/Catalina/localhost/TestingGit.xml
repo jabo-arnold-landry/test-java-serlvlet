@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Context docBase="C:\Users\user\Downloads\ClassProj\test-java-serlvlet\src\main\webapp">
+<Context docBase="C:\Users\user\IdeaProjects\test-java-serlvlet\src\main\webapp">
   <Resources cacheMaxSize="10240">
-    <PreResources base="C:/Users/user/Downloads/ClassProj/test-java-serlvlet/target/classes" className="org.apache.catalina.webresources.DirResourceSet" webAppMount="/WEB-INF/classes"/>
+    <PreResources base="C:/Users/user/IdeaProjects/test-java-serlvlet/target/classes" className="org.apache.catalina.webresources.DirResourceSet" webAppMount="/WEB-INF/classes"/>
     <PostResources base="C:/Users/user/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.2.5/spring-boot-starter-web-3.2.5.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/spring-boot-starter-web-3.2.5.jar"/>
     <PostResources base="C:/Users/user/.m2/repository/org/springframework/boot/spring-boot-starter/3.2.5/spring-boot-starter-3.2.5.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/spring-boot-starter-3.2.5.jar"/>
     <PostResources base="C:/Users/user/.m2/repository/org/springframework/boot/spring-boot/3.2.5/spring-boot-3.2.5.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/spring-boot-3.2.5.jar"/>

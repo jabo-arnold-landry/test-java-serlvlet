@@ -56,9 +56,13 @@ public class SecurityConfig {
                 
                 // Public access - MUST come first
                 .requestMatchers(
-                    new AntPathRequestMatcher("/login**"),
-                    new AntPathRequestMatcher("/perform_login**"),
-                    new AntPathRequestMatcher("/error**"),
+                    new AntPathRequestMatcher("/"),
+                    new AntPathRequestMatcher("/index.jsp"),
+                    new AntPathRequestMatcher("/login"),
+                    new AntPathRequestMatcher("/login/**"),
+                    new AntPathRequestMatcher("/perform_login"),
+                    new AntPathRequestMatcher("/error"),
+                    new AntPathRequestMatcher("/error/**"),
                     new AntPathRequestMatcher("/css/**"),
                     new AntPathRequestMatcher("/js/**"),
                     new AntPathRequestMatcher("/images/**"),
