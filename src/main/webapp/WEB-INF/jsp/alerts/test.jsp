@@ -402,10 +402,6 @@
                                 <input type="number" name="thresholdHigh" class="form-control" value="60" step="0.1">
                             </div>
                         </div>
-                        <div class="alert alert-info mb-3" style="font-size:13px;">
-                            <strong>ℹ️ How it works:</strong> Alerts trigger if Actual is below Low Threshold OR above High Threshold. 
-                            If within range, a warning appears instead.
-                        </div>
                         <div class="mb-3">
                             <label class="form-label">Send Alert Email To</label>
                             <div class="searchable-select-wrapper">
