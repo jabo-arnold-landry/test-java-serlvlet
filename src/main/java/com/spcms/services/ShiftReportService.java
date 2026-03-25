@@ -48,6 +48,13 @@ public class ShiftReportService {
         return shiftReportRepository.save(report);
     }
 
+    public void closeShift(Long id) {
+        ShiftReport report = shiftReportRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Shift report not found"));
+        report.setStatus(ShiftReport.ShiftStatus.CLOSED);
+        shiftReportRepository.save(report);
+    }
+
     // ==================== Handover Notes ====================
 
     public ShiftHandoverNote addHandoverNote(ShiftHandoverNote note) {

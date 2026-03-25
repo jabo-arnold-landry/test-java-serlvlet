@@ -20,7 +20,7 @@ public class MaintenanceController {
     @GetMapping
     public String list(Model model) {
         model.addAttribute("overdueUps", maintenanceService.getOverdueUpsMaintenance());
-        model.addAttribute("overdueCooling", maintenanceService.getOverdueCoolingMaintenance());
+        model.addAttribute("allCoolingMaintenance", maintenanceService.getAllCoolingMaintenance());
         model.addAttribute("allUpsMaintenance", maintenanceService.getAllUpsMaintenance());
         model.addAttribute("allCoolingMaintenance", maintenanceService.getAllCoolingMaintenance());
         return "maintenance/list";
@@ -34,7 +34,7 @@ public class MaintenanceController {
 
     @PostMapping("/ups/save")
     public String saveUpsMaintenance(@ModelAttribute UpsMaintenance maintenance,
-                                      RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         maintenanceService.scheduleUpsMaintenance(maintenance);
         redirectAttributes.addFlashAttribute("success", "UPS maintenance scheduled");
         return "redirect:/maintenance";
@@ -48,7 +48,7 @@ public class MaintenanceController {
 
     @PostMapping("/cooling/save")
     public String saveCoolingMaintenance(@ModelAttribute CoolingMaintenance maintenance,
-                                          RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         maintenanceService.scheduleCoolingMaintenance(maintenance);
         redirectAttributes.addFlashAttribute("success", "Cooling maintenance scheduled");
         return "redirect:/maintenance";
@@ -56,9 +56,9 @@ public class MaintenanceController {
 
     @PostMapping("/ups/schedule-quarterly")
     public String scheduleQuarterlyUps(@RequestParam Long upsId,
-                                        @RequestParam String technician,
-                                        @RequestParam String vendor,
-                                        RedirectAttributes redirectAttributes) {
+            @RequestParam String technician,
+            @RequestParam String vendor,
+            RedirectAttributes redirectAttributes) {
         maintenanceService.scheduleQuarterlyUpsMaintenance(upsId, technician, vendor);
         redirectAttributes.addFlashAttribute("success", "Quarterly UPS maintenance scheduled");
         return "redirect:/maintenance";

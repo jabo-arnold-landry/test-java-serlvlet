@@ -140,11 +140,19 @@ public class ShiftReport {
     @Column(name = "visitor_incident", columnDefinition = "TEXT")
     private String visitorIncident;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 10)
+    private ShiftStatus status = ShiftStatus.OPEN;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     public enum ShiftType {
         MORNING, EVENING, NIGHT
+    }
+
+    public enum ShiftStatus {
+        OPEN, CLOSED
     }
 
     @PrePersist

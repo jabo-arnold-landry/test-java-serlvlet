@@ -95,6 +95,10 @@ public class MaintenanceService {
         return coolingMaintenanceRepository.save(maintenance);
     }
 
+    public List<CoolingMaintenance> getAllCoolingMaintenance() {
+        return coolingMaintenanceRepository.findAll();
+    }
+
     public void deleteCoolingMaintenance(Long id) {
         coolingMaintenanceRepository.deleteById(id);
     }
