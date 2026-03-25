@@ -317,6 +317,13 @@ public class AlertController {
             @RequestParam(required = false) String email,
             RedirectAttributes redirectAttributes) {
         try {
+            // VALIDATION: Check if actual load exceeds threshold
+            if (actualLoad.compareTo(threshold) <= 0) {
+                redirectAttributes.addFlashAttribute("warning", 
+                    "NO THRESHOLD EXCEEDED: Actual load (" + actualLoad + "%) does not exceed limit (" + threshold + "%). No alert will be sent.");
+                return "redirect:/alerts/test";
+            }
+            
             if (sendEmail) {
                 if (email == null || email.trim().isEmpty()) {
                     redirectAttributes.addFlashAttribute("error", "Provide an email to notify.");
@@ -348,6 +355,13 @@ public class AlertController {
             @RequestParam(required = false) String email,
             RedirectAttributes redirectAttributes) {
         try {
+            // VALIDATION: Check if actual battery is BELOW threshold (lower = critical)
+            if (actualLevel.compareTo(threshold) >= 0) {
+                redirectAttributes.addFlashAttribute("warning", 
+                    "NO THRESHOLD EXCEEDED: Battery level (" + actualLevel + "%) is above the critical threshold (" + threshold + "%). No alert will be sent.");
+                return "redirect:/alerts/test";
+            }
+            
             if (sendEmail) {
                 if (email == null || email.trim().isEmpty()) {
                     redirectAttributes.addFlashAttribute("error", "Provide an email to notify.");
