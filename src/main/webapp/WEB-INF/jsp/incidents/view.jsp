@@ -1,8 +1,47 @@
+<<<<<<< HEAD
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="jakarta.tags.core" %>
         <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
             <!DOCTYPE html>
             <html lang="en">
+=======
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPCMS - Incident Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <jsp:include page="../common/styles.jsp"/>
+</head>
+<body>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
+    <div class="main-content">
+        <c:if test="${not empty success}">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill"></i> ${success}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </c:if>
+        <c:if test="${not empty info}">
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="bi bi-info-circle-fill"></i> ${info}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </c:if>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 style="font-weight:700;margin:0;">Incident #${incident.incidentId}: ${incident.title}</h4>
+                <p class="text-muted mb-0" style="font-size:14px;">Logged: ${incident.createdAt} | Equipment: ${incident.equipmentType} #${incident.equipmentId}</p>
+            </div>
+            <a href="${pageContext.request.contextPath}/incidents" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+        </div>
+>>>>>>> origin/ft-kimenyi
 
             <head>
                 <meta charset="UTF-8">

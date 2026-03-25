@@ -88,13 +88,13 @@ public class SecurityConfig {
                     new AntPathRequestMatcher("/visitors/reject/**")
                 ).hasAnyRole("MANAGER", "ADMIN")
 
-                // Reports generation - MANAGER or ADMIN
+                // Reports generation - TECHNICIAN, MANAGER or ADMIN
                 .requestMatchers(
                     new AntPathRequestMatcher("/reports/generate/**"),
                     new AntPathRequestMatcher("/reports/downtime-trend/**"),
                     new AntPathRequestMatcher("/reports/project/**"),
                     new AntPathRequestMatcher("/reports/sla-compliance/**")
-                ).hasAnyRole("MANAGER", "ADMIN")
+                ).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
 
                 // Maintenance - TECHNICIAN, MANAGER, ADMIN
                 .requestMatchers(new AntPathRequestMatcher("/maintenance/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")

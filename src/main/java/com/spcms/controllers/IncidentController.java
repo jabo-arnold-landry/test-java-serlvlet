@@ -1,10 +1,13 @@
 package com.spcms.controllers;
 
 import com.spcms.models.Incident;
+import com.spcms.models.User;
+import com.spcms.repositories.UserRepository;
 import com.spcms.services.IncidentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +32,9 @@ public class IncidentController {
     private static final Logger log = LoggerFactory.getLogger(IncidentController.class);
     @Autowired
     private IncidentService incidentService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private com.spcms.services.UserService userService;
@@ -104,9 +110,21 @@ public class IncidentController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Incident incident,
+                       Authentication authentication,
+                      
             org.springframework.validation.BindingResult result,
             @RequestParam(value = "attachmentFile", required = false) MultipartFile attachmentFile,
             RedirectAttributes redirectAttributes) {
+        // Prefer logged-in user as reporter; fallback to provided ID if valid
+        if (authentication != null) {
+            userRepository.findByUsername(authentication.getName())
+                    .ifPresent(incident::setReportedBy);
+        } else if (incident.getReportedBy() != null && incident.getReportedBy().getUserId() != null) {
+            Long reportedById = incident.getReportedBy().getUserId();
+            userRepository.findById(reportedById)
+                    .ifPresentOrElse(incident::setReportedBy, () -> incident.setReportedBy(null));
+        }
+
         
         if (result.hasErrors()) {
             StringBuilder errors = new StringBuilder("Form data errors: ");
@@ -195,6 +213,18 @@ public class IncidentController {
     }
 
     // ==================== STATUS ACTIONS ====================
+
+    @GetMapping("/assign/{id}")
+    public String assignRedirect(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("info", "Use the Assign form on the incident page.");
+        return "redirect:/incidents/view/" + id;
+    }
+
+    @GetMapping("/resolve/{id}")
+    public String resolveRedirect(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("info", "Assign the incident first to enable resolution.");
+        return "redirect:/incidents/view/" + id;
+    }
 
     @PostMapping("/resolve/{id}")
     public String resolve(@PathVariable Long id,

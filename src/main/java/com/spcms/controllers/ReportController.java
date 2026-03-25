@@ -42,6 +42,7 @@ public class ReportController {
             model.addAttribute("error", "Failed to generate report: " + e.getMessage());
             model.addAttribute("report", null);
         }
+        model.addAttribute("selectedDate", date);
         return "reports/daily";
     }
 
