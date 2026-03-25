@@ -34,6 +34,12 @@ public class Alert {
     @Column(name = "threshold_value", precision = 10, scale = 2)
     private BigDecimal thresholdValue;
 
+    @Column(name = "low_threshold_value", precision = 10, scale = 2)
+    private BigDecimal lowThresholdValue;
+
+    @Column(name = "high_threshold_value", precision = 10, scale = 2)
+    private BigDecimal highThresholdValue;
+
     @Column(name = "actual_value", precision = 10, scale = 2)
     private BigDecimal actualValue;
 

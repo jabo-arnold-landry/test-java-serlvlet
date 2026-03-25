@@ -486,6 +486,41 @@ public class AlertService {
     }
 
     /**
+     * Create humidity alert with range-based thresholds (LOW and HIGH)
+     * Alert triggers if actual is outside the safe range [lowThreshold, highThreshold]
+     */
+    @Transactional
+    public Alert createHumidityAlertWithRange(Alert.EquipmentCategory equipmentType,
+                                               Long equipmentId, BigDecimal lowThreshold, 
+                                               BigDecimal highThreshold, BigDecimal actual, 
+                                               boolean notifyAll) {
+        boolean isHighViolation = actual.compareTo(highThreshold) > 0;
+        String direction = isHighViolation ? "ABOVE HIGH THRESHOLD" : "BELOW LOW THRESHOLD";
+        
+        Alert alert = Alert.builder()
+                .alertType(Alert.AlertType.HUMIDITY)
+                .equipmentType(equipmentType)
+                .equipmentId(equipmentId)
+                .lowThresholdValue(lowThreshold)
+                .highThresholdValue(highThreshold)
+                .actualValue(actual)
+                .message("HUMIDITY ALERT - " + (isHighViolation ? "TOO HIGH" : "TOO LOW") + 
+                        ": Actual " + actual + "% is " + direction + 
+                        " (Safe range: " + lowThreshold + "-" + highThreshold + "%)")
+                .isSent(false)
+                .isAcknowledged(false)
+                .build();
+        
+        Alert savedAlert = alertRepository.save(alert);
+        
+        if (notifyAll) {
+            sendAlertToAllRecipients(savedAlert);
+        }
+        
+        return savedAlert;
+    }
+
+    /**
      * Send a test email to verify email configuration.
      */
     public void sendTestEmail(String recipientEmail) {

@@ -247,8 +247,8 @@ public class AlertController {
             @RequestParam String equipmentType,
             @RequestParam Long equipmentId,
             @RequestParam BigDecimal actualHumidity,
-            @RequestParam BigDecimal threshold,
-            @RequestParam String humidityType,
+            @RequestParam(required = false) BigDecimal thresholdLow,
+            @RequestParam(required = false) BigDecimal thresholdHigh,
             @RequestParam(defaultValue = "false") boolean sendEmail,
             @RequestParam(required = false) String email,
             RedirectAttributes redirectAttributes) {
@@ -257,33 +257,39 @@ public class AlertController {
                 ? Alert.EquipmentCategory.UPS 
                 : Alert.EquipmentCategory.COOLING;
             
-            boolean isHigh = "HIGH".equals(humidityType);
-            String direction = isHigh ? "above" : "below";
+            // Use provided thresholds or defaults (safe range: 30-60%)
+            BigDecimal lowThreshold = thresholdLow != null ? thresholdLow : new BigDecimal("30");
+            BigDecimal highThreshold = thresholdHigh != null ? thresholdHigh : new BigDecimal("60");
             
-            // VALIDATION: Check if actual value violates threshold
-            boolean violatesThreshold = (isHigh && actualHumidity.compareTo(threshold) > 0) || 
-                                       (!isHigh && actualHumidity.compareTo(threshold) < 0);
+            // VALIDATION: Check if actual humidity is WITHIN safe range
+            boolean isWithinSafeRange = actualHumidity.compareTo(lowThreshold) >= 0 && 
+                                        actualHumidity.compareTo(highThreshold) <= 0;
             
-            if (!violatesThreshold) {
-                String expectedCondition = isHigh ? "higher than " + threshold + "%" : "lower than " + threshold + "%";
+            if (isWithinSafeRange) {
                 redirectAttributes.addFlashAttribute("warning", 
-                    "NO THRESHOLD EXCEEDED: Actual humidity (" + actualHumidity + "%) is not " + expectedCondition + ". No alert will be sent.");
+                    "NO THRESHOLD EXCEEDED: Actual humidity (" + actualHumidity + "%) is within safe range (" + lowThreshold + "%-" + highThreshold + "%). No alert will be sent.");
                 return "redirect:/alerts/test";
             }
+            
+            // Determine if it's high or low violation
+            boolean isHighViolation = actualHumidity.compareTo(highThreshold) > 0;
+            String violationType = isHighViolation ? "TOO HIGH" : "TOO LOW";
+            String relevantThreshold = isHighViolation ? highThreshold.toString() : lowThreshold.toString();
             
             if (sendEmail) {
                 if (email == null || email.trim().isEmpty()) {
                     redirectAttributes.addFlashAttribute("error", "Provide an email to notify.");
                     return "redirect:/alerts/test";
                 }
-                String message = "HUMIDITY NOTIFICATION: Actual " + actualHumidity + "% is " + direction + " threshold " + threshold + "% on " + category + " (ID: " + equipmentId + ")";
+                String message = "HUMIDITY ALERT - " + violationType + ": Actual humidity " + actualHumidity + "% exceeds " + 
+                                 (isHighViolation ? "maximum" : "minimum") + " threshold " + relevantThreshold + "% on " + category + " (ID: " + equipmentId + ")";
                 alertService.sendStandaloneNotificationEmail("Humidity Alert", message, email.trim());
-                redirectAttributes.addFlashAttribute("success", "Humidity notification email sent to " + email);
+                redirectAttributes.addFlashAttribute("success", "Humidity alert email sent to " + email);
             } else {
-                Alert alert = alertService.createHumidityAlert(category, equipmentId, threshold, actualHumidity, isHigh, false);
+                Alert alert = alertService.createHumidityAlertWithRange(category, equipmentId, lowThreshold, highThreshold, actualHumidity, false);
                 pushAlert(alert);
                 redirectAttributes.addFlashAttribute("success", 
-                    "Humidity alert triggered (ID: " + alert.getAlertId() + ")");
+                    "Humidity alert triggered - " + violationType + " (ID: " + alert.getAlertId() + ")");
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed: " + e.getMessage());

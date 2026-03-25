@@ -370,9 +370,9 @@
             <!-- Humidity -->
             <div class="col-md-6">
                 <div class="sim-card">
-                    <h5><i class="bi bi-droplet icon-humidity"></i> Humidity Alert</h5>
+                    <h5><i class="bi bi-droplet icon-humidity"></i> Humidity Alert (Range-Based)</h5>
                     <div class="alert-scenario">
-                        <strong>💧 Warning Scenario:</strong> Humidity outside acceptable range
+                        <strong>💧 Safe Range:</strong> Between Low and High Thresholds (default: 30-60%)
                     </div>
                     <form action="${pageContext.request.contextPath}/alerts/test/humidity" method="post">
                         <div class="row">
@@ -390,20 +390,21 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Type</label>
-                                <select name="humidityType" class="form-select" required>
-                                    <option value="HIGH">Too High</option>
-                                    <option value="LOW">Too Low</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3">
                                 <label class="form-label">Actual (%)</label>
                                 <input type="number" name="actualHumidity" class="form-control" value="78" step="0.1" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Threshold (%)</label>
-                                <input type="number" name="threshold" class="form-control" value="65" step="0.1" required>
+                                <label class="form-label">Low Threshold (%) <small class="text-muted">Min safe</small></label>
+                                <input type="number" name="thresholdLow" class="form-control" value="30" step="0.1">
                             </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">High Threshold (%) <small class="text-muted">Max safe</small></label>
+                                <input type="number" name="thresholdHigh" class="form-control" value="60" step="0.1">
+                            </div>
+                        </div>
+                        <div class="alert alert-info mb-3" style="font-size:13px;">
+                            <strong>ℹ️ How it works:</strong> Alerts trigger if Actual is below Low Threshold OR above High Threshold. 
+                            If within range, a warning appears instead.
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Send Alert Email To</label>
