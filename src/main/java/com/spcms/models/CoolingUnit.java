@@ -49,7 +49,7 @@ public class CoolingUnit {
     @Column(name = "location_room", length = 100)
     private String locationRoom;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = CoolingStatusConverter.class)
     @Column(length = 25)
     private CoolingStatus status = CoolingStatus.ACTIVE;
 
@@ -167,5 +167,24 @@ public class CoolingUnit {
     public void setResolution(LocalDateTime now) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setResolution'");
+    }
+
+    public static class CoolingStatusConverter implements AttributeConverter<CoolingStatus, String> {
+        @Override
+        public String convertToDatabaseColumn(CoolingStatus attribute) {
+            return attribute == null ? null : attribute.name();
+        }
+
+        @Override
+        public CoolingStatus convertToEntityAttribute(String dbData) {
+            if (dbData == null || dbData.trim().isEmpty()) {
+                return null;
+            }
+            try {
+                return CoolingStatus.valueOf(dbData.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return CoolingStatus.ACTIVE; // Fallback for invalid DB string
+            }
+        }
     }
 }

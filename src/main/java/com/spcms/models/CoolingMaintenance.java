@@ -23,7 +23,7 @@ public class CoolingMaintenance {
     @JoinColumn(name = "cooling_id", nullable = false)
     private CoolingUnit coolingUnit;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = MaintenanceTypeConverter.class)
     @Column(name = "maintenance_type", nullable = false, length = 15)
     private MaintenanceType maintenanceType;
 
@@ -77,5 +77,24 @@ public class CoolingMaintenance {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+
+    public static class MaintenanceTypeConverter implements AttributeConverter<MaintenanceType, String> {
+        @Override
+        public String convertToDatabaseColumn(MaintenanceType attribute) {
+            return attribute == null ? null : attribute.name();
+        }
+
+        @Override
+        public MaintenanceType convertToEntityAttribute(String dbData) {
+            if (dbData == null || dbData.trim().isEmpty()) {
+                return null;
+            }
+            try {
+                return MaintenanceType.valueOf(dbData.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return MaintenanceType.PREVENTIVE; // Fallback for invalid DB string
+            }
+        }
     }
 }

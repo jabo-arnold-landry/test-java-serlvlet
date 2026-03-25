@@ -18,6 +18,7 @@
             <div class="nav-section-label">Operations</div>
             <a href="${pageContext.request.contextPath}/monitoring" class="nav-link"><i class="bi bi-speedometer2"></i> Monitoring</a>
             <a href="${pageContext.request.contextPath}/maintenance" class="nav-link"><i class="bi bi-wrench-adjustable-circle"></i> Maintenance</a>
+            <a href="${pageContext.request.contextPath}/maintenance/report" class="nav-link"><i class="bi bi-clipboard2-data"></i> Maintenance Report</a>
             <a href="${pageContext.request.contextPath}/incidents" class="nav-link"><i class="bi bi-exclamation-triangle-fill"></i> Incidents</a>
         </sec:authorize>
         
