@@ -1,11 +1,19 @@
-# Ignore Tomcat deployment artifacts
-WEB-INF/
-META-INF/
-target/
-index.jsp
-work/
-logs/
-.vscode/
-
+# Project structure
 # Only track project_files
+!project_files/**
 !project_files/
+
+# Standard Ignores (Root only)
+/WEB-INF/
+/META-INF/
+/target/
+/index.jsp
+/work/
+/logs/
+/.vscode/
+
+### Mac OS ###
+.DS_Store
+conf/Catalina/
+*.log
+.idea/

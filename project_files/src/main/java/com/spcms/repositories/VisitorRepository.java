@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface VisitorRepository extends JpaRepository<Visitor, Long> {
     Optional<Visitor> findByPassNumber(String passNumber);
     List<Visitor> findByVisitDate(LocalDate visitDate);
+    List<Visitor> findByRequestedBy_UserId(Long userId);
     List<Visitor> findByVisitDateBetween(LocalDate start, LocalDate end);
     List<Visitor> findByNationalIdPassport(String nationalIdPassport);
     List<Visitor> findByHostEmployee_UserId(Long hostEmployeeId);

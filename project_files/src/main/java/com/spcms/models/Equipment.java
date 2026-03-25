@@ -65,6 +65,9 @@ public class Equipment {
     @Column(name = "physical_location", length = 200)
     private String physicalLocation;
 
+    @Column(name = "google_maps_location", length = 500)
+    private String googleMapsLocation;
+
     // === Technical Specifications ===
 
     @Column(name = "cpu_type", length = 100)

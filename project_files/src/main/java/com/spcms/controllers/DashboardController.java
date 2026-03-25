@@ -44,8 +44,8 @@ public class DashboardController {
                 coolingService.getCoolingUnitsByStatus(CoolingUnit.CoolingStatus.ACTIVE).size());
 
         // Incidents
-        model.addAttribute("openIncidents",
-                incidentService.getIncidentsByStatus(Incident.IncidentStatus.OPEN).size());
+        model.addAttribute("inProgressIncidents",
+                incidentService.getIncidentsByStatus(Incident.IncidentStatus.IN_PROGRESS).size());
         model.addAttribute("criticalIncidents",
                 incidentService.getIncidentsBySeverity(Incident.Severity.CRITICAL).size());
 
