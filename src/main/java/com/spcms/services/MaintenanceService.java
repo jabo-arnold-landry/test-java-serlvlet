@@ -4,6 +4,7 @@ import com.spcms.models.UpsMaintenance;
 import com.spcms.models.CoolingMaintenance;
 import com.spcms.repositories.UpsMaintenanceRepository;
 import com.spcms.repositories.CoolingMaintenanceRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,10 @@ public class MaintenanceService {
         return upsMaintenanceRepository.findByUps_UpsIdOrderByMaintenanceDateDesc(upsId);
     }
 
+    public List<UpsMaintenance> getAllUpsMaintenance() {
+        return upsMaintenanceRepository.findAll(Sort.by(Sort.Direction.DESC, "maintenanceDate"));
+    }
+
     public List<UpsMaintenance> getOverdueUpsMaintenance() {
         return upsMaintenanceRepository.findOverdue(LocalDate.now());
     }
@@ -60,6 +65,10 @@ public class MaintenanceService {
 
     public List<CoolingMaintenance> getCoolingMaintenanceHistory(Long coolingId) {
         return coolingMaintenanceRepository.findByCoolingUnit_CoolingIdOrderByMaintenanceDateDesc(coolingId);
+    }
+
+    public List<CoolingMaintenance> getAllCoolingMaintenance() {
+        return coolingMaintenanceRepository.findAll(Sort.by(Sort.Direction.DESC, "maintenanceDate"));
     }
 
     public List<CoolingMaintenance> getOverdueCoolingMaintenance() {

@@ -28,9 +28,14 @@
             <a href="${pageContext.request.contextPath}/visitors" class="nav-link"><i class="bi bi-person-badge"></i> Visitor Management</a>
         </sec:authorize>
 
-        <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
+        <sec:authorize access="hasAnyRole('VIEWER', 'TECHNICIAN', 'MANAGER', 'ADMIN')">
             <div class="nav-section-label">Reports</div>
             <a href="${pageContext.request.contextPath}/reports" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Daily Report</a>
+            <a href="${pageContext.request.contextPath}/reports/equipment-health" class="nav-link"><i class="bi bi-hdd-rack"></i> Equipment Health</a>
+            <a href="${pageContext.request.contextPath}/reports/cost-of-maintenance" class="nav-link"><i class="bi bi-calculator"></i> Maintenance Costs</a>
+            <a href="${pageContext.request.contextPath}/reports/downtime-analysis" class="nav-link"><i class="bi bi-graph-up"></i> Downtime Analysis</a>
+            <a href="${pageContext.request.contextPath}/reports/monthly-quarterly" class="nav-link"><i class="bi bi-calendar-month"></i> Monthly/Quarterly</a>
+                    <a href="${pageContext.request.contextPath}/reports/maintenance-history" class="nav-link"><i class="bi bi-clock-history"></i> Maintenance History</a>
         </sec:authorize>
         
         <sec:authorize access="hasAnyRole('TECHNICIAN', 'MANAGER', 'ADMIN')">

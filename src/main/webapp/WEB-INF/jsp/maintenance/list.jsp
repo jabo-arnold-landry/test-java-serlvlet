@@ -22,7 +22,7 @@
             </div>
         </div>
         
-        <h6 class="mb-3 text-danger"><i class="bi bi-exclamation-circle-fill"></i> Overdue & Upcoming UPS Maintenance</h6>
+        <h6 class="mb-3 text-danger"><i class="bi bi-exclamation-circle-fill"></i> Overdue UPS Maintenance</h6>
         <div class="table-container mb-5">
             <table class="table hover">
                 <thead><tr><th>UPS ID</th><th>Type</th><th>Maintenance Date</th><th>Next Due Date</th><th>Technician</th><th>Vendor</th></tr></thead>
@@ -39,7 +39,24 @@
             </table>
         </div>
 
-        <h6 class="mb-3 text-primary"><i class="bi bi-card-checklist"></i> Recent Cooling Maintenance</h6>
+        <h6 class="mb-3 text-secondary"><i class="bi bi-clock-history"></i> UPS Maintenance History</h6>
+        <div class="table-container mb-5">
+            <table class="table hover">
+                <thead><tr><th>UPS ID</th><th>Type</th><th>Maintenance Date</th><th>Next Due Date</th><th>Technician</th><th>Vendor</th></tr></thead>
+                <tbody>
+                    <c:forEach var="m" items="${allUpsMaintenance}">
+                    <tr>
+                        <td><strong>${m.ups.assetTag}</strong></td><td>${m.maintenanceType}</td>
+                        <td>${m.maintenanceDate}</td><td>${m.nextDueDate}</td>
+                        <td>${m.technician}</td><td>${m.vendor}</td>
+                    </tr>
+                    </c:forEach>
+                    <c:if test="${empty allUpsMaintenance}"><tr><td colspan="6" class="text-center text-muted">No UPS maintenance history found.</td></tr></c:if>
+                </tbody>
+            </table>
+        </div>
+
+        <h6 class="mb-3 text-primary"><i class="bi bi-card-checklist"></i> Cooling Maintenance History</h6>
         <div class="table-container">
             <table class="table hover">
                 <thead><tr><th>Cooling ID</th><th>Type</th><th>Date</th><th>Filter Cleaned</th><th>Technician</th><th>Next Due</th></tr></thead>

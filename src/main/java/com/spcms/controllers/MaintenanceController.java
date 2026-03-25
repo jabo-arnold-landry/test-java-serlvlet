@@ -21,6 +21,8 @@ public class MaintenanceController {
     public String list(Model model) {
         model.addAttribute("overdueUps", maintenanceService.getOverdueUpsMaintenance());
         model.addAttribute("overdueCooling", maintenanceService.getOverdueCoolingMaintenance());
+        model.addAttribute("allUpsMaintenance", maintenanceService.getAllUpsMaintenance());
+        model.addAttribute("allCoolingMaintenance", maintenanceService.getAllCoolingMaintenance());
         return "maintenance/list";
     }
 
