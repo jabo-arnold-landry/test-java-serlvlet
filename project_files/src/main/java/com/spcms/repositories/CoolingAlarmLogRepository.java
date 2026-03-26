@@ -165,8 +165,21 @@ public class CoolingAlarmLogRepository {
     }
 
     public List<CoolingAlarmLog> findByAlarmTimeBetween(LocalDateTime start, LocalDateTime end) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByAlarmTimeBetween'");
+        String sql = "SELECT * FROM cooling_alarm_log WHERE alarm_triggered_at BETWEEN ? AND ? ORDER BY alarm_triggered_at DESC";
+        List<CoolingAlarmLog> alarms = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setTimestamp(1, Timestamp.valueOf(start));
+            ps.setTimestamp(2, Timestamp.valueOf(end));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    alarms.add(extractAlarm(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return alarms;
     }
 
     public Optional<CoolingUnit> findById(Long alarmId) {

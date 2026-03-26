@@ -187,7 +187,7 @@ public class SecurityConfig {
                         targetUrl = request.getContextPath() + "/visitor-portal";
                         break;
                     case "ROLE_VIEWER":
-                        targetUrl = request.getContextPath() + "/visitor-portal";
+                        targetUrl = request.getContextPath() + "/dashboard";
                         break;
                 }
             }

@@ -42,7 +42,7 @@ public class Incident {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 15)
-    private IncidentStatus status = IncidentStatus.IN_PROGRESS;
+    private IncidentStatus status = IncidentStatus.OPEN;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "reported_by")
@@ -100,7 +100,7 @@ public class Incident {
     }
 
     public enum IncidentStatus {
-        IN_PROGRESS, RESOLVED, CLOSED
+        OPEN, IN_PROGRESS, RESOLVED, CLOSED
     }
 
     @PrePersist

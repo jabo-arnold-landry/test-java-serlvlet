@@ -485,6 +485,17 @@ public class AlertService {
         return createHumidityAlert(equipmentType, equipmentId, threshold, actual, direction, notifyAll);
     }
 
+    public Alert createHumidityAlertWithRange(Alert.EquipmentCategory equipmentType,
+                                              Long equipmentId,
+                                              BigDecimal lowThreshold,
+                                              BigDecimal highThreshold,
+                                              BigDecimal actual,
+                                              boolean notifyAll) {
+        boolean isHighViolation = actual != null && highThreshold != null && actual.compareTo(highThreshold) > 0;
+        BigDecimal breachedThreshold = isHighViolation ? highThreshold : lowThreshold;
+        return createHumidityAlert(equipmentType, equipmentId, breachedThreshold, actual, isHighViolation, notifyAll);
+    }
+
     /**
      * Send a test email to verify email configuration.
      */

@@ -75,7 +75,7 @@ public class MonitoringService {
     }
 
     public List<MonitoringLog> getReadingsForEquipment(MonitoringLog.EquipmentType type, Long equipmentId) {
-        return monitoringLogRepository.findByEquipmentTypeAndEquipmentIdOrderByCreatedAtDesc(
+        return monitoringLogRepository.findByEquipmentTypeAndEquipmentIdOrderByReadingTimeDesc(
                 type, equipmentId);
     }
 
@@ -102,7 +102,7 @@ public class MonitoringService {
     }
 
     public List<MonitoringLog> getReadingsForUps(Long upsId) {
-        return monitoringLogRepository.findByEquipmentTypeAndEquipmentIdOrderByCreatedAtDesc(
+        return monitoringLogRepository.findByEquipmentTypeAndEquipmentIdOrderByReadingTimeDesc(
                 MonitoringLog.EquipmentType.UPS, upsId);
     }
 }

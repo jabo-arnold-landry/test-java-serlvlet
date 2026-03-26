@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -649,43 +652,9 @@ public class VisitorPortalController {
 
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=visit_archive_logs.pdf");
-
-        try (com.lowagie.text.Document document = new com.lowagie.text.Document(com.lowagie.text.PageSize.A4.rotate())) {
-            com.lowagie.text.pdf.PdfWriter.getInstance(document, response.getOutputStream());
-            document.open();
-
-            com.lowagie.text.Font titleFont = com.lowagie.text.FontFactory.getFont(com.lowagie.text.FontFactory.HELVETICA_BOLD, 18);
-            com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("Visit Archive Logs", titleFont);
-            title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
-            title.setSpacingAfter(20);
-            document.add(title);
-
-            com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(new float[]{3f, 3f, 4f, 2f, 2f, 2f});
-            table.setWidthPercentage(100);
-            table.setSpacingBefore(10f);
-            table.setSpacingAfter(10f);
-
-            String[] headers = {"Visitor Name", "Company", "Purpose", "Visit Date", "In", "Out"};
-            for (String header : headers) {
-                com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(header, com.lowagie.text.FontFactory.getFont(com.lowagie.text.FontFactory.HELVETICA_BOLD)));
-                cell.setBackgroundColor(java.awt.Color.LIGHT_GRAY);
-                cell.setPadding(5);
-                table.addCell(cell);
-            }
-
-            for (VisitorCheckInOut v : past) {
-                table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(v.getVisitor().getFullName() != null ? v.getVisitor().getFullName() : "")));
-                table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(v.getVisitor().getCompany() != null ? v.getVisitor().getCompany() : "")));
-                table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(v.getVisitor().getPurposeOfVisit() != null ? v.getVisitor().getPurposeOfVisit() : "")));
-                table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(v.getVisitor().getVisitDate() != null ? v.getVisitor().getVisitDate().toString() : "")));
-                table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(v.getCheckInTime() != null ? v.getCheckInTime().toLocalTime().toString().substring(0, 5) : "")));
-                table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(v.getCheckOutTime() != null ? v.getCheckOutTime().toLocalTime().toString().substring(0, 5) : "")));
-            }
-
-            document.add(table);
-        } catch (com.lowagie.text.DocumentException e) {
-            e.printStackTrace();
-        }
+        byte[] pdf = buildVisitHistoryPdf(past);
+        response.setContentLength(pdf.length);
+        response.getOutputStream().write(pdf);
     }
 
     // ==================== INCIDENTS ====================
@@ -731,6 +700,29 @@ public class VisitorPortalController {
         return "redirect:/visitor-portal";
     }
 
+    @PostMapping("/incident")
+    public String saveIncidentAlias(@RequestParam(required = false) String type,
+                                    @RequestParam(required = false) String description,
+                                    RedirectAttributes redirectAttributes,
+                                    Principal principal) {
+        User user = getCurrentUser(principal);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Incident incident = new Incident();
+        incident.setReportedBy(user);
+        incident.setStatus(Incident.IncidentStatus.OPEN);
+        incident.setEquipmentType(Incident.EquipmentType.OTHER);
+        incident.setSeverity(Incident.Severity.MEDIUM);
+        incident.setTitle((type != null && !type.isBlank()) ? type : "Visitor Portal Incident");
+        incident.setDescription(description != null ? description : "");
+        incidentService.logIncident(incident);
+
+        redirectAttributes.addFlashAttribute("success", "Security incident has been logged and escalated to the Manager.");
+        return "redirect:/visitor-portal/support";
+    }
+
     // ==================== NOTIFICATIONS ====================
 
     private List<Map<String, String>> getTechnicianDashNotifications(User technician) {
@@ -759,6 +751,92 @@ public class VisitorPortalController {
         }
         
         return notifications;
+    }
+
+    private byte[] buildVisitHistoryPdf(List<VisitorCheckInOut> visits) throws IOException {
+        List<String> lines = new ArrayList<>();
+        lines.add("Visit Archive Logs");
+        lines.add("");
+        lines.add("Visitor | Company | Purpose | Visit Date | In | Out");
+
+        for (VisitorCheckInOut visit : visits) {
+            Visitor visitor = visit.getVisitor();
+            lines.add(String.join(" | ",
+                    abbreviate(visitor != null ? visitor.getFullName() : "", 24),
+                    abbreviate(visitor != null ? visitor.getCompany() : "", 18),
+                    abbreviate(visitor != null ? visitor.getPurposeOfVisit() : "", 24),
+                    visitor != null && visitor.getVisitDate() != null ? visitor.getVisitDate().toString() : "",
+                    visit.getCheckInTime() != null ? visit.getCheckInTime().toLocalTime().toString().substring(0, 5) : "",
+                    visit.getCheckOutTime() != null ? visit.getCheckOutTime().toLocalTime().toString().substring(0, 5) : ""));
+        }
+
+        return buildSinglePagePdf(lines);
+    }
+
+    private byte[] buildSinglePagePdf(List<String> lines) throws IOException {
+        StringBuilder content = new StringBuilder();
+        content.append("BT\n/F1 11 Tf\n");
+        int y = 560;
+        for (String line : lines) {
+            content.append("1 0 0 1 36 ").append(y).append(" Tm\n");
+            content.append("(").append(escapePdf(line)).append(") Tj\n");
+            y -= 14;
+        }
+        content.append("ET\n");
+
+        byte[] contentBytes = content.toString().getBytes(StandardCharsets.ISO_8859_1);
+        ByteArrayOutputStream pdf = new ByteArrayOutputStream();
+        List<Integer> offsets = new ArrayList<>();
+
+        writePdf(pdf, "%PDF-1.4\n");
+
+        offsets.add(pdf.size());
+        writePdf(pdf, "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+
+        offsets.add(pdf.size());
+        writePdf(pdf, "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
+
+        offsets.add(pdf.size());
+        writePdf(pdf, "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 842 595] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>\nendobj\n");
+
+        offsets.add(pdf.size());
+        writePdf(pdf, "4 0 obj\n<< /Length " + contentBytes.length + " >>\nstream\n");
+        pdf.write(contentBytes);
+        writePdf(pdf, "endstream\nendobj\n");
+
+        offsets.add(pdf.size());
+        writePdf(pdf, "5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n");
+
+        int xrefOffset = pdf.size();
+        writePdf(pdf, "xref\n0 6\n");
+        writePdf(pdf, "0000000000 65535 f \n");
+        for (Integer offset : offsets) {
+            writePdf(pdf, String.format(Locale.ROOT, "%010d 00000 n \n", offset));
+        }
+        writePdf(pdf, "trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + xrefOffset + "\n%%EOF");
+
+        return pdf.toByteArray();
+    }
+
+    private void writePdf(OutputStream outputStream, String value) throws IOException {
+        outputStream.write(value.getBytes(StandardCharsets.ISO_8859_1));
+    }
+
+    private String escapePdf(String value) {
+        return value.replace("\\", "\\\\")
+                .replace("(", "\\(")
+                .replace(")", "\\)");
+    }
+
+    private String abbreviate(String value, int maxLength) {
+        if (value == null) {
+            return "";
+        }
+        String normalized = value.replaceAll("\\s+", " ").trim();
+        if (normalized.length() <= maxLength) {
+            return normalized;
+        }
+        return normalized.substring(0, Math.max(0, maxLength - 3)) + "...";
     }
 
     @GetMapping("/support")

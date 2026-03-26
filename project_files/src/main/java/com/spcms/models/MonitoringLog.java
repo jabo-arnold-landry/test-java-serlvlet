@@ -15,6 +15,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Builder
 public class MonitoringLog {
 
+    public static class MonitoringLogBuilder {
+        public MonitoringLogBuilder humidityPercent(BigDecimal humidity) {
+            this.humidity = humidity;
+            return this;
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "log_id")
@@ -48,6 +55,9 @@ public class MonitoringLog {
     @Column(name = "supply_air_temp")
     private BigDecimal supplyAirTemp;
 
+    @Column(name = "cooling_performance")
+    private String coolingPerformance;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -57,6 +67,10 @@ public class MonitoringLog {
     @Column(name = "reading_time")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime readingTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recorded_by_user_id")
+    private User recordedBy;
 
     @Column(columnDefinition = "TEXT")
     private String notes;
@@ -180,5 +194,37 @@ public class MonitoringLog {
 
     public void setSupplyAirTemp(BigDecimal supplyAirTemp) {
         this.supplyAirTemp = supplyAirTemp;
+    }
+
+    public String getCoolingPerformance() {
+        return coolingPerformance;
+    }
+
+    public void setCoolingPerformance(String coolingPerformance) {
+        this.coolingPerformance = coolingPerformance;
+    }
+
+    public LocalDateTime getReadingTime() {
+        return readingTime;
+    }
+
+    public void setReadingTime(LocalDateTime readingTime) {
+        this.readingTime = readingTime;
+    }
+
+    public User getRecordedBy() {
+        return recordedBy;
+    }
+
+    public void setRecordedBy(User recordedBy) {
+        this.recordedBy = recordedBy;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

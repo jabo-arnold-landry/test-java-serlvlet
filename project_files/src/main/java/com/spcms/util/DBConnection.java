@@ -28,6 +28,10 @@ public class DBConnection {
         }
     }
 
+    public static void setDataSource(DataSource springDataSource) {
+        dataSource = springDataSource;
+    }
+
     public static void closeConnection(Connection conn) {
         if (conn != null) {
             try {
