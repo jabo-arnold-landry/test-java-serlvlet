@@ -31,6 +31,8 @@
         <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
             <div class="nav-section-label">Reports</div>
             <a href="${pageContext.request.contextPath}/reports" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Daily Report</a>
+            <a href="${pageContext.request.contextPath}/reports/monthly" class="nav-link"><i class="bi bi-calendar-month"></i> Monthly Report</a>
+            <a href="${pageContext.request.contextPath}/reports/quarterly" class="nav-link"><i class="bi bi-calendar3"></i> Quarterly Report</a>
         </sec:authorize>
         
         <sec:authorize access="hasAnyRole('TECHNICIAN', 'MANAGER', 'ADMIN')">

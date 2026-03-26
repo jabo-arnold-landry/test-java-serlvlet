@@ -3,6 +3,7 @@ package com.spcms.services;
 import com.spcms.models.DailyConsolidatedReport;
 import com.spcms.models.MonitoringLog;
 import com.spcms.models.Incident;
+import com.spcms.models.MonthlyQuarterlyReportDto;
 import com.spcms.repositories.*;
 import com.spcms.util.ReportCalculationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.math.RoundingMode;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -148,5 +152,85 @@ public class ReportService {
      */
     public List<DailyConsolidatedReport> getLoadTrend(LocalDate start, LocalDate end) {
         return dailyReportRepository.findByReportDateBetweenOrderByReportDateDesc(start, end);
+    }
+
+    // ==================== Monthly and Quarterly Reports ====================
+
+    public MonthlyQuarterlyReportDto generateMonthlyReport(int year, int month) {
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate start = ym.atDay(1);
+        LocalDate end = ym.atEndOfMonth();
+        List<DailyConsolidatedReport> dailyReports = getReportsInRange(start, end);
+        String periodName = ym.getMonth().toString() + " " + year;
+        return aggregateReports(periodName, start, end, dailyReports);
+    }
+
+    public MonthlyQuarterlyReportDto generateQuarterlyReport(int year, int quarter) {
+        int startMonth = (quarter - 1) * 3 + 1;
+        YearMonth startYm = YearMonth.of(year, startMonth);
+        YearMonth endYm = YearMonth.of(year, startMonth + 2);
+        LocalDate start = startYm.atDay(1);
+        LocalDate end = endYm.atEndOfMonth();
+        List<DailyConsolidatedReport> dailyReports = getReportsInRange(start, end);
+        String periodName = "Q" + quarter + " " + year;
+        return aggregateReports(periodName, start, end, dailyReports);
+    }
+
+    private MonthlyQuarterlyReportDto aggregateReports(String periodName, LocalDate start, LocalDate end, List<DailyConsolidatedReport> dailyReports) {
+        if (dailyReports == null || dailyReports.isEmpty()) {
+            return MonthlyQuarterlyReportDto.builder().periodName(periodName).build();
+        }
+
+        BigDecimal totalLoad = BigDecimal.ZERO;
+        int loadCount = 0;
+        int totalAlarms = 0;
+        BigDecimal totalTemp = BigDecimal.ZERO;
+        int tempCount = 0;
+        BigDecimal maxTemp = BigDecimal.ZERO;
+        int totalIncidents = 0;
+        int totalDowntimeMin = 0;
+        int totalVisitors = 0;
+
+        for (DailyConsolidatedReport report : dailyReports) {
+            if (report.getAvgDailyLoad() != null && report.getAvgDailyLoad().compareTo(BigDecimal.ZERO) > 0) {
+                totalLoad = totalLoad.add(report.getAvgDailyLoad());
+                loadCount++;
+            }
+            totalAlarms += report.getTotalUpsAlarms() != null ? report.getTotalUpsAlarms() : 0;
+            
+            if (report.getAvgRoomTemperature() != null && report.getAvgRoomTemperature().compareTo(BigDecimal.ZERO) > 0) {
+                totalTemp = totalTemp.add(report.getAvgRoomTemperature());
+                tempCount++;
+            }
+            if (report.getHighestTempRecorded() != null && report.getHighestTempRecorded().compareTo(maxTemp) > 0) {
+                maxTemp = report.getHighestTempRecorded();
+            }
+            
+            totalIncidents += report.getTotalIncidents() != null ? report.getTotalIncidents() : 0;
+            totalDowntimeMin += report.getTotalDowntimeMin() != null ? report.getTotalDowntimeMin() : 0;
+            totalVisitors += report.getTotalVisitors() != null ? report.getTotalVisitors() : 0;
+        }
+
+        BigDecimal avgLoad = loadCount > 0 ? totalLoad.divide(BigDecimal.valueOf(loadCount), 2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
+        BigDecimal avgTemp = tempCount > 0 ? totalTemp.divide(BigDecimal.valueOf(tempCount), 2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
+
+        long daysInPeriod = java.time.temporal.ChronoUnit.DAYS.between(start, end.plusDays(1));
+        double totalHrs = daysInPeriod * 24.0;
+        
+        BigDecimal mttr = ReportCalculationUtil.calculateMTTR(totalDowntimeMin, totalIncidents);
+        BigDecimal mtbf = ReportCalculationUtil.calculateMTBF(totalHrs, totalDowntimeMin, totalIncidents);
+
+        return MonthlyQuarterlyReportDto.builder()
+                .periodName(periodName)
+                .avgDailyLoad(avgLoad)
+                .totalUpsAlarms(totalAlarms)
+                .avgRoomTemperature(avgTemp)
+                .highestTempRecorded(maxTemp)
+                .totalIncidents(totalIncidents)
+                .totalDowntimeMin(totalDowntimeMin)
+                .mttrMinutes(mttr)
+                .mtbfHours(mtbf)
+                .totalVisitors(totalVisitors)
+                .build();
     }
 }

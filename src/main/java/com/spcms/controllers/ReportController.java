@@ -47,4 +47,30 @@ public class ReportController {
         model.addAttribute("loadTrend", reportService.getLoadTrend(today.minusDays(30), today));
         return "reports/trends";
     }
+
+    @GetMapping("/monthly")
+    public String monthlyReport(@RequestParam(required = false) Integer year,
+                                @RequestParam(required = false) Integer month,
+                                Model model) {
+        LocalDate now = LocalDate.now();
+        int targetYear = year != null ? year : now.getYear();
+        int targetMonth = month != null ? month : now.getMonthValue();
+        model.addAttribute("report", reportService.generateMonthlyReport(targetYear, targetMonth));
+        model.addAttribute("selectedYear", targetYear);
+        model.addAttribute("selectedMonth", targetMonth);
+        return "reports/monthly";
+    }
+
+    @GetMapping("/quarterly")
+    public String quarterlyReport(@RequestParam(required = false) Integer year,
+                                  @RequestParam(required = false) Integer quarter,
+                                  Model model) {
+        LocalDate now = LocalDate.now();
+        int targetYear = year != null ? year : now.getYear();
+        int targetQuarter = quarter != null ? quarter : (now.getMonthValue() - 1) / 3 + 1;
+        model.addAttribute("report", reportService.generateQuarterlyReport(targetYear, targetQuarter));
+        model.addAttribute("selectedYear", targetYear);
+        model.addAttribute("selectedQuarter", targetQuarter);
+        return "reports/quarterly";
+    }
 }
