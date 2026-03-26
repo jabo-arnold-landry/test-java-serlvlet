@@ -5,6 +5,7 @@ import com.spcms.models.ShiftHandoverNote;
 import com.spcms.repositories.ShiftReportRepository;
 import com.spcms.repositories.ShiftHandoverNoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,10 @@ public class ShiftReportService {
 
     public Optional<ShiftReport> getShiftReportById(Long id) {
         return shiftReportRepository.findById(id);
+    }
+
+    public List<ShiftReport> getAllShiftReports() {
+        return shiftReportRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     public List<ShiftReport> getShiftReportsByDate(LocalDate date) {

@@ -28,13 +28,13 @@
             <a href="${pageContext.request.contextPath}/visitors" class="nav-link"><i class="bi bi-person-badge"></i> Visitor Management</a>
         </sec:authorize>
 
-        <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
-            <div class="nav-section-label">Reports</div>
-            <a href="${pageContext.request.contextPath}/reports" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Daily Report</a>
-        </sec:authorize>
-        
         <sec:authorize access="hasAnyRole('TECHNICIAN', 'MANAGER', 'ADMIN')">
+            <div class="nav-section-label">Reports</div>
             <a href="${pageContext.request.contextPath}/shift-reports" class="nav-link"><i class="bi bi-clock-history"></i> Shift Reports</a>
+        </sec:authorize>
+
+        <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
+            <a href="${pageContext.request.contextPath}/reports" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Daily Report</a>
         </sec:authorize>
 
         <sec:authorize access="hasRole('ADMIN')">

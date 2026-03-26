@@ -24,7 +24,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h4 style="font-weight:700;margin:0;">Shift Report #${report.reportId}</h4>
-                <p class="text-muted mb-0" style="font-size:14px;">${report.shiftType} Shift - ${report.shiftDate} | Staff: ${report.staff.fullName}</p>
+                <p class="text-muted mb-0" style="font-size:14px;">${report.shiftType} Shift - ${report.shiftDate} | Staff: ${report.staff.userId} - ${report.staff.fullName}</p>
             </div>
             <a href="${pageContext.request.contextPath}/shift-reports" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
         </div>
@@ -66,8 +66,24 @@
                         <tr><td class="text-muted" style="width:45%;">Avg Input Voltage</td><td>${report.avgInputVoltage} V</td></tr>
                         <tr><td class="text-muted">Avg Output Voltage</td><td>${report.avgOutputVoltage} V</td></tr>
                         <tr><td class="text-muted">Max Load</td><td>${report.maxLoadPercent}%</td></tr>
-                        <tr><td class="text-muted">Min Battery Level</td><td>${report.minBatteryLevel}%</td></tr>
-                        <tr><td class="text-muted">Runtime Remaining</td><td>${report.batteryRuntimeRemaining} min</td></tr>
+                        <tr>
+                            <td class="text-muted">Min Battery Level</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${report.minBatteryLevel != null}">${report.minBatteryLevel}%</c:when>
+                                    <c:otherwise>N/A</c:otherwise>
+                                </c:choose>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Runtime Remaining</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${report.batteryRuntimeRemaining != null}">${report.batteryRuntimeRemaining} min</c:when>
+                                    <c:otherwise>N/A</c:otherwise>
+                                </c:choose>
+                            </td>
+                        </tr>
                         <tr><td class="text-muted">Overload Occurred</td><td>${report.overloadOccurred ? 'Yes' : 'No'}</td></tr>
                         <tr><td class="text-muted">Bypass Activated</td><td>${report.bypassActivated ? 'Yes' : 'No'}</td></tr>
                     </table>
@@ -81,6 +97,7 @@
                         <tr><td class="text-muted">Lowest Temp</td><td>${report.lowestTempRecorded}&deg;C</td></tr>
                         <tr><td class="text-muted">Avg Humidity</td><td>${report.avgHumidity}%</td></tr>
                         <tr><td class="text-muted">Compressor Status</td><td>${report.compressorStatus}</td></tr>
+                        <tr><td class="text-muted">Fan Status</td><td>${report.fanStatus}</td></tr>
                         <tr><td class="text-muted">High Temp Alarm</td><td>${report.highTempAlarm ? 'Yes' : 'No'}</td></tr>
                         <tr><td class="text-muted">Humidity Alarm</td><td>${report.humidityAlarm ? 'Yes' : 'No'}</td></tr>
                     </table>
@@ -103,9 +120,19 @@
                         <tr><td class="text-muted">Total Visitors</td><td>${report.numVisitors}</td></tr>
                         <tr><td class="text-muted">Approved By</td><td>${report.visitorApprovedBy}</td></tr>
                         <tr><td class="text-muted">Escort</td><td>${report.escortName}</td></tr>
+                        <tr><td class="text-muted">Visit Summary</td><td>${report.visitDurationSummary}</td></tr>
+                        <tr><td class="text-muted">Visitor Incident</td><td>${report.visitorIncident}</td></tr>
                     </table>
                 </div>
             </div>
+        </div>
+
+        <div class="stat-card mb-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-wrench-adjustable-circle"></i> Maintenance (Manual)</h6>
+            <p style="font-size:14px;"><strong>Preventive:</strong> ${report.preventiveMaintDone != null ? report.preventiveMaintDone : 'None'}</p>
+            <p style="font-size:14px;"><strong>Corrective:</strong> ${report.correctiveMaintDone != null ? report.correctiveMaintDone : 'None'}</p>
+            <p style="font-size:14px;"><strong>Spare Parts:</strong> ${report.sparePartsUsed != null ? report.sparePartsUsed : 'None'}</p>
+            <p style="font-size:14px;" class="mb-0"><strong>Photos Path:</strong> ${report.photosUploadedPath != null ? report.photosUploadedPath : 'None'}</p>
         </div>
 
         <div class="stat-card mb-4">
