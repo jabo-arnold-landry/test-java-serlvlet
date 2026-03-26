@@ -1,0 +1,80 @@
+*   4c96539 (HEAD -> feature/spcms-project, dev) Merge branch 'dev' of https://github.com/jabo-arnold-landry/test-java-serlvlet into feature/spcms-project
+|\  
+| *   8593737 (origin/dev) Merge pull request #6 from jabo-arnold-landry/leon/herve/regis/revised
+| |\  
+| | *   7e2f63a Merge dev into leon/herve/regis/revised - Resolved all conflicts
+| | |\  
+| | |/  
+| |/|   
+| * | 3714add Created `lsfiles.txt`, `lsfiles8.txt`, `unmerged.txt`, and `diff_u.txt` containing file listings and Git status information.
+| * |   1385718 chore: Resolve merge conflicts by re-synchronizing remote origin/dev changes into project_files structure
+| |\ \  
+| | * | eeebd10 ups and cooling monitoring
+| | * |   535028e merge(dev): integrate paulderire role-18 maintenance reporting work
+| | |\ \  
+| | | * | 5b358d9 feat(role-18): paulderire implement complete maintenance history reporting
+| | * | |   ef98821 Resolve merge conflicts from origin/ft-kimenyi
+| | |\ \ \  
+| | | * | | 8d17214 fix:fixed the incident report and downtime report
+| | * | | |   0a429f0 Merge remote-tracking branch 'origin/esther' into dev
+| | |\ \ \ \  
+| | | * | | | 874d89d Implement Reporting & Analytics: Equipment Health and Maintenance History Reports
+| | | * | | | 48a4037 Add equipment health and maintenance history reports
+| | | |/ / /  
+| | * | | |   a422481 Resolve merge conflicts from origin/pamella
+| | |\ \ \ \  
+| | | * | | | a51258b feat: implemented download button and upload file in service report, reminder
+| | | * | | | 74ecf5c all thing work remain download
+| | | |/ / /  
+| | * | | |   7779b59 Merge branch '95d3dde' - Resolve merge conflicts
+| | |\ \ \ \  
+| | | * \ \ \   95d3dde Merge branch 'dev' of https://github.com/jabo-arnold-landry/test-java-serlvlet into dev
+| | | |\ \ \ \  
+| | | * \ \ \ \   11bc71e fix: remove remaining conflict markers in DataInitializer.java
+| | | |\ \ \ \ \  
+| | | * | | | | | 113fd1d fix: resolve old conflict markers in DataInitializer.java
+| | | * | | | | |   5e2be60 Merge branch 'ft/belinice' into dev - resolved conflicts
+| | | |\ \ \ \ \ \  
+| | | | * | | | | | 8ebb5a9 feat: add stashed changes to ft/belinice
+| | | | | |_|/ / /  
+| | | | |/| | | |   
+| | * | | | | | | f99e65d feat: Add WebMvcConfig for serving uploaded files with resource handlers
+| | * | | | | | | 52fdd90 incident and faulty management
+| | * | | | | | | 6c3cd3d feat: all work remain with upload image
+| | | |/ / / / /  
+| | |/| | | | |   
+| * | | | | | |   609a852 chore: Resolve merge conflicts by synchronizing dev branch changes into reorganized project_files structure
+| |\ \ \ \ \ \ \  
+| | | |_|_|/ / /  
+| | |/| | | | |   
+| | * | | | | | 67df789 location by jonathan
+| | | |_|/ / /  
+| | |/| | | |   
+| | * | | | |   a48960a Merge branch 'annet' into dev
+| | |\ \ \ \ \  
+| | | |_|/ / /  
+| | |/| | | |   
+| | | * | | | e093d33 work ya annet
+| | | |/ / /  
+| | * | | |   ff6501e Merge branch 'ft-cooling' into dev
+| | |\ \ \ \  
+| | | * | | | 0d598ed removed test file
+| | | * | | | f99abd6 cooling and incident
+| | | |/ / /  
+| | * | | |   2d1b78e Merge branch 'ft/emelyse' into dev
+| | |\ \ \ \  
+| | | * | | | 3705f99 feat: Add cooling and UPS report JSP pages with filters and performance metrics
+| | | * | | |   2dc0c6f merged-branch
+| | | |\ \ \ \  
+| | | | | |/ /  
+| | | | |/| |   
+| | | * | | | f18d2ea feat:Add a crud operation to monitoring section
+| | | * | | |   96d64cd Merge branch 'feature/spcms-project' of https://github.com/jabo-arnold-landry/test-java-serlvlet into ft/emelyse
+| | | |\ \ \ \  
+| | | | |_|/ /  
+| | | |/| | |   
+| | * | | | | c9a3b4d Implement Reporting & Analytics: Equipment Health and Maintenance History Reports
+| | * | | | |   6d33cbc Merge branch 'Menelick' into dev
+| | |\ \ \ \ \  
+| | | * | | | | 2c9281b implementingreportanlysis
+| | | |/ / / /  
