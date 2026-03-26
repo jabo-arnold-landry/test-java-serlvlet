@@ -27,54 +27,54 @@ public class CostAnalysisReport {
     // === Maintenance Costs ===
 
     @Column(name = "total_maintenance_cost", precision = 15, scale = 2)
-    private BigDecimal totalMaintenanceCost = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal totalMaintenanceCost = BigDecimal.ZERO;
 
     @Column(name = "ups_maintenance_cost", precision = 15, scale = 2)
-    private BigDecimal upsMaintenanceCost = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal upsMaintenanceCost = BigDecimal.ZERO;
 
     @Column(name = "cooling_maintenance_cost", precision = 15, scale = 2)
-    private BigDecimal coolingMaintenanceCost = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal coolingMaintenanceCost = BigDecimal.ZERO;
 
     @Column(name = "preventive_maintenance_cost", precision = 15, scale = 2)
-    private BigDecimal preventiveMaintenanceCost = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal preventiveMaintenanceCost = BigDecimal.ZERO;
 
     @Column(name = "corrective_maintenance_cost", precision = 15, scale = 2)
-    private BigDecimal correctiveMaintenanceCost = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal correctiveMaintenanceCost = BigDecimal.ZERO;
 
     // === Incident/Repair Costs ===
 
     @Column(name = "total_repair_cost", precision = 15, scale = 2)
-    private BigDecimal totalRepairCost = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal totalRepairCost = BigDecimal.ZERO;
 
     @Column(name = "critical_incident_cost", precision = 15, scale = 2)
-    private BigDecimal criticalIncidentCost = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal criticalIncidentCost = BigDecimal.ZERO;
 
     // === Downtime Cost ===
 
     @Column(name = "total_downtime_minutes")
-    private Integer totalDowntimeMinutes = 0;
+    @Builder.Default private Integer totalDowntimeMinutes = 0;
 
     @Column(name = "cost_per_hour_loss", precision = 15, scale = 2)
-    private BigDecimal costPerHourLoss = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal costPerHourLoss = BigDecimal.ZERO;
 
     @Column(name = "total_downtime_cost", precision = 15, scale = 2)
-    private BigDecimal totalDowntimeCost = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal totalDowntimeCost = BigDecimal.ZERO;
 
     // === Summary Costs ===
 
     @Column(name = "total_maintenance_cost_all", precision = 15, scale = 2)
-    private BigDecimal totalMaintenanceCostAll = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal totalMaintenanceCostAll = BigDecimal.ZERO;
 
     @Column(name = "total_operational_cost", precision = 15, scale = 2)
-    private BigDecimal totalOperationalCost = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal totalOperationalCost = BigDecimal.ZERO;
 
     // === Metrics ===
 
     @Column(name = "maintenance_cost_per_hour", precision = 15, scale = 2)
-    private BigDecimal maintenanceCostPerHour = BigDecimal.ZERO;
+    @Builder.Default private BigDecimal maintenanceCostPerHour = BigDecimal.ZERO;
 
     @Column(name = "total_incidents")
-    private Integer totalIncidents = 0;
+    @Builder.Default private Integer totalIncidents = 0;
 
     @Column(name = "maintenance_events")
     private Integer maintenanceEvents = 0;

@@ -41,10 +41,6 @@ public class MaintenanceService {
         return upsMaintenanceRepository.findByUps_UpsIdOrderByMaintenanceDateDesc(upsId);
     }
 
-    public List<UpsMaintenance> getAllUpsMaintenance() {
-        return upsMaintenanceRepository.findAll(Sort.by(Sort.Direction.DESC, "maintenanceDate"));
-    }
-
     public List<UpsMaintenance> getOverdueUpsMaintenance() {
         return upsMaintenanceRepository.findOverdue(LocalDate.now());
     }
@@ -79,10 +75,6 @@ public class MaintenanceService {
         return coolingMaintenanceRepository.findByCoolingUnit_CoolingIdOrderByMaintenanceDateDesc(coolingId);
     }
 
-    public List<CoolingMaintenance> getAllCoolingMaintenance() {
-        return coolingMaintenanceRepository.findAll(Sort.by(Sort.Direction.DESC, "maintenanceDate"));
-    }
-
     public List<CoolingMaintenance> getOverdueCoolingMaintenance() {
         return coolingMaintenanceRepository.findOverdue(LocalDate.now());
     }
@@ -93,10 +85,6 @@ public class MaintenanceService {
 
     public CoolingMaintenance updateCoolingMaintenance(CoolingMaintenance maintenance) {
         return coolingMaintenanceRepository.save(maintenance);
-    }
-
-    public List<CoolingMaintenance> getAllCoolingMaintenance() {
-        return coolingMaintenanceRepository.findAll();
     }
 
     public void deleteCoolingMaintenance(Long id) {
@@ -189,13 +177,6 @@ maintenance.setUps(ups);
             maintenance.setRemarks("Quarterly preventive maintenance - Q" + (q + 1));
             coolingMaintenanceRepository.save(maintenance);
         }
-    }
-    public List<UpsMaintenance> getAllUpsMaintenance() {
-        return upsMaintenanceRepository.findAll();
-    }
-
-    public List<CoolingMaintenance> getAllCoolingMaintenance() {
-        return coolingMaintenanceRepository.findAll();
     }
 
     public java.math.BigDecimal getTotalUpsCost() {

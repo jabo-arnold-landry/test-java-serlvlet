@@ -15,6 +15,7 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
     List<Incident> findByAssignedTo_UserId(Long userId);
     List<Incident> findByStatusInOrderByUpdatedAtDesc(List<Incident.IncidentStatus> statuses);
     List<Incident> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    List<Incident> findByStatusAndCreatedAtBetween(Incident.IncidentStatus status, LocalDateTime start, LocalDateTime end);
 
     @Query("SELECT SUM(i.downtimeMinutes) FROM Incident i WHERE i.createdAt BETWEEN :start AND :end")
     Integer sumDowntimeMinutes(LocalDateTime start, LocalDateTime end);
@@ -24,4 +25,7 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
 
     @Query("SELECT COUNT(i) FROM Incident i WHERE i.equipmentType = :type AND i.equipmentId = :equipmentId AND i.createdAt BETWEEN :start AND :end")
     Long countByEquipmentTypeAndEquipmentIdAndCreatedAtBetween(Incident.EquipmentType type, Long equipmentId, LocalDateTime start, LocalDateTime end);
+
+    @Query("SELECT new map(i.equipmentType as equipmentType, COUNT(i) as count) FROM Incident i WHERE i.createdAt BETWEEN :start AND :end GROUP BY i.equipmentType")
+    List<Object[]> countByEquipmentType(LocalDateTime start, LocalDateTime end);
 }

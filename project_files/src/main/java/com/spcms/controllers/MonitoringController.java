@@ -3,7 +3,6 @@ package com.spcms.controllers;
 import com.spcms.models.MonitoringLog;
 import com.spcms.models.User;
 import com.spcms.repositories.UserRepository;
-import com.spcms.models.User;
 import com.spcms.services.MonitoringService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,9 +34,6 @@ public class MonitoringController {
         model.addAttribute("monitoringLog", new MonitoringLog());
         return "monitoring/form";
     }
-
-    @Autowired
-    private com.spcms.repositories.UserRepository userRepository;
 
     @PostMapping("/save")
     public String save(@ModelAttribute MonitoringLog log,

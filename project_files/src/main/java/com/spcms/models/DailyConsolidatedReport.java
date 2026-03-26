@@ -27,13 +27,13 @@ public class DailyConsolidatedReport {
     private BigDecimal avgDailyLoad;
 
     @Column(name = "total_ups_alarms")
-    private Integer totalUpsAlarms = 0;
+    @Builder.Default private Integer totalUpsAlarms = 0;
 
     @Column(name = "battery_status_summary", columnDefinition = "TEXT")
     private String batteryStatusSummary;
 
     @Column(name = "failover_to_generator")
-    private Boolean failoverToGenerator = false;
+    @Builder.Default private Boolean failoverToGenerator = false;
 
     // === Cooling Performance ===
 
@@ -47,18 +47,18 @@ public class DailyConsolidatedReport {
     private String humidityStability;
 
     @Column(name = "cooling_failure")
-    private Boolean coolingFailure = false;
+    @Builder.Default private Boolean coolingFailure = false;
 
     // === Incidents Summary ===
 
     @Column(name = "total_incidents")
-    private Integer totalIncidents = 0;
+    @Builder.Default private Integer totalIncidents = 0;
 
     @Column(name = "total_downtime_min")
-    private Integer totalDowntimeMin = 0;
+    @Builder.Default private Integer totalDowntimeMin = 0;
 
     @Column(name = "critical_incidents")
-    private Integer criticalIncidents = 0;
+    @Builder.Default private Integer criticalIncidents = 0;
 
     @Column(name = "mttr_minutes", precision = 10, scale = 2)
     private BigDecimal mttrMinutes;
@@ -77,13 +77,13 @@ public class DailyConsolidatedReport {
     // === Visitor Summary ===
 
     @Column(name = "total_visitors")
-    private Integer totalVisitors = 0;
+    @Builder.Default private Integer totalVisitors = 0;
 
     @Column(name = "overstayed_visitors")
-    private Integer overstayedVisitors = 0;
+    @Builder.Default private Integer overstayedVisitors = 0;
 
     @Column(name = "high_risk_visits")
-    private Integer highRiskVisits = 0;
+    @Builder.Default private Integer highRiskVisits = 0;
 
     @Column(name = "generated_at", updatable = false)
     private LocalDateTime generatedAt;

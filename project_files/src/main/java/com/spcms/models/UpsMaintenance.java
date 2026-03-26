@@ -58,8 +58,6 @@ public class UpsMaintenance {
 
     @Column(name = "service_report_path", length = 500)
     private String serviceReportPath;
-    @Column(name = "maintenance_cost", precision = 15, scale = 2)
-    private java.math.BigDecimal maintenanceCost;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
