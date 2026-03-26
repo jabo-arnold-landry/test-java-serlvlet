@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <!-- Date Filter -->
+
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-body">
                 <form method="get" class="row g-3 align-items-end">
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <!-- Summary Cards Row 1 -->
+
         <div class="row mb-3">
             <div class="col-md-4 mb-3">
                 <div class="card border-0 shadow-sm stat-card blue h-100">
