@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -17,6 +19,10 @@ import java.util.UUID;
  */
 @Service
 public class FileStorageService {
+
+    private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
+            ".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png", ".xls", ".xlsx"
+    );
 
     @Value("${file.upload-dir:./uploads}")
     private String uploadDir;
@@ -46,7 +52,11 @@ public class FileStorageService {
             String originalName = file.getOriginalFilename();
             String extension = "";
             if (originalName != null && originalName.contains(".")) {
-                extension = originalName.substring(originalName.lastIndexOf("."));
+                extension = originalName.substring(originalName.lastIndexOf(".")).toLowerCase(Locale.ROOT);
+            }
+
+            if (!ALLOWED_EXTENSIONS.contains(extension)) {
+                throw new IllegalArgumentException("Unsupported file type. Allowed: PDF, DOC, DOCX, JPG, PNG, XLS, XLSX");
             }
 
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
