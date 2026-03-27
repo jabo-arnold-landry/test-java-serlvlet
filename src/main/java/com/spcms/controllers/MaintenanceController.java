@@ -83,10 +83,17 @@ public class MaintenanceController {
     public String saveUpsMaintenance(@ModelAttribute UpsMaintenance maintenance,
                                       @RequestParam(value = "serviceReportFile", required = false) MultipartFile serviceReportFile,
                                       RedirectAttributes redirectAttributes) {
+        boolean isEdit = maintenance.getMaintenanceId() != null;
+
         // Handle file upload
         if (serviceReportFile != null && !serviceReportFile.isEmpty()) {
-            String filePath = fileStorageService.storeServiceReport(serviceReportFile);
-            maintenance.setServiceReportPath(filePath);
+            try {
+                String filePath = fileStorageService.storeServiceReport(serviceReportFile);
+                maintenance.setServiceReportPath(filePath);
+            } catch (RuntimeException ex) {
+                redirectAttributes.addFlashAttribute("error", "Failed to upload UPS service report: " + ex.getMessage());
+                return "redirect:/maintenance";
+            }
         } else if (maintenance.getMaintenanceId() != null) {
             // Preserve existing file path on edit if no new file uploaded
             maintenanceService.getUpsMaintenanceById(maintenance.getMaintenanceId())
@@ -98,7 +105,7 @@ public class MaintenanceController {
         }
 
         maintenanceService.scheduleUpsMaintenance(maintenance);
-        String action = maintenance.getMaintenanceId() != null ? "updated" : "saved";
+        String action = isEdit ? "updated" : "saved";
         redirectAttributes.addFlashAttribute("success", "UPS maintenance record " + action + " successfully");
         return "redirect:/maintenance";
     }
@@ -146,10 +153,17 @@ public class MaintenanceController {
     public String saveCoolingMaintenance(@ModelAttribute CoolingMaintenance maintenance,
                                           @RequestParam(value = "serviceReportFile", required = false) MultipartFile serviceReportFile,
                                           RedirectAttributes redirectAttributes) {
+        boolean isEdit = maintenance.getMaintenanceId() != null;
+
         // Handle file upload
         if (serviceReportFile != null && !serviceReportFile.isEmpty()) {
-            String filePath = fileStorageService.storeServiceReport(serviceReportFile);
-            maintenance.setServiceReportPath(filePath);
+            try {
+                String filePath = fileStorageService.storeServiceReport(serviceReportFile);
+                maintenance.setServiceReportPath(filePath);
+            } catch (RuntimeException ex) {
+                redirectAttributes.addFlashAttribute("error", "Failed to upload Cooling service report: " + ex.getMessage());
+                return "redirect:/maintenance";
+            }
         } else if (maintenance.getMaintenanceId() != null) {
             // Preserve existing file path on edit if no new file uploaded
             maintenanceService.getCoolingMaintenanceById(maintenance.getMaintenanceId())
@@ -161,7 +175,7 @@ public class MaintenanceController {
         }
 
         maintenanceService.scheduleCoolingMaintenance(maintenance);
-        String action = maintenance.getMaintenanceId() != null ? "updated" : "saved";
+        String action = isEdit ? "updated" : "saved";
         redirectAttributes.addFlashAttribute("success", "Cooling maintenance record " + action + " successfully");
         return "redirect:/maintenance";
     }
