@@ -141,11 +141,16 @@
         <%-- Report Header --%>
         <div class="report-header d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <h4><i class="bi bi-clipboard2-data me-2"></i>Incident Report</h4>
-                <p><i class="bi bi-calendar3 me-1"></i>Report for: <strong style="color:#60a5fa;">${selectedDate}</strong></p>
+                <h4><i class="bi bi-shield-exclamation text-primary me-2"></i>Incident Report</h4>
+                <p><i class="bi bi-calendar3 me-1"></i>Report for: <strong style="color:#60a5fa;">${periodLabel}</strong></p>
             </div>
             <div class="d-flex gap-2 align-items-center no-print">
                 <form action="${pageContext.request.contextPath}/incidents/report" method="get" class="date-picker-form">
+                    <select name="reportType" class="form-select form-select-sm" style="width:auto;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);color:#fff;">
+                        <option value="daily" style="color:black;" ${reportType == 'daily' ? 'selected' : ''}>Daily</option>
+                        <option value="monthly" style="color:black;" ${reportType == 'monthly' ? 'selected' : ''}>Monthly</option>
+                        <option value="annually" style="color:black;" ${reportType == 'annually' ? 'selected' : ''}>Annually</option>
+                    </select>
                     <input type="date" class="form-control form-control-sm" name="date" id="reportDate"
                            value="${selectedDate}" style="width:155px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);color:#fff;"/>
                     <button type="submit" class="btn btn-sm btn-outline-light">
@@ -168,7 +173,7 @@
                     <i class="bi bi-exclamation-triangle-fill kpi-icon"></i>
                     <div class="kpi-label">Total Incidents</div>
                     <div class="kpi-value" style="color:#3b82f6;">${totalCount}</div>
-                    <div class="text-muted" style="font-size:12px;">on ${selectedDate}</div>
+                    <div class="text-muted" style="font-size:12px;">in ${periodLabel}</div>
                 </div>
             </div>
             <div class="col-md-3">
@@ -203,14 +208,14 @@
             <div class="col-lg-8">
                 <div class="stat-card">
                     <div class="section-title">
-                        <i class="bi bi-list-check text-primary"></i>
-                        <span>All Incidents — ${selectedDate}</span>
-                        <span class="badge bg-primary ms-auto">${totalCount}</span>
+                        <i class="bi bi-exclamation-octagon-fill text-danger"></i>
+                        <span>Open & In Progress Incidents — ${periodLabel}</span>
+                        <span class="badge bg-danger ms-auto">${openCount + inProgressCount}</span>
                     </div>
 
                     <c:choose>
-                        <c:when test="${not empty todayIncidents}">
-                            <div class="table-responsive">
+                        <c:when test="${not empty openIncidents}">
+                             <div class="table-responsive">
                                 <table class="table table-hover incident-table mb-0">
                                     <thead>
                                         <tr>
@@ -219,12 +224,12 @@
                                             <th>Type</th>
                                             <th>Severity</th>
                                             <th>Status</th>
-                                            <th>Resolved By</th>
-                                            <th>Downtime</th>
+                                            <th>Reported By</th>
+                                            <th>Assigned To</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach var="inc" items="${todayIncidents}">
+                                        <c:forEach var="inc" items="${openIncidents}">
                                             <tr>
                                                 <td>
                                                     <a href="${pageContext.request.contextPath}/incidents/view/${inc.incidentId}"
@@ -254,15 +259,9 @@
                                                         ${inc.status}
                                                     </span>
                                                 </td>
-                                                <td>${inc.resolvedBy != null ? inc.resolvedBy.fullName : '—'}</td>
+                                                <td>${inc.reportedBy != null ? inc.reportedBy.fullName : '—'}</td>
                                                 <td>
-                                                    <c:choose>
-                                                        <c:when test="${inc.downtimeMinutes != null}">
-                                                            <strong>${inc.downtimeMinutes}</strong>
-                                                            <span class="text-muted" style="font-size:10px;">min</span>
-                                                        </c:when>
-                                                        <c:otherwise><span class="text-muted">—</span></c:otherwise>
-                                                    </c:choose>
+                                                    <strong>${inc.assignedTo != null ? inc.assignedTo.fullName : 'Unassigned'}</strong>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -273,7 +272,7 @@
                         <c:otherwise>
                             <div class="empty-state">
                                 <i class="bi bi-inbox"></i>
-                                <p class="mb-0">No incidents recorded for this date</p>
+                                <p class="mb-0">No open incidents recorded for this period</p>
                             </div>
                         </c:otherwise>
                     </c:choose>
@@ -292,10 +291,10 @@
                         <c:when test="${not empty byDepartment}">
                             <c:forEach var="dept" items="${byDepartment}">
                                 <div class="dept-bar">
-                                    <div class="dept-icon ${dept[0] == 'UPS' ? 'ups' : dept[0] == 'COOLING' ? 'cooling' : 'other'}">
+                                    <div class="dept-icon ${dept[0].name() == 'UPS' ? 'ups' : dept[0].name() == 'COOLING' ? 'cooling' : 'other'}">
                                         <c:choose>
-                                            <c:when test="${dept[0] == 'UPS'}"><i class="bi bi-lightning-charge-fill"></i></c:when>
-                                            <c:when test="${dept[0] == 'COOLING'}"><i class="bi bi-snow2"></i></c:when>
+                                            <c:when test="${dept[0].name() == 'UPS'}"><i class="bi bi-lightning-charge-fill"></i></c:when>
+                                            <c:when test="${dept[0].name() == 'COOLING'}"><i class="bi bi-snow2"></i></c:when>
                                             <c:otherwise><i class="bi bi-gear-fill"></i></c:otherwise>
                                         </c:choose>
                                     </div>
@@ -327,7 +326,7 @@
                         <c:if test="${totalDowntime > 0 && totalCount > 0}">
                             <div class="mt-2" style="font-size:12px;color:#a16207;">
                                 <i class="bi bi-calculator me-1"></i>
-                                Average: <strong>${totalDowntime / totalCount}</strong> min per incident
+                                Average: <strong><fmt:formatNumber value="${totalDowntime / totalCount}" maxFractionDigits="1" /></strong> min per incident
                             </div>
                         </c:if>
                     </div>
@@ -353,9 +352,9 @@
                                             <th>Title</th>
                                             <th>Type</th>
                                             <th>Severity</th>
+                                            <th>Resolved By</th>
                                             <th>Root Cause</th>
                                             <th>Action Taken</th>
-                                             <th>Resolved By</th>
                                             <th>Downtime</th>
                                         </tr>
                                     </thead>
@@ -382,17 +381,19 @@
                                                         ${inc.severity}
                                                     </span>
                                                 </td>
-                                                <td style="max-width:200px;">
-                                                    <span class="text-truncate d-inline-block" style="max-width:200px;" title="${inc.rootCause}">
+                                                <td>
+                                                    <strong>${inc.resolvedBy != null ? inc.resolvedBy.fullName : '—'}</strong>
+                                                </td>
+                                                <td style="max-width:180px;">
+                                                    <span class="text-truncate d-inline-block" style="max-width:180px;" title="${inc.rootCause}">
                                                         ${not empty inc.rootCause ? inc.rootCause : '—'}
                                                     </span>
                                                 </td>
-                                                <td style="max-width:200px;">
-                                                    <span class="text-truncate d-inline-block" style="max-width:200px;" title="${inc.actionTaken}">
+                                                <td style="max-width:180px;">
+                                                    <span class="text-truncate d-inline-block" style="max-width:180px;" title="${inc.actionTaken}">
                                                         ${not empty inc.actionTaken ? inc.actionTaken : '—'}
                                                     </span>
                                                 </td>
-                                                <td>${inc.resolvedBy != null ? inc.resolvedBy.fullName : '—'}</td>
                                                  <td>
                                                     <c:choose>
                                                         <c:when test="${inc.downtimeMinutes != null}">

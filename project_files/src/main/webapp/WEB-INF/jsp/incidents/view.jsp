@@ -79,9 +79,9 @@
                                 <div class="mb-3">
                                     <label class="form-label">Technician</label>
                                     <select class="form-select" name="assigneeId" required>
-                                        <option value="" disabled selected>Select a technician</option>
+                                        <option value="" disabled ${incident.assignedTo == null ? 'selected' : ''}>Select a technician</option>
                                         <c:forEach var="tech" items="${technicians}">
-                                            <option value="${tech.userId}">${tech.fullName}</option>
+                                            <option value="${tech.userId}" ${incident.assignedTo != null && incident.assignedTo.userId == tech.userId ? 'selected' : ''}>${tech.fullName}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -97,9 +97,9 @@
                                 <div class="mb-3">
                                     <label class="form-label">Technician</label>
                                     <select class="form-select" name="resolverId" required>
-                                        <option value="" disabled selected>Select a technician</option>
+                                        <option value="" disabled ${incident.assignedTo == null ? 'selected' : ''}>Select a technician</option>
                                         <c:forEach var="tech" items="${technicians}">
-                                            <option value="${tech.userId}">${tech.fullName}</option>
+                                            <option value="${tech.userId}" ${incident.assignedTo != null && incident.assignedTo.userId == tech.userId ? 'selected' : ''}>${tech.fullName}</option>
                                         </c:forEach>
                                     </select>
                                 </div>

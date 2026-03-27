@@ -63,25 +63,55 @@ public class IncidentController {
     @GetMapping("/report")
     public String incidentReport(
             @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false, defaultValue = "daily") String reportType,
             Model model) {
         LocalDate reportDate = (date != null) ? date : LocalDate.now();
-        LocalDateTime dayStart = reportDate.atStartOfDay();
-        LocalDateTime dayEnd = reportDate.atTime(LocalTime.MAX);
+        LocalDateTime periodStart;
+        LocalDateTime periodEnd;
+        String periodLabel;
+
+        if ("monthly".equalsIgnoreCase(reportType)) {
+            LocalDate startOfMonth = reportDate.withDayOfMonth(1);
+            LocalDate endOfMonth = reportDate.withDayOfMonth(reportDate.lengthOfMonth());
+            periodStart = startOfMonth.atStartOfDay();
+            periodEnd = endOfMonth.atTime(LocalTime.MAX);
+            periodLabel = reportDate.getMonth().toString() + " " + reportDate.getYear();
+        } else if ("annually".equalsIgnoreCase(reportType)) {
+            LocalDate startOfYear = reportDate.withDayOfYear(1);
+            LocalDate endOfYear = reportDate.withDayOfYear(reportDate.lengthOfYear());
+            periodStart = startOfYear.atStartOfDay();
+            periodEnd = endOfYear.atTime(LocalTime.MAX);
+            periodLabel = String.valueOf(reportDate.getYear());
+        } else {
+            // daily
+            periodStart = reportDate.atStartOfDay();
+            periodEnd = reportDate.atTime(LocalTime.MAX);
+            periodLabel = reportDate.toString();
+        }
 
         // All incidents for the selected date
-        List<Incident> todayIncidents = incidentService.getIncidentsForDate(dayStart, dayEnd);
-        model.addAttribute("todayIncidents", todayIncidents);
+        List<Incident> todayIncidents = incidentService.getIncidentsForDate(periodStart, periodEnd);
+        
+        // Split into lists for the view
+        List<Incident> openIncidents = todayIncidents.stream()
+                .filter(i -> i.getStatus() == Incident.IncidentStatus.OPEN || i.getStatus() == Incident.IncidentStatus.IN_PROGRESS)
+                .collect(java.util.stream.Collectors.toList());
 
         // Resolved incidents for the selected date
-        List<Incident> resolvedIncidents = incidentService.getResolvedIncidentsForDate(dayStart, dayEnd);
+        List<Incident> resolvedIncidents = todayIncidents.stream()
+                .filter(i -> i.getStatus() == Incident.IncidentStatus.RESOLVED || i.getStatus() == Incident.IncidentStatus.CLOSED)
+                .collect(java.util.stream.Collectors.toList());
+                
+        model.addAttribute("todayIncidents", todayIncidents);
+        model.addAttribute("openIncidents", openIncidents);
         model.addAttribute("resolvedIncidents", resolvedIncidents);
 
         // Incidents grouped by equipment type (department)
-        List<Object[]> byDepartment = incidentService.getIncidentCountByEquipmentType(dayStart, dayEnd);
+        List<Object[]> byDepartment = incidentService.getIncidentCountByEquipmentType(periodStart, periodEnd);
         model.addAttribute("byDepartment", byDepartment);
 
         // Total downtime
-        Integer totalDowntime = incidentService.getTotalDowntimeMinutes(dayStart, dayEnd);
+        Integer totalDowntime = incidentService.getTotalDowntimeMinutes(periodStart, periodEnd);
         model.addAttribute("totalDowntime", totalDowntime);
 
         // Summary counts
@@ -95,6 +125,8 @@ public class IncidentController {
                 todayIncidents.stream().filter(i -> i.getSeverity() == Incident.Severity.CRITICAL).count());
 
         model.addAttribute("selectedDate", reportDate);
+        model.addAttribute("reportType", reportType);
+        model.addAttribute("periodLabel", periodLabel);
 
         return "incidents/report";
     }
