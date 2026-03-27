@@ -259,11 +259,7 @@ public class IncidentController {
     }
 
     @PostMapping("/resolve/{id}")
-<<<<<<< HEAD:src/main/java/com/spcms/controllers/IncidentController.java
-    public String resolve(@PathVariable Long id,
-=======
     public String resolve(@PathVariable("id") Long id,
->>>>>>> dev:project_files/src/main/java/com/spcms/controllers/IncidentController.java
             @RequestParam String rootCause,
             @RequestParam String actionTaken,
             @RequestParam(required = false) Long resolverId,
@@ -291,11 +287,7 @@ public class IncidentController {
     }
 
     @PostMapping("/assign/{id}")
-<<<<<<< HEAD:src/main/java/com/spcms/controllers/IncidentController.java
-    public String assign(@PathVariable Long id,
-=======
     public String assign(@PathVariable("id") Long id,
->>>>>>> dev:project_files/src/main/java/com/spcms/controllers/IncidentController.java
             @RequestParam Long assigneeId,
             RedirectAttributes redirectAttributes,
             jakarta.servlet.http.HttpServletRequest request) {
