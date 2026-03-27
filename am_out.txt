@@ -1,0 +1,50 @@
+.git/rebase-apply/patch:5840: trailing whitespace.
+[INFO] 
+.git/rebase-apply/patch:5852: trailing whitespace.
+[ERROR] 
+.git/rebase-apply/patch:5855: trailing whitespace.
+[ERROR] 
+error: project_files/.smarttomcat/spcms/conf/catalina.policy: already exists in index
+error: project_files/.smarttomcat/spcms/conf/catalina.properties: already exists in index
+error: project_files/.smarttomcat/spcms/conf/context.xml: already exists in index
+error: project_files/.smarttomcat/spcms/conf/jaspic-providers.xml: already exists in index
+error: project_files/.smarttomcat/spcms/conf/jaspic-providers.xsd: already exists in index
+error: project_files/.smarttomcat/spcms/conf/logging.properties: already exists in index
+error: project_files/.smarttomcat/spcms/conf/server.xml: already exists in index
+error: project_files/.smarttomcat/spcms/conf/tomcat-users.xml: already exists in index
+error: project_files/.smarttomcat/spcms/conf/tomcat-users.xsd: already exists in index
+error: project_files/.smarttomcat/spcms/conf/web.xml: already exists in index
+error: patch failed: project_files/src/main/java/com/spcms/controllers/MaintenanceController.java:17
+error: project_files/src/main/java/com/spcms/controllers/MaintenanceController.java: patch does not apply
+error: patch failed: project_files/src/main/java/com/spcms/models/CoolingMaintenance.java:21
+error: project_files/src/main/java/com/spcms/models/CoolingMaintenance.java: patch does not apply
+error: patch failed: project_files/src/main/java/com/spcms/models/CoolingUnit.java:49
+error: project_files/src/main/java/com/spcms/models/CoolingUnit.java: patch does not apply
+error: patch failed: project_files/src/main/java/com/spcms/models/Ups.java:40
+error: project_files/src/main/java/com/spcms/models/Ups.java: patch does not apply
+error: patch failed: project_files/src/main/java/com/spcms/models/UpsMaintenance.java:21
+error: project_files/src/main/java/com/spcms/models/UpsMaintenance.java: patch does not apply
+error: patch failed: project_files/src/main/java/com/spcms/repositories/CoolingMaintenanceRepository.java:11
+error: project_files/src/main/java/com/spcms/repositories/CoolingMaintenanceRepository.java: patch does not apply
+error: patch failed: project_files/src/main/java/com/spcms/repositories/UpsMaintenanceRepository.java:12
+error: project_files/src/main/java/com/spcms/repositories/UpsMaintenanceRepository.java: patch does not apply
+error: project_files/src/main/java/com/spcms/services/FileStorageService.java: already exists in index
+error: project_files/src/main/java/com/spcms/services/MaintenanceReminderService.java: already exists in index
+error: patch failed: project_files/src/main/java/com/spcms/services/MaintenanceService.java:32
+error: project_files/src/main/java/com/spcms/services/MaintenanceService.java: patch does not apply
+error: patch failed: project_files/src/main/resources/application.properties:39
+error: project_files/src/main/resources/application.properties: patch does not apply
+error: patch failed: project_files/src/main/webapp/WEB-INF/jsp/maintenance/cooling-form.jsp:5
+error: project_files/src/main/webapp/WEB-INF/jsp/maintenance/cooling-form.jsp: patch does not apply
+error: patch failed: project_files/src/main/webapp/WEB-INF/jsp/maintenance/list.jsp:5
+error: project_files/src/main/webapp/WEB-INF/jsp/maintenance/list.jsp: patch does not apply
+error: project_files/src/main/webapp/WEB-INF/jsp/maintenance/report.jsp: already exists in index
+error: patch failed: project_files/src/main/webapp/WEB-INF/jsp/maintenance/ups-form.jsp:5
+error: project_files/src/main/webapp/WEB-INF/jsp/maintenance/ups-form.jsp: patch does not apply
+Applying: all thing work remain download
+Patch failed at 0001 all thing work remain download
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+hint: When you have resolved this problem, run "git am --continue".
+hint: If you prefer to skip this patch, run "git am --skip" instead.
+hint: To restore the original branch and stop patching, run "git am --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
