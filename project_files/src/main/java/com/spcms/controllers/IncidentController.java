@@ -152,7 +152,7 @@ public class IncidentController {
     // ==================== VIEW ====================
 
     @GetMapping("/view/{id}")
-    public String view(@PathVariable Long id, Model model) {
+    public String view(@PathVariable("id") Long id, Model model) {
         model.addAttribute("incident", incidentService.getIncidentById(id)
                 .orElseThrow(() -> new RuntimeException("Incident not found")));
         model.addAttribute("technicians", userService.getUsersByRole(com.spcms.models.User.Role.TECHNICIAN));
@@ -162,7 +162,7 @@ public class IncidentController {
     // ==================== EDIT ====================
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
         Incident incident = incidentService.getIncidentById(id)
                 .orElseThrow(() -> new RuntimeException("Incident not found"));
         model.addAttribute("incident", incident);
@@ -171,7 +171,7 @@ public class IncidentController {
     }
 
     @PostMapping("/update/{id}")
-    public String update(@PathVariable Long id,
+    public String update(@PathVariable("id") Long id,
             @ModelAttribute Incident incident,
             org.springframework.validation.BindingResult result,
             @RequestParam(value = "attachmentFile", required = false) MultipartFile attachmentFile,
@@ -206,7 +206,7 @@ public class IncidentController {
     // ==================== DELETE ====================
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         incidentService.deleteIncident(id);
         redirectAttributes.addFlashAttribute("success", "Incident deleted successfully.");
         return "redirect:/incidents";
@@ -215,19 +215,19 @@ public class IncidentController {
     // ==================== STATUS ACTIONS ====================
 
     @GetMapping("/assign/{id}")
-    public String assignRedirect(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String assignRedirect(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("info", "Use the Assign form on the incident page.");
         return "redirect:/incidents/view/" + id;
     }
 
     @GetMapping("/resolve/{id}")
-    public String resolveRedirect(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String resolveRedirect(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("info", "Assign the incident first to enable resolution.");
         return "redirect:/incidents/view/" + id;
     }
 
     @PostMapping("/resolve/{id}")
-    public String resolve(@PathVariable Long id,
+    public String resolve(@PathVariable("id") Long id,
             @RequestParam String rootCause,
             @RequestParam String actionTaken,
             @RequestParam(required = false) Long resolverId,
@@ -255,7 +255,7 @@ public class IncidentController {
     }
 
     @PostMapping("/assign/{id}")
-    public String assign(@PathVariable Long id,
+    public String assign(@PathVariable("id") Long id,
             @RequestParam Long assigneeId,
             RedirectAttributes redirectAttributes,
             jakarta.servlet.http.HttpServletRequest request) {

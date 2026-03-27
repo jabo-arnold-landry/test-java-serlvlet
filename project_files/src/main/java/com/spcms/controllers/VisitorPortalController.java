@@ -296,7 +296,7 @@ public class VisitorPortalController {
     // ==================== EDIT VISITOR ====================
 
     @GetMapping("/edit/{visitorId}")
-    public String editVisitorForm(@PathVariable Long visitorId, Model model, Principal principal) {
+    public String editVisitorForm(@PathVariable("visitorId") Long visitorId, Model model, Principal principal) {
         User user = getCurrentUser(principal);
         if (user == null) return "redirect:/login";
 
@@ -310,7 +310,7 @@ public class VisitorPortalController {
     }
 
     @PostMapping("/edit/{visitorId}")
-    public String updateVisitor(@PathVariable Long visitorId,
+    public String updateVisitor(@PathVariable("visitorId") Long visitorId,
                                 @ModelAttribute Visitor updated,
                                 Principal principal,
                                 RedirectAttributes redirectAttributes) {
@@ -341,7 +341,7 @@ public class VisitorPortalController {
     // ==================== DELETE VISITOR (WITH REASON) ====================
 
     @PostMapping("/delete/{visitorId}")
-    public String deleteVisitor(@PathVariable Long visitorId,
+    public String deleteVisitor(@PathVariable("visitorId") Long visitorId,
                                 @RequestParam String reason,
                                 Principal principal,
                                 RedirectAttributes redirectAttributes) {
@@ -379,7 +379,7 @@ public class VisitorPortalController {
     // ==================== MANAGER: APPROVE/REJECT ====================
 
     @PostMapping("/approve/{approvalId}")
-    public String approveVisit(@PathVariable Long approvalId,
+    public String approveVisit(@PathVariable("approvalId") Long approvalId,
                               @RequestParam(defaultValue = "4") Integer durationHours,
                               Principal principal,
                               RedirectAttributes redirectAttributes) {
@@ -399,7 +399,7 @@ public class VisitorPortalController {
     }
 
     @PostMapping("/reject/{approvalId}")
-    public String rejectVisit(@PathVariable Long approvalId,
+    public String rejectVisit(@PathVariable("approvalId") Long approvalId,
                              @RequestParam String reason,
                              Principal principal,
                              RedirectAttributes redirectAttributes) {
@@ -419,7 +419,7 @@ public class VisitorPortalController {
     }
 
     @PostMapping("/request-info/{approvalId}")
-    public String requestInfo(@PathVariable Long approvalId,
+    public String requestInfo(@PathVariable("approvalId") Long approvalId,
                               @RequestParam String remarks,
                               Principal principal,
                               RedirectAttributes redirectAttributes) {
@@ -591,7 +591,7 @@ public class VisitorPortalController {
     // ==================== CHECK-OUT ====================
 
     @PostMapping("/checkout/{checkId}")
-    public String checkOut(@PathVariable Long checkId,
+    public String checkOut(@PathVariable("checkId") Long checkId,
                            @RequestParam(defaultValue = "true") boolean equipmentConfirmed,
                            @RequestParam(defaultValue = "true") boolean badgeReturned,
                            RedirectAttributes redirectAttributes,

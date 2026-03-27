@@ -301,8 +301,8 @@ public class ReportController {
     }
 
     @GetMapping("/maintenance-history/{equipmentType}/{maintenanceId}")
-    public String maintenanceHistoryDetail(@PathVariable String equipmentType,
-            @PathVariable Long maintenanceId,
+    public String maintenanceHistoryDetail(@PathVariable("equipmentType") String equipmentType,
+            @PathVariable("maintenanceId") Long maintenanceId,
             Model model,
             RedirectAttributes redirectAttributes) {
 

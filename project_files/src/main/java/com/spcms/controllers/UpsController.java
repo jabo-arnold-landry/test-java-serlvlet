@@ -35,14 +35,14 @@ public class UpsController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
         model.addAttribute("ups", upsService.getUpsById(id)
                 .orElseThrow(() -> new RuntimeException("UPS not found")));
         return "ups/form";
     }
 
     @GetMapping("/view/{id}")
-    public String view(@PathVariable Long id, Model model) {
+    public String view(@PathVariable("id") Long id, Model model) {
         model.addAttribute("ups", upsService.getUpsById(id)
                 .orElseThrow(() -> new RuntimeException("UPS not found")));
         model.addAttribute("batteries", upsService.getBatteriesByUpsId(id));
@@ -50,7 +50,7 @@ public class UpsController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         System.out.println("DEBUG: Deleting UPS with ID: " + id);
         try {
             upsService.deleteUps(id);

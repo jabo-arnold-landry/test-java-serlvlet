@@ -46,14 +46,14 @@ public class CoolingController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
         model.addAttribute("coolingUnit", coolingService.getCoolingUnitById(id)
                 .orElseThrow(() -> new RuntimeException("Cooling unit not found")));
         return "cooling/form";
     }
 
     @GetMapping("/view/{id}")
-    public String view(@PathVariable Long id, Model model) {
+    public String view(@PathVariable("id") Long id, Model model) {
         model.addAttribute("coolingUnit", coolingService.getCoolingUnitById(id)
                 .orElseThrow(() -> new RuntimeException("Cooling unit not found")));
         return "cooling/view";
@@ -107,7 +107,7 @@ public class CoolingController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         coolingService.deleteCoolingUnit(id);
         redirectAttributes.addFlashAttribute("success", "Cooling unit deleted successfully");
         return "redirect:/cooling";

@@ -54,7 +54,7 @@ public class MonitoringController {
     }
 
     @GetMapping("/view/{id}")
-    public String view(@PathVariable Long id, Model model) {
+    public String view(@PathVariable("id") Long id, Model model) {
         model.addAttribute("monitoringLog", monitoringService.getReadingById(id)
                 .orElseThrow(() -> new RuntimeException("Reading not found")));
         model.addAttribute("viewMode", true);
@@ -62,14 +62,14 @@ public class MonitoringController {
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable("id") Long id, Model model) {
         model.addAttribute("monitoringLog", monitoringService.getReadingById(id)
                 .orElseThrow(() -> new RuntimeException("Reading not found")));
         return "monitoring/form";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         System.out.println("DEBUG: Deleting monitoring reading with ID: " + id);
         try {
             monitoringService.deleteReading(id);

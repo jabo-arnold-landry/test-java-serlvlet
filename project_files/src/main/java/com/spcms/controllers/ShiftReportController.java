@@ -38,7 +38,7 @@ public class ShiftReportController {
     }
 
     @GetMapping("/view/{id}")
-    public String view(@PathVariable Long id, Model model) {
+    public String view(@PathVariable("id") Long id, Model model) {
         model.addAttribute("report", shiftReportService.getShiftReportById(id)
                 .orElseThrow(() -> new RuntimeException("Shift report not found")));
         model.addAttribute("handoverNotes", shiftReportService.getHandoverNotes(id));
@@ -46,7 +46,7 @@ public class ShiftReportController {
     }
 
     @PostMapping("/handover/{reportId}")
-    public String addHandoverNote(@PathVariable Long reportId,
+    public String addHandoverNote(@PathVariable("reportId") Long reportId,
             @ModelAttribute ShiftHandoverNote note,
             RedirectAttributes redirectAttributes) {
         ShiftReport report = shiftReportService.getShiftReportById(reportId)
@@ -58,7 +58,7 @@ public class ShiftReportController {
     }
 
     @PostMapping("/close/{id}")
-    public String closeShift(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String closeShift(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         shiftReportService.closeShift(id);
         redirectAttributes.addFlashAttribute("success", "Shift closed successfully");
         return "redirect:/shift-reports";

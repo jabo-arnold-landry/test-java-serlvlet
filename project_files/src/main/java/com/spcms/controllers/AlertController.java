@@ -76,7 +76,7 @@ public class AlertController {
     }
 
     @GetMapping("/view/{id}")
-    public String viewAlert(@PathVariable Long id, Model model) {
+    public String viewAlert(@PathVariable("id") Long id, Model model) {
         Alert alert = alertService.getAlertById(id)
                 .orElseThrow(() -> new RuntimeException("Alert not found: " + id));
         
@@ -126,7 +126,7 @@ public class AlertController {
     }
 
     @PostMapping("/acknowledge/{id}")
-    public String acknowledge(@PathVariable Long id,
+    public String acknowledge(@PathVariable("id") Long id,
                                Authentication authentication,
                                RedirectAttributes redirectAttributes) {
         User currentUser = userService.getUserByUsername(authentication.getName())
@@ -137,7 +137,7 @@ public class AlertController {
     }
 
     @PostMapping("/send-email/{id}")
-    public String sendAlertEmail(@PathVariable Long id,
+    public String sendAlertEmail(@PathVariable("id") Long id,
                                   @RequestParam String email,
                                   RedirectAttributes redirectAttributes) {
         try {

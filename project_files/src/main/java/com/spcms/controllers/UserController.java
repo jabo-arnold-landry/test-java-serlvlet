@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", userService.getUserById(id)
                 .orElseThrow(() -> new RuntimeException("User not found")));
         model.addAttribute("roles", User.Role.values());
@@ -51,21 +51,21 @@ public class UserController {
     }
 
     @PostMapping("/deactivate/{id}")
-    public String deactivate(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String deactivate(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         userService.deactivateUser(id);
         redirectAttributes.addFlashAttribute("success", "User deactivated");
         return "redirect:/users";
     }
 
     @PostMapping("/reactivate/{id}")
-    public String reactivate(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String reactivate(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         userService.reactivateUser(id);
         redirectAttributes.addFlashAttribute("success", "User reactivated");
         return "redirect:/users";
     }
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
             userService.deleteUser(id);
             redirectAttributes.addFlashAttribute("success", "User deleted successfully");
@@ -78,7 +78,7 @@ public class UserController {
     }
 
     @GetMapping("/activity/{id}")
-    public String activityLog(@PathVariable Long id, Model model) {
+    public String activityLog(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", userService.getUserById(id)
                 .orElseThrow(() -> new RuntimeException("User not found")));
         model.addAttribute("logs", userService.getUserActivityLogs(id));

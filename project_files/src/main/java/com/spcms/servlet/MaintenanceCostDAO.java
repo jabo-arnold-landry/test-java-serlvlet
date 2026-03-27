@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import com.spcms.model.MaintenanceCost;
+import com.spcms.models.MaintenanceCost;
 
 public class MaintenanceCostDAO {
 

@@ -28,12 +28,12 @@ public class VisitorController {
     }
 
     @PostMapping("/approve/{approvalId}")
-    public String approve(@PathVariable Long approvalId) {
+    public String approve(@PathVariable("approvalId") Long approvalId) {
         return "redirect:/visitor-portal/approve/" + approvalId;
     }
 
     @PostMapping("/reject/{approvalId}")
-    public String reject(@PathVariable Long approvalId) {
+    public String reject(@PathVariable("approvalId") Long approvalId) {
         return "redirect:/visitor-portal/reject/" + approvalId;
     }
 
@@ -43,7 +43,7 @@ public class VisitorController {
     }
 
     @PostMapping("/checkout/{checkId}")
-    public String checkOut(@PathVariable Long checkId) {
+    public String checkOut(@PathVariable("checkId") Long checkId) {
         return "redirect:/visitor-portal/checkout/" + checkId;
     }
 }

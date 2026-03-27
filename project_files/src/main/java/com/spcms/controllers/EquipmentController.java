@@ -35,21 +35,21 @@ public class EquipmentController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
         model.addAttribute("equipment", equipmentService.getEquipmentById(id)
                 .orElseThrow(() -> new RuntimeException("Equipment not found")));
         return "equipment/form";
     }
 
     @GetMapping("/view/{id}")
-    public String view(@PathVariable Long id, Model model) {
+    public String view(@PathVariable("id") Long id, Model model) {
         model.addAttribute("equipment", equipmentService.getEquipmentById(id)
                 .orElseThrow(() -> new RuntimeException("Equipment not found")));
         return "equipment/view";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         equipmentService.deleteEquipment(id);
         redirectAttributes.addFlashAttribute("success", "Equipment deleted successfully");
         return "redirect:/equipment";
