@@ -144,6 +144,13 @@ public class VisitorPortalController {
             }
             model.addAttribute("monthlyStats", monthlyStats);
             model.addAttribute("dailyStats", dailyStats);
+            model.addAttribute("pastVisits", allHistory.stream()
+                .sorted((a, b) -> {
+                    if (a.getCheckInTime() == null) return 1;
+                    if (b.getCheckInTime() == null) return -1;
+                    return b.getCheckInTime().compareTo(a.getCheckInTime());
+                })
+                .collect(java.util.stream.Collectors.toList()));
 
             recent.addAll(visitApprovalRepository.findAll().stream()
                 .filter(a -> a.getStatus() == VisitApproval.ApprovalStatus.PENDING || a.getStatus() == VisitApproval.ApprovalStatus.MORE_INFO)
@@ -218,7 +225,9 @@ public class VisitorPortalController {
                 monthlyStats.put(month.format(monthFormatter), count);
             }
             model.addAttribute("monthlyStats", monthlyStats);
+        }
 
+        if (isAdmin || isManager) {
             List<Incident> allIncidents = incidentService.getAllIncidents();
             model.addAttribute("allIncidents", allIncidents);
             
@@ -228,16 +237,18 @@ public class VisitorPortalController {
                 if(inc.getCreatedAt() != null) incidentDates.put(inc.getIncidentId(), inc.getCreatedAt().format(dtf));
             });
             model.addAttribute("incidentCsvDates", incidentDates);
+        }
 
+        if (isAdmin) {
             List<Object[]> highFreq = visitorService.getHighFrequencyVisitors();
             model.addAttribute("highFrequencyVisitors", highFreq);
 
             List<VisitorCheckInOut> history = visitorService.getVisitHistory(LocalDate.now().minusDays(30), LocalDate.now());
             model.addAttribute("visitHistory", history);
             
-            // System Audit Logs (Latest 10 for dashboard)
             model.addAttribute("systemLogs", visitorService.getLatestActivity(10));
             
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             Map<Long, String> historyIn = new HashMap<>();
             Map<Long, String> historyOut = new HashMap<>();
             history.forEach(h -> {
@@ -319,6 +330,7 @@ public class VisitorPortalController {
             visitor.setNationalIdPassport(updated.getNationalIdPassport());
             visitor.setCompany(updated.getCompany());
             visitor.setPhone(updated.getPhone());
+            visitor.setVisitorEmail(updated.getVisitorEmail());
             visitor.setPurposeOfVisit(updated.getPurposeOfVisit());
             visitor.setDepartmentToVisit(updated.getDepartmentToVisit());
             visitor.setVisitDate(updated.getVisitDate());
@@ -441,11 +453,6 @@ public class VisitorPortalController {
     public String visitLog(Model model, Principal principal) {
         User user = getCurrentUser(principal);
         if (user == null) return "redirect:/login";
-        
-        // Admin and Manager are not allowed to see the visit log page
-        if (user.getRole() == User.Role.ADMIN || user.getRole() == User.Role.MANAGER) {
-            return "redirect:/visitor-portal";
-        }
 
         boolean isAdmin = user.getRole() == User.Role.ADMIN;
         boolean isManager = user.getRole() == User.Role.MANAGER;
@@ -456,9 +463,23 @@ public class VisitorPortalController {
             model.addAttribute("awaitingCheckIn", visitorService.getTechnicianAssignments(user.getUserId()));
             model.addAttribute("allApprovals", visitApprovalRepository.findByVisitor_HostEmployee_UserId(user.getUserId()));
         } else {
+            // Security/Admin/Manager see awaiting arrivals
             model.addAttribute("awaitingCheckIn", visitorService.getWaitingForCheckIn());
             model.addAttribute("allApprovals", visitApprovalRepository.findAll());
             model.addAttribute("allVisitors", visitorRepository.findAll());
+        }
+
+        if (isAdmin || isManager) {
+            // Provide full historical visit archive
+            List<VisitorCheckInOut> history = visitorCheckInOutRepository.findAll();
+            model.addAttribute("visitHistory", history.stream()
+                .filter(v -> Boolean.TRUE.equals(v.getVisitClosed()))
+                .sorted((a, b) -> {
+                    if (a.getCheckInTime() == null) return 1;
+                    if (b.getCheckInTime() == null) return -1;
+                    return b.getCheckInTime().compareTo(a.getCheckInTime());
+                })
+                .collect(Collectors.toList()));
         }
 
         model.addAttribute("isAdmin", isAdmin);
@@ -517,9 +538,31 @@ public class VisitorPortalController {
                                " | Please escort the visitor."
                 ));
             }
+        } else if (user.getRole() == User.Role.ADMIN || user.getRole() == User.Role.MANAGER) {
+            // Fetch Open Incidents for Admin/Manager
+            List<Incident> openIncidents = incidentService.getIncidentsByStatus(Incident.IncidentStatus.OPEN);
+            for (Incident i : openIncidents) {
+                notifications.add(Map.of(
+                    "type", "SECURITY_ALERT",
+                    "title", "Security Incident Reported",
+                    "content", "Technician " + (i.getReportedBy() != null ? i.getReportedBy().getFullName() : "System") + 
+                               " reported: " + i.getTitle(),
+                    "date", i.getCreatedAt().toLocalDate().toString(),
+                    "details", "Severity: " + i.getSeverity() + 
+                               " | Description: " + (i.getDescription() != null ? i.getDescription() : "No description") +
+                               " | Status: " + i.getStatus()
+                ));
+            }
+            // Add static system alerts as fallback or additional info
+            notifications.add(Map.of(
+                "type", "SYSTEM", 
+                "title", "Audit Alert", 
+                "content", "Weekly visitor audit log generated.", 
+                "date", LocalDate.now().toString(), 
+                "details", "View in System Administration"
+            ));
         } else {
             notifications = List.of(
-                Map.of("type", "SYSTEM", "title", "Audit Alert", "content", "Weekly visitor audit log generated.", "date", LocalDate.now().toString(), "details", "View in System Administration"),
                 Map.of("type", "SYSTEM", "title", "Security Update", "content", "Access policy v2.4 initialized.", "date", LocalDate.now().toString(), "details", "Changes to visitor duration limits")
             );
         }

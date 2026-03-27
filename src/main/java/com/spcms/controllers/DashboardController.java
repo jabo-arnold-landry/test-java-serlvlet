@@ -8,6 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.security.Principal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -32,7 +36,7 @@ public class DashboardController {
     private ReportService reportService;
 
     @GetMapping
-    public String dashboard(Model model) {
+    public String dashboard(Model model, java.security.Principal principal) {
         // UPS Summary
         model.addAttribute("totalUps", upsService.getAllUps().size());
         model.addAttribute("activeUps", upsService.getUpsByStatus(Ups.UpsStatus.ACTIVE).size());
@@ -52,8 +56,34 @@ public class DashboardController {
         // Alerts
         model.addAttribute("unacknowledgedAlerts", alertService.getUnacknowledgedAlerts().size());
 
-        // Visitors
-        model.addAttribute("activeVisitors", visitorService.getActiveVisitors().size());
+        // Visitors (Global)
+        model.addAttribute("activeVisitorsCount", visitorService.getActiveVisitors().size());
+        
+        // Detailed Visitor Metrics for Security/Manager
+        model.addAttribute("pendingApprovals", visitorService.getPendingApprovals().size());
+        model.addAttribute("waitingForCheckIn", visitorService.getWaitingForCheckIn().size());
+        model.addAttribute("checkOutsToday", visitorService.countCompletedVisitsToday());
+
+        // Traffic Stats (Daily/Monthly) for Security/Manager Charts
+        Map<String, Long> monthlyStats = new LinkedHashMap<>();
+        Map<String, Long> dailyStats = new LinkedHashMap<>();
+        DateTimeFormatter mFmt = DateTimeFormatter.ofPattern("MMM yyyy");
+        DateTimeFormatter dFmt = DateTimeFormatter.ofPattern("dd MMM");
+        
+        for (int i = 5; i >= 0; i--) {
+            java.time.YearMonth month = java.time.YearMonth.now().minusMonths(i);
+            long count = visitorService.getAllVisitors().stream()
+                    .filter(v -> v.getVisitDate() != null && java.time.YearMonth.from(v.getVisitDate()).equals(month))
+                    .count();
+            monthlyStats.put(month.format(mFmt), count);
+        }
+        for (int i = 6; i >= 0; i--) {
+            LocalDate date = LocalDate.now().minusDays(i);
+            long count = visitorService.getVisitorsByDate(date).size();
+            dailyStats.put(date.format(dFmt), count);
+        }
+        model.addAttribute("monthlyStats", monthlyStats);
+        model.addAttribute("dailyStats", dailyStats);
 
         // Today's Report
         model.addAttribute("dailyReport", reportService.getDailyReport(LocalDate.now()).orElse(null));

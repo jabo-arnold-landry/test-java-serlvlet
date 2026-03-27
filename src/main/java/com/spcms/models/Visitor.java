@@ -33,6 +33,9 @@ public class Visitor {
     @Column(length = 20)
     private String phone;
 
+    @Column(name = "visitor_email", length = 100)
+    private String visitorEmail;
+
     @Column(name = "purpose_of_visit", nullable = false, columnDefinition = "TEXT")
     private String purposeOfVisit;
 

@@ -7,16 +7,18 @@
     <title>SPCMS - Visit Log</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <jsp:include page="../common/visitor-header.jsp"/>
+    <jsp:include page="../common/styles.jsp"/>
 </head>
-<body class="visitor-app">
+<body>
 
-    <jsp:include page="../common/visitor-sidebar.jsp">
-        <jsp:param name="pageName" value="visit-log" />
-    </jsp:include>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
 
-    <div class="vp-content-area" style="background: #f1f5f9; min-height: 100vh;">
+    <div class="main-content">
         <div class="container-fluid py-5">
+            <jsp:include page="../common/visitor-nav.jsp">
+                <jsp:param name="pageName" value="visit-log" />
+            </jsp:include>
             <!-- Alert messages -->
             <c:if test="${not empty success}">
                 <div class="alert alert-success border-0 shadow-lg rounded-4 p-4 mb-5 d-flex align-items-center">
@@ -35,10 +37,10 @@
             <div class="d-flex align-items-center justify-content-between mb-5">
                 <div>
                     <h2 class="fw-black text-slate-900 mb-1" style="color: #0f172a;">
-                        ${isAdmin ? 'Systems Compliance Log' : (isSecurity ? 'Receptionist Tracking' : (isManager ? 'Governance Pipeline' : 'Assigned Visits'))}
+                        ${isAdmin || isManager ? 'Institutional Visit Archive' : (isSecurity ? 'Receptionist Tracking' : 'Assigned Visits')}
                     </h2>
                     <p class="text-slate-500 mb-0">
-                        ${isAdmin ? 'Centralized audit of all visitor movements and institutional security logs' : (isSecurity ? 'Awaiting approved visitors for facility access initialization' : (isManager ? 'Review, approve, or reject pending visit requests' : 'Protocol-approved visitors pending your escort activation'))}
+                        ${isAdmin || isManager ? 'Comprehensive historical record of all institutional visitor movements and security logs' : (isSecurity ? 'Awaiting approved visitors for facility access initialization' : 'Protocol-approved visitors pending your escort activation')}
                     </p>
                 </div>
                 <c:if test="${isSecurity}">
@@ -51,12 +53,16 @@
             <!-- Main Log Section -->
             <div class="card border-0 shadow-sm rounded-5 overflow-hidden mb-5">
                 <div class="card-header bg-white p-4 border-0 border-bottom border-light">
+                <div class="card-header bg-white p-4 border-0 border-bottom border-light d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center">
                         <div class="bg-primary bg-opacity-10 p-2 rounded-3 text-primary me-3">
                             <i class="bi bi-clock-history fs-5"></i>
                         </div>
-                        <h5 class="fw-bold mb-0 text-slate-800">Awaiting Check-In</h5>
+                        <h5 class="fw-bold mb-0 text-slate-800">Awaiting Check-In (Live Feed)</h5>
                     </div>
+                    <c:if test="${isAdmin || isManager}">
+                        <span class="badge bg-slate-100 text-slate-500 rounded-pill px-3">Pipeline Monitoring</span>
+                    </c:if>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -167,6 +173,73 @@
                     </div>
                 </div>
             </div>
+
+            <c:if test="${isAdmin || isManager}">
+                <!-- ARCHIVE SECTION: Historical Records -->
+                <div class="card border-0 shadow-sm rounded-5 overflow-hidden mb-5 border border-slate-200">
+                    <div class="card-header bg-white p-4 border-0 border-bottom border-light d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success bg-opacity-10 p-2 rounded-3 text-success me-3">
+                                <i class="bi bi-archive-fill fs-5"></i>
+                            </div>
+                            <h5 class="fw-bold mb-0 text-slate-800">Historical Visit Archive</h5>
+                        </div>
+                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-bold">
+                            <i class="bi bi-clock-history me-1"></i> ${visitHistory.size()} Records
+                        </span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr class="bg-slate-50">
+                                        <th class="ps-4 py-4 text-uppercase small fw-black text-slate-400">Visitor</th>
+                                        <th class="py-4 text-uppercase small fw-black text-slate-400">Company</th>
+                                        <th class="py-4 text-uppercase small fw-black text-slate-400">Session Times</th>
+                                        <th class="py-4 text-uppercase small fw-black text-slate-400">Escort</th>
+                                        <th class="py-4 text-uppercase small fw-black text-slate-400">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${empty visitHistory}">
+                                            <tr><td colspan="5" class="text-center py-5 text-muted small italic">No historical records available for archiving.</td></tr>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:forEach var="vh" items="${visitHistory}">
+                                                <tr>
+                                                    <td class="ps-4 py-4">
+                                                        <div class="fw-bold text-slate-900">${vh.visitor.fullName}</div>
+                                                        <div class="small text-muted">Badge: ${vh.badgeNumber}</div>
+                                                    </td>
+                                                    <td class="py-4 text-slate-600 fw-medium">${vh.visitor.company}</td>
+                                                    <td class="py-4">
+                                                        <div class="small fw-semibold text-slate-900">
+                                                            In: <span class="text-success">${vh.checkInTime}</span>
+                                                        </div>
+                                                        <div class="small fw-semibold text-slate-900">
+                                                            Out: <span class="text-danger">${vh.checkOutTime != null ? vh.checkOutTime : 'STILL ACTIVE'}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-4">
+                                                        <div class="small fw-bold">${vh.escort.fullName}</div>
+                                                        <div class="smaller text-muted">${vh.escort.role}</div>
+                                                    </td>
+                                                    <td class="py-4">
+                                                        <span class="badge bg-slate-900 text-white rounded-pill px-3 py-1 fw-bold small">
+                                                            ARCHIVED
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
 
             <c:if test="${!isTech}">
                 <!-- Secondary Section: Full Pipeline (Only for Security/Admins) -->

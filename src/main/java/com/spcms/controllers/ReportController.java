@@ -71,6 +71,9 @@ public class ReportController {
     @Autowired
     private MonitoringLogRepository monitoringLogRepository;
 
+    @Autowired
+    private com.spcms.services.VisitorService visitorService;
+
     @GetMapping
     public String dailyReport(Model model) {
         LocalDate today = LocalDate.now();
@@ -166,6 +169,103 @@ public class ReportController {
                 today.minusDays(7), today));
         model.addAttribute("loadTrend", reportService.getLoadTrend(today.minusDays(30), today));
         return "reports/trends";
+    }
+
+    @GetMapping("/visitor-log")
+    public void exportVisitorReport(@RequestParam(required = false, defaultValue = "daily") String type,
+                                    @RequestParam(required = false) String startDate,
+                                    @RequestParam(required = false) String endDate,
+                                    jakarta.servlet.http.HttpServletResponse response) throws java.io.IOException {
+        
+        LocalDate start = LocalDate.now();
+        LocalDate end = LocalDate.now();
+
+        switch (type.toLowerCase()) {
+            case "weekly":
+                start = LocalDate.now().minusWeeks(1);
+                break;
+            case "monthly":
+                start = LocalDate.now().minusMonths(1);
+                break;
+            case "custom":
+                if (startDate != null && !startDate.isBlank()) start = LocalDate.parse(startDate);
+                if (endDate != null && !endDate.isBlank()) end = LocalDate.parse(endDate);
+                break;
+            case "daily":
+            default:
+                start = LocalDate.now();
+                end = LocalDate.now();
+                break;
+        }
+
+        List<com.spcms.models.VisitorCheckInOut> data = visitorService.getVisitHistory(start, end);
+        
+        response.setContentType("application/pdf");
+        String filename = String.format("visitor_report_%s_%s_to_%s.pdf", type, start, end);
+        response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+
+        try (com.lowagie.text.Document document = new com.lowagie.text.Document(com.lowagie.text.PageSize.A4.rotate())) {
+            com.lowagie.text.pdf.PdfWriter.getInstance(document, response.getOutputStream());
+            document.open();
+
+            // Header
+            com.lowagie.text.Font titleFont = com.lowagie.text.FontFactory.getFont(com.lowagie.text.FontFactory.HELVETICA_BOLD, 20, java.awt.Color.DARK_GRAY);
+            com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("SPCMS Visitor Management Report", titleFont);
+            title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            document.add(title);
+
+            com.lowagie.text.Paragraph sub = new com.lowagie.text.Paragraph("Report Type: " + type.toUpperCase() + " | Period: " + start + " to " + end);
+            sub.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            sub.setSpacingAfter(20);
+            document.add(sub);
+
+            // Summary Stats
+            com.lowagie.text.pdf.PdfPTable stats = new com.lowagie.text.pdf.PdfPTable(1);
+            stats.setWidthPercentage(100);
+            com.lowagie.text.pdf.PdfPCell sCell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase("Total Visitors Recorded: " + data.size()));
+            sCell.setBorder(com.lowagie.text.Rectangle.NO_BORDER);
+            sCell.setPaddingBottom(10);
+            stats.addCell(sCell);
+            document.add(stats);
+
+            // Table
+            com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(new float[]{3f, 3f, 4f, 2f, 2f, 2f, 3f});
+            table.setWidthPercentage(100);
+            
+            String[] headers = {"Visitor Name", "Company", "Purpose", "Date", "In", "Out", "Escort"};
+            for (String h : headers) {
+                com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(h, com.lowagie.text.FontFactory.getFont(com.lowagie.text.FontFactory.HELVETICA_BOLD, 10, java.awt.Color.WHITE)));
+                cell.setBackgroundColor(new java.awt.Color(15, 23, 42)); // Slate-900
+                cell.setPadding(8);
+                table.addCell(cell);
+            }
+
+            for (com.spcms.models.VisitorCheckInOut v : data) {
+                table.addCell(createVisitorCell(v.getVisitor().getFullName()));
+                table.addCell(createVisitorCell(v.getVisitor().getCompany()));
+                table.addCell(createVisitorCell(v.getVisitor().getPurposeOfVisit()));
+                table.addCell(createVisitorCell(v.getVisitor().getVisitDate().toString()));
+                table.addCell(createVisitorCell(v.getCheckInTime() != null ? v.getCheckInTime().toLocalTime().toString().substring(0, 5) : "-"));
+                table.addCell(createVisitorCell(v.getCheckOutTime() != null ? v.getCheckOutTime().toLocalTime().toString().substring(0, 5) : "-"));
+                table.addCell(createVisitorCell(v.getEscort() != null ? v.getEscort().getFullName() : "-"));
+            }
+
+            document.add(table);
+            
+            com.lowagie.text.Paragraph footer = new com.lowagie.text.Paragraph("\nGenerated by SPCMS System on " + LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            footer.setAlignment(com.lowagie.text.Element.ALIGN_RIGHT);
+            footer.setFont(com.lowagie.text.FontFactory.getFont(com.lowagie.text.FontFactory.HELVETICA, 8, java.awt.Color.GRAY));
+            document.add(footer);
+
+        } catch (com.lowagie.text.DocumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private com.lowagie.text.pdf.PdfPCell createVisitorCell(String text) {
+        com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(text != null ? text : "", com.lowagie.text.FontFactory.getFont(com.lowagie.text.FontFactory.HELVETICA, 9)));
+        cell.setPadding(5);
+        return cell;
     }
 
     private String csvCell(Object value) {

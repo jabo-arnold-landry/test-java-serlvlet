@@ -9,10 +9,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-<<<<<<< HEAD
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * DataInitializer: Seeds the database with a default ADMIN user on first run.
@@ -23,10 +23,6 @@ import java.util.List;
  *
  * Change these credentials immediately after first login via /users.
  */
-=======
-import java.util.Optional;
-
->>>>>>> feature/visitor-management
 @Component
 public class DataInitializer implements CommandLineRunner {
 
@@ -37,9 +33,9 @@ public class DataInitializer implements CommandLineRunner {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-<<<<<<< HEAD
     private MonitoringLogRepository monitoringLogRepository;
-=======
+
+    @Autowired
     private com.spcms.repositories.VisitorRepository visitorRepository;
 
     @Autowired
@@ -47,7 +43,6 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private com.spcms.repositories.VisitorCheckInOutRepository visitorCheckInOutRepository;
->>>>>>> feature/visitor-management
 
     @Override
     public void run(String... args) throws Exception {

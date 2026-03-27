@@ -7,16 +7,18 @@
     <title>SPCMS - Request Visit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <jsp:include page="../common/visitor-header.jsp"/>
+    <jsp:include page="../common/styles.jsp"/>
 </head>
-<body class="visitor-app">
+<body>
 
-    <jsp:include page="../common/visitor-sidebar.jsp">
-        <jsp:param name="pageName" value="request" />
-    </jsp:include>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
 
-    <div class="vp-content-area" style="background: #f1f5f9; min-height: 100vh;">
+    <div class="main-content">
         <div class="container-fluid py-5">
+            <jsp:include page="../common/visitor-nav.jsp">
+                <jsp:param name="pageName" value="request" />
+            </jsp:include>
             <div class="row justify-content-center">
                 <div class="col-xl-10">
                     <!-- Page Header -->
@@ -79,10 +81,17 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label small fw-bold text-uppercase text-muted mb-2">Contact Link</label>
+                                                <label class="form-label small fw-bold text-uppercase text-muted mb-2">Primary Phone</label>
                                                 <div class="input-group border rounded-4 overflow-hidden bg-white focus-within-ring transition-300">
                                                     <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-telephone text-slate-400"></i></span>
-                                                    <input type="text" name="phone" class="form-control border-0 bg-white py-3" placeholder="Primary Phone" required>
+                                                    <input type="text" name="phone" class="form-control border-0 bg-white py-3" placeholder="+250..." required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-bold text-uppercase text-muted mb-2">Email Address</label>
+                                                <div class="input-group border rounded-4 overflow-hidden bg-white focus-within-ring transition-300">
+                                                    <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-envelope text-slate-400"></i></span>
+                                                    <input type="email" name="visitorEmail" class="form-control border-0 bg-white py-3" placeholder="visitor@example.com" required>
                                                 </div>
                                             </div>
                                             <div class="col-12">

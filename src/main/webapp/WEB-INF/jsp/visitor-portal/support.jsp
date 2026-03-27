@@ -7,15 +7,19 @@
     <title>SPCMS - Support</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <jsp:include page="../common/visitor-header.jsp"/>
+    <jsp:include page="../common/styles.jsp"/>
 </head>
-<body class="visitor-app">
+<body>
 
-    <jsp:include page="../common/visitor-sidebar.jsp">
-        <jsp:param name="pageName" value="support" />
-    </jsp:include>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
 
-    <div class="vp-content-area d-flex align-items-center justify-content-center">
+    <div class="main-content">
+        <div class="container-fluid py-5">
+            <jsp:include page="../common/visitor-nav.jsp">
+                <jsp:param name="pageName" value="support" />
+            </jsp:include>
+            <div class="row justify-content-center">
         <c:set var="isTech" value="${currentUser.role == 'TECHNICIAN'}" />
         
         <div class="col-lg-6 col-md-8">
@@ -32,25 +36,31 @@
                                 <p class="text-muted small">Submit a security or operational report</p>
                             </div>
 
-                            <form action="${pageContext.request.contextPath}/visitor-portal/incident" method="post" class="needs-validation">
+                            <form action="${pageContext.request.contextPath}/visitor-portal/save-incident" method="post" class="needs-validation">
                                 <c:if test="${not empty _csrf}">
                                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                 </c:if>
+                                <input type="hidden" name="equipmentType" value="OTHER">
 
                                 <div class="mb-4">
-                                    <label class="form-label fw-bold small text-muted text-uppercase" style="letter-spacing:1px;">Incident Type</label>
-                                    <select name="type" class="form-select bg-light border-0 py-3 rounded-3 shadow-none" required>
-                                        <option value="">Select Incident Type...</option>
-                                        <option value="Visitor Overstayed">Visitor Overstayed</option>
-                                        <option value="Unauthorized Access">Unauthorized Access</option>
-                                        <option value="Restricted Area Entry">Restricted Area Entry</option>
-                                        <option value="Equipment Misuse">Equipment Misuse</option>
-                                        <option value="Other Safety Issue">Other Safety Issue</option>
-                                    </select>
+                                    <label class="form-label fw-bold small text-muted text-uppercase" style="letter-spacing:1px;">Incident Title</label>
+                                    <input type="text" name="title" class="form-control bg-light border-0 py-3 rounded-3 shadow-none" placeholder="e.g., Unauthorized Access Attempt" required>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-bold small text-muted text-uppercase" style="letter-spacing:1px;">Criticality Level</label>
+                                        <select name="severity" class="form-select bg-light border-0 py-3 rounded-3 shadow-none" required>
+                                            <option value="LOW">Low - Policy Reminder</option>
+                                            <option value="MEDIUM" selected>Medium - Escalation Required</option>
+                                            <option value="HIGH">High - Immediate Intervention</option>
+                                            <option value="CRITICAL">Critical - Facility Lockdown</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div class="mb-5">
-                                    <label class="form-label fw-bold small text-muted text-uppercase" style="letter-spacing:1px;">Report Description</label>
+                                    <label class="form-label fw-bold small text-muted text-uppercase" style="letter-spacing:1px;">Detailed Findings</label>
                                     <textarea name="description" class="form-control bg-light border-0 py-3 rounded-3 shadow-none" rows="4" placeholder="Describe what happened, including visitor names and locations..." required></textarea>
                                 </div>
 
@@ -104,6 +114,9 @@
         .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important; }
     </style>
 
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

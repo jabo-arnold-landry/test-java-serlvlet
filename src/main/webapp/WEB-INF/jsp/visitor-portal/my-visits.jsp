@@ -7,15 +7,14 @@
     <title>SPCMS - My Visits</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <jsp:include page="../common/visitor-header.jsp"/>
+    <jsp:include page="../common/styles.jsp"/>
 </head>
-<body class="visitor-app">
+<body>
 
-    <jsp:include page="../common/visitor-sidebar.jsp">
-        <jsp:param name="pageName" value="my-visits" />
-    </jsp:include>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
 
-    <div class="vp-content-area">
+    <div class="main-content">
         <div class="bg-white rounded-3 p-4 shadow-sm border border-light mb-4">
             <h3 class="mb-0 text-dark fw-bold">My Active Visits</h3>
             <p class="text-muted mb-0">List of your current and upcoming visit requests</p>

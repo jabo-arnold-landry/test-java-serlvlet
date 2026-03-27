@@ -7,7 +7,7 @@
     <title>SPCMS - Account Provisioning</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <jsp:include page="../common/visitor-header.jsp"/>
+    <jsp:include page="../common/styles.jsp"/>
     <style>
         .fw-black { font-weight: 800; }
         .rounded-5 { border-radius: 1.5rem !important; }
@@ -15,13 +15,12 @@
         .form-control:focus, .form-select:focus { background: #fff; border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
     </style>
 </head>
-<body class="visitor-app">
+<body>
 
-    <jsp:include page="../common/visitor-sidebar.jsp">
-        <jsp:param name="pageName" value="support" />
-    </jsp:include>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
 
-    <div class="vp-content-area" style="background: #f1f5f9; min-height: 100vh;">
+    <div class="main-content">
         <div class="container py-5">
             <div class="d-flex align-items-center justify-content-between mb-5">
                 <div>

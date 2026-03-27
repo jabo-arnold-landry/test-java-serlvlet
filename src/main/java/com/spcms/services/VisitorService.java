@@ -34,6 +34,12 @@ public class VisitorService {
     @Autowired
     private com.spcms.repositories.IncidentRepository incidentRepository;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private SmsService smsService;
+
     // ==================== Visitor Registration ====================
 
     public Visitor registerVisitor(Visitor visitor) {
@@ -82,7 +88,20 @@ public class VisitorService {
         approval.setStatus(VisitApproval.ApprovalStatus.APPROVED);
         approval.setDecisionTime(LocalDateTime.now());
         approval.setApprovedDurationHours(durationHours);
-        approval.setNotificationSent(true); // TODO: send actual notification
+        
+        // Send actual notification (Dual Channel)
+        Visitor visitor = approval.getVisitor();
+        if (visitor.getVisitorEmail() != null && !visitor.getVisitorEmail().isBlank()) {
+            mailService.sendApprovalEmail(visitor);
+            approval.setNotificationSent(true);
+        } else {
+            System.err.println("Email notification skipped: No valid email for visitor " + visitor.getFullName());
+        }
+
+        if (visitor.getPhone() != null && !visitor.getPhone().isBlank()) {
+            smsService.sendApprovalSms(visitor);
+        }
+        
         VisitApproval saved = visitApprovalRepository.save(approval);
         logAction(manager, "VISIT_APPROVED", "VisitApproval", saved.getApprovalId(), 
                   "Approved visit for: " + approval.getVisitor().getFullName() + " (Duration: " + durationHours + "h)");

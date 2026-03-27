@@ -7,19 +7,21 @@
     <title>SPCMS - Active Visitors</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <jsp:include page="../common/visitor-header.jsp"/>
+    <jsp:include page="../common/styles.jsp"/>
     <style>
         .duration-badge { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px; }
     </style>
 </head>
-<body class="visitor-app">
+<body>
 
-    <jsp:include page="../common/visitor-sidebar.jsp">
-        <jsp:param name="pageName" value="active" />
-    </jsp:include>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
 
-    <div class="vp-content-area" style="background: #f1f5f9; min-height: 100vh;">
+    <div class="main-content">
         <div class="container-fluid py-5">
+            <jsp:include page="../common/visitor-nav.jsp">
+                <jsp:param name="pageName" value="active" />
+            </jsp:include>
             <!-- Alert messages -->
             <c:if test="${not empty success}">
                 <div class="alert alert-success border-0 shadow-lg rounded-4 p-4 mb-5 d-flex align-items-center">

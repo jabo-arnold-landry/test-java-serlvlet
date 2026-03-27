@@ -8,7 +8,7 @@
     <title>SPCMS - System Audit Logs</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <jsp:include page="../common/visitor-header.jsp"/>
+    <jsp:include page="../common/styles.jsp"/>
     <style>
         .font-monospace { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; }
         .bg-slate-900 { background-color: #0f172a; }
@@ -17,13 +17,12 @@
         .audit-item:hover { background-color: #f8fafc; }
     </style>
 </head>
-<body class="visitor-app">
+<body>
 
-    <jsp:include page="../common/visitor-sidebar.jsp">
-        <jsp:param name="pageName" value="visit-log" />
-    </jsp:include>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
 
-    <div class="vp-content-area" style="background: #f1f5f9; min-height: 100vh;">
+    <div class="main-content">
         <div class="container-fluid py-5">
             <div class="d-flex align-items-center justify-content-between mb-5">
                 <div>

@@ -8,8 +8,10 @@
         <div><h5>SPCMS</h5><small>Power &amp; Cooling Mgmt</small></div>
     </div>
     <div class="sidebar-nav">
-        <div class="nav-section-label">Main</div>
-        <a href="${pageContext.request.contextPath}/dashboard" class="nav-link"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+        <sec:authorize access="!hasRole('SECURITY')">
+            <div class="nav-section-label">Main</div>
+            <a href="${pageContext.request.contextPath}/dashboard" class="nav-link"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+        </sec:authorize>
         
         <sec:authorize access="hasAnyRole('TECHNICIAN', 'MANAGER', 'ADMIN')">
             <div class="nav-section-label">Assets</div>
@@ -23,43 +25,29 @@
             <a href="${pageContext.request.contextPath}/incidents" class="nav-link"><i class="bi bi-exclamation-triangle-fill"></i> Incidents</a>
         </sec:authorize>
         
-        <a href="${pageContext.request.contextPath}/alerts" class="nav-link"><i class="bi bi-bell-fill"></i> Alerts</a>
+        <sec:authorize access="!hasRole('SECURITY')">
+            <a href="${pageContext.request.contextPath}/alerts" class="nav-link"><i class="bi bi-bell-fill"></i> Alerts</a>
+        </sec:authorize>
         
-        <!-- 1. ADMIN: Intelligence Dashboard -->
         <sec:authorize access="hasRole('ADMIN')">
             <div class="nav-section-label">Global Intelligence</div>
-            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-cpu"></i> Intelligence Hub</a>
-            <a href="${pageContext.request.contextPath}/visitors" class="nav-link"><i class="bi bi-shield-lock"></i> Security Dashboard</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="nav-link"><i class="bi bi-journals"></i> System Audit Log</a>
+            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-window-stack"></i> Visitor Management</a>
         </sec:authorize>
 
         <!-- 2. MANAGER: Governance & Oversight -->
         <sec:authorize access="hasRole('MANAGER')">
             <div class="nav-section-label">Management Governance</div>
-            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-window-stack"></i> Governance Dashboard</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="nav-link"><i class="bi bi-file-earmark-check"></i> Approval Pipeline</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/active" class="nav-link"><i class="bi bi-door-open"></i> Live Traffic Monitor</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/history" class="nav-link"><i class="bi bi-clock-history"></i> Security Audit Logs</a>
+            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-window-stack"></i> Visitor Management</a>
         </sec:authorize>
 
-        <!-- 3. SECURITY: Receptionist Desk -->
         <sec:authorize access="hasRole('SECURITY')">
             <div class="nav-section-label">Receptionist Desk</div>
-            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-speedometer2"></i> Security Dashboard</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/request" class="nav-link"><i class="bi bi-person-plus"></i> Register Arrival</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="nav-link"><i class="bi bi-list-check"></i> Visitor Tracking</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/active" class="nav-link"><i class="bi bi-door-closed"></i> Live Escorts</a>
+            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-shield-shaded"></i> Security Dashboard</a>
         </sec:authorize>
 
-        <!-- 4. TECHNICIAN: Operational Terminal -->
         <sec:authorize access="hasRole('TECHNICIAN')">
             <div class="nav-section-label">Operational Terminal</div>
-            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-speedometer2"></i> Tech Dashboard</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/visit-log" class="nav-link"><i class="bi bi-list-task"></i> My Escort Assignments</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/active" class="nav-link"><i class="bi bi-person-badge"></i> Active Escorts</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/report-incident" class="nav-link"><i class="bi bi-exclamation-octagon"></i> Incident Reports</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/history" class="nav-link"><i class="bi bi-clock-history"></i> My Visit History</a>
-            <a href="${pageContext.request.contextPath}/visitor-portal/notifications" class="nav-link"><i class="bi bi-bell"></i> Notifications</a>
+            <a href="${pageContext.request.contextPath}/visitor-portal" class="nav-link"><i class="bi bi-display"></i> Visitor Management</a>
         </sec:authorize>
 
         <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">

@@ -7,16 +7,18 @@
     <title>SPCMS - Notifications</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <jsp:include page="../common/visitor-header.jsp"/>
+    <jsp:include page="../common/styles.jsp"/>
 </head>
-<body class="visitor-app">
+<body>
 
-    <jsp:include page="../common/visitor-sidebar.jsp">
-        <jsp:param name="pageName" value="notifications" />
-    </jsp:include>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
 
-    <div class="vp-content-area" style="background: #f1f5f9; min-height: 100vh;">
+    <div class="main-content">
         <div class="container-fluid py-5">
+            <jsp:include page="../common/visitor-nav.jsp">
+                <jsp:param name="pageName" value="notifications" />
+            </jsp:include>
             <div class="row justify-content-center">
                 <div class="col-xl-8 col-lg-10">
                     <!-- Page Header -->
@@ -60,6 +62,11 @@
                                                             <c:when test="${n.type == 'CHECKIN'}">
                                                                 <div class="p-4 bg-success bg-opacity-10 text-success rounded-4">
                                                                     <i class="bi bi-geo-alt-fill fs-3"></i>
+                                                                </div>
+                                                            </c:when>
+                                                            <c:when test="${n.type == 'SECURITY_ALERT'}">
+                                                                <div class="p-4 bg-danger bg-opacity-10 text-danger rounded-4">
+                                                                    <i class="bi bi-exclamation-octagon-fill fs-3"></i>
                                                                 </div>
                                                             </c:when>
                                                             <c:otherwise>
@@ -108,6 +115,7 @@
         .notification-card .card { border-left: 5px solid transparent !important; }
         .notification-card:has(.text-primary) .card { border-left-color: #3b82f6 !important; }
         .notification-card:has(.text-success) .card { border-left-color: #10b981 !important; }
+        .notification-card:has(.text-danger) .card { border-left-color: #ef4444 !important; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -7,15 +7,14 @@
     <title>SPCMS - Edit Visitor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <jsp:include page="../common/visitor-header.jsp"/>
+    <jsp:include page="../common/styles.jsp"/>
 </head>
-<body class="visitor-app">
+<body>
 
-    <jsp:include page="../common/visitor-sidebar.jsp">
-        <jsp:param name="pageName" value="visit-log" />
-    </jsp:include>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
 
-    <div class="vp-content-area">
+    <div class="main-content">
         <div class="container-fluid">
             <div class="col-lg-8 mx-auto">
 
@@ -53,6 +52,10 @@
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">Phone Number</label>
                                     <input type="text" name="phone" class="form-control" value="${visitor.phone}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" name="visitorEmail" class="form-control" value="${visitor.visitorEmail}" required>
                                 </div>
                             </div>
 

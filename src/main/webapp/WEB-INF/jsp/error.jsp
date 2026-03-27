@@ -39,7 +39,7 @@
         </c:if>
         
         <hr>
-        <p><a href="${pageContext.request.contextPath}/ups/reports" class="btn btn-primary">Back to Reports</a></p>
+        <p><a href="${pageContext.request.contextPath}/reports" class="btn btn-primary">Back to Reports</a></p>
     </div>
 </body>
 </html>

@@ -53,78 +53,154 @@
 
         <!-- Stat Cards Row -->
         <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-label">Total UPS Systems</div>
-                            <div class="stat-value">${totalUps != null ? totalUps : 0}</div>
-                            <small class="text-success"><i class="bi bi-check-circle"></i> ${activeUps != null ? activeUps : 0} Active</small>
+            <sec:authorize access="hasRole('SECURITY')">
+                <!-- SECURITY: VISITOR FOCUS -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label text-uppercase small fw-bold">Wait-listed</div>
+                                <div class="stat-value">${pendingApprovals}</div>
+                                <small class="text-warning">Pending</small>
+                            </div>
+                            <div class="stat-icon bg-orange-soft"><i class="bi bi-hourglass-split"></i></div>
                         </div>
-                        <div class="stat-icon bg-blue-soft"><i class="bi bi-battery-charging"></i></div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-label">Cooling Systems</div>
-                            <div class="stat-value">${totalCooling != null ? totalCooling : 0}</div>
-                            <small class="text-success"><i class="bi bi-check-circle"></i> ${activeCooling != null ? activeCooling : 0} Active</small>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label text-uppercase small fw-bold">Check-in Awaiting</div>
+                                <div class="stat-value">${waitingForCheckIn}</div>
+                                <small class="text-success">Ready</small>
+                            </div>
+                            <div class="stat-icon bg-green-soft"><i class="bi bi-calendar-check"></i></div>
                         </div>
-                        <div class="stat-icon bg-green-soft"><i class="bi bi-snow2"></i></div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-label">Open Incidents</div>
-                            <div class="stat-value">${openIncidents != null ? openIncidents : 0}</div>
-                            <small class="text-danger"><i class="bi bi-exclamation-circle"></i> ${criticalIncidents != null ? criticalIncidents : 0} Critical</small>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label text-uppercase small fw-bold">Currently Inside</div>
+                                <div class="stat-value">${activeVisitorsCount}</div>
+                                <small class="text-primary">Live</small>
+                            </div>
+                            <div class="stat-icon bg-blue-soft"><i class="bi bi-activity"></i></div>
                         </div>
-                        <div class="stat-icon bg-orange-soft"><i class="bi bi-exclamation-triangle-fill"></i></div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-label">Active Visitors</div>
-                            <div class="stat-value">${activeVisitors != null ? activeVisitors : 0}</div>
-                            <small class="text-warning"><i class="bi bi-bell-fill"></i> ${unacknowledgedAlerts != null ? unacknowledgedAlerts : 0} Alerts</small>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label text-uppercase small fw-bold">Total Check-outs</div>
+                                <div class="stat-value">${checkOutsToday}</div>
+                                <small class="text-muted">Metrics</small>
+                            </div>
+                            <div class="stat-icon bg-secondary bg-opacity-10 text-secondary"><i class="bi bi-clock-history"></i></div>
                         </div>
-                        <div class="stat-icon bg-purple-soft"><i class="bi bi-person-badge"></i></div>
                     </div>
                 </div>
-            </div>
+            </sec:authorize>
+
+            <sec:authorize access="!hasRole('SECURITY')">
+                <!-- DEFAULT: INFRASTRUCTURE FOCUS -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label">Total UPS Systems</div>
+                                <div class="stat-value">${totalUps != null ? totalUps : 0}</div>
+                                <small class="text-success"><i class="bi bi-check-circle"></i> ${activeUps != null ? activeUps : 0} Active</small>
+                            </div>
+                            <div class="stat-icon bg-blue-soft"><i class="bi bi-battery-charging"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label">Cooling Systems</div>
+                                <div class="stat-value">${totalCooling != null ? totalCooling : 0}</div>
+                                <small class="text-success"><i class="bi bi-check-circle"></i> ${activeCooling != null ? activeCooling : 0} Active</small>
+                            </div>
+                            <div class="stat-icon bg-green-soft"><i class="bi bi-snow2"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label">Open Incidents</div>
+                                <div class="stat-value">${openIncidents != null ? openIncidents : 0}</div>
+                                <small class="text-danger"><i class="bi bi-exclamation-circle"></i> ${criticalIncidents != null ? criticalIncidents : 0} Critical</small>
+                            </div>
+                            <div class="stat-icon bg-orange-soft"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="stat-label">Active Visitors</div>
+                                <div class="stat-value">${activeVisitorsCount != null ? activeVisitorsCount : 0}</div>
+                                <small class="text-warning"><i class="bi bi-bell-fill"></i> ${unacknowledgedAlerts != null ? unacknowledgedAlerts : 0} Alerts</small>
+                            </div>
+                            <div class="stat-icon bg-purple-soft"><i class="bi bi-person-badge"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </sec:authorize>
         </div>
 
         <!-- Charts Row -->
         <div class="row g-4 mb-4">
-            <div class="col-lg-8">
-                <div class="chart-container">
-                    <h6 style="font-weight:600;margin-bottom:15px;"><i class="bi bi-graph-up"></i> UPS Load Trend (Last 7 Days)</h6>
-                    <div style="position:relative;height:280px;">
-                        <canvas id="loadTrendChart"></canvas>
+            <sec:authorize access="hasRole('SECURITY')">
+                <div class="col-lg-8">
+                    <div class="chart-container">
+                        <h6 style="font-weight:600;margin-bottom:15px;"><i class="bi bi-people-fill"></i> Visitor Traffic Trend (Last 7 Days)</h6>
+                        <div style="position:relative;height:280px;">
+                            <canvas id="visitorTrendChart"></canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="chart-container">
-                    <h6 style="font-weight:600;margin-bottom:15px;"><i class="bi bi-thermometer-half"></i> Temperature Trend</h6>
-                    <div style="position:relative;height:280px;">
-                        <canvas id="tempTrendChart"></canvas>
+                <div class="col-lg-4">
+                    <div class="chart-container">
+                        <h6 style="font-weight:600;margin-bottom:15px;"><i class="bi bi-bar-chart-fill"></i> Monthly Visit Volume</h6>
+                        <div style="position:relative;height:280px;">
+                            <canvas id="visitorVolumeChart"></canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </sec:authorize>
+            <sec:authorize access="!hasRole('SECURITY')">
+                <div class="col-lg-8">
+                    <div class="chart-container">
+                        <h6 style="font-weight:600;margin-bottom:15px;"><i class="bi bi-graph-up"></i> UPS Load Trend (Last 7 Days)</h6>
+                        <div style="position:relative;height:280px;">
+                            <canvas id="loadTrendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="chart-container">
+                        <h6 style="font-weight:600;margin-bottom:15px;"><i class="bi bi-thermometer-half"></i> Temperature Trend</h6>
+                        <div style="position:relative;height:280px;">
+                            <canvas id="tempTrendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </sec:authorize>
         </div>
 
         <!-- Daily Report Summary -->
         <c:if test="${dailyReport != null}">
+        <sec:authorize access="!hasRole('SECURITY')">
         <div class="row g-4 mb-4">
             <div class="col-md-4">
                 <div class="stat-card">
@@ -148,72 +224,135 @@
                 </div>
             </div>
         </div>
+        </sec:authorize>
         </c:if>
 
         <!-- Faulty Equipment Alert -->
         <c:if test="${faultyUps != null && faultyUps > 0}">
+        <sec:authorize access="!hasRole('SECURITY')">
         <div class="alert alert-danger d-flex align-items-center" role="alert">
             <i class="bi bi-exclamation-octagon-fill me-2" style="font-size:20px;"></i>
             <div><strong>Attention!</strong> ${faultyUps} UPS system(s) are currently in FAULTY status. Immediate action required.</div>
         </div>
+        </sec:authorize>
         </c:if>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
-        // UPS Load Trend Chart (Sample data - replace with dynamic data)
-        const loadCtx = document.getElementById('loadTrendChart').getContext('2d');
-        new Chart(loadCtx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Avg Load %',
-                    data: [45, 52, 48, 61, 55, 42, 50],
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59,130,246,0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#3b82f6',
-                    pointBorderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } }
+        // --- INFRASTRUCTURE CHARTS (Admin/Manager) ---
+        const loadTrendEl = document.getElementById('loadTrendChart');
+        if (loadTrendEl) {
+            const loadCtx = loadTrendEl.getContext('2d');
+            new Chart(loadCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Avg Load %',
+                        data: [45, 52, 48, 61, 55, 42, 50],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59,130,246,0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } }
+                    }
                 }
-            }
-        });
+            });
+        }
 
-        // Temperature Trend Chart
-        const tempCtx = document.getElementById('tempTrendChart').getContext('2d');
-        new Chart(tempCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Avg Temp °C',
-                    data: [22, 23, 24, 26, 25, 22, 23],
-                    backgroundColor: function(context) {
-                        const value = context.dataset.data[context.dataIndex];
-                        return value > 25 ? 'rgba(239,68,68,0.7)' : 'rgba(16,185,129,0.7)';
-                    },
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: false, min: 18, max: 35, ticks: { callback: v => v + '°C' } }
+        const tempTrendEl = document.getElementById('tempTrendChart');
+        if (tempTrendEl) {
+            const tempCtx = tempTrendEl.getContext('2d');
+            new Chart(tempCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Avg Temp °C',
+                        data: [22, 23, 24, 26, 25, 22, 23],
+                        backgroundColor: function(context) {
+                            const value = context.dataset.data[context.dataIndex];
+                            return value > 25 ? 'rgba(239,68,68,0.7)' : 'rgba(16,185,129,0.7)';
+                        },
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: false, min: 18, max: 35, ticks: { callback: v => v + '°C' } }
+                    }
                 }
-            }
-        });
+            });
+        }
+
+        // --- VISITOR CHARTS (Security) ---
+        const visitorTrendEl = document.getElementById('visitorTrendChart');
+        if (visitorTrendEl) {
+            const vTrendCtx = visitorTrendEl.getContext('2d');
+            new Chart(vTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: [<c:forEach var="entry" items="${dailyStats}" varStatus="status">'${entry.key}'${status.last ? '' : ','}</c:forEach>],
+                    datasets: [{
+                        label: 'Visitors',
+                        data: [<c:forEach var="entry" items="${dailyStats}" varStatus="status">${entry.value}${status.last ? '' : ','}</c:forEach>],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSizeValue: 1 } }
+                    }
+                }
+            });
+        }
+
+        const visitorVolEl = document.getElementById('visitorVolumeChart');
+        if (visitorVolEl) {
+            const vVolCtx = visitorVolEl.getContext('2d');
+            new Chart(vVolCtx, {
+                type: 'bar',
+                data: {
+                    labels: [<c:forEach var="entry" items="${monthlyStats}" varStatus="status">'${entry.key}'${status.last ? '' : ','}</c:forEach>],
+                    datasets: [{
+                        label: 'Total Visits',
+                        data: [<c:forEach var="entry" items="${monthlyStats}" varStatus="status">${entry.value}${status.last ? '' : ','}</c:forEach>],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSizeValue: 1 } }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>

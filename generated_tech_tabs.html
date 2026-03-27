@@ -1,0 +1,443 @@
+<c:otherwise>
+                    <!-- 3. TECHNICIAN: OPERATIONAL TERMINAL -->
+                    <c:set var="isTech" value="${currentUser.role == 'TECHNICIAN'}" />
+                    
+<div class="col-xl-12 mb-4">
+    <style>
+        .nav-pills .nav-link { color: #475569; transition: all 0.3s ease; border: 1px solid transparent; }
+        .nav-pills .nav-link.active { background-color: #0f172a; color: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .nav-pills .nav-link:hover:not(.active) { background-color: #f8fafc; color: #0f172a; border-color: #e2e8f0; }
+    </style>
+    <ul class="nav nav-pills nav-fill bg-white p-2 border border-slate-100 shadow-sm rounded-pill" id="techTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold px-4 py-3 rounded-pill" id="tech-overview-tab" data-bs-toggle="pill" data-bs-target="#tech-overview" type="button" role="tab"><i class="bi bi-speedometer2 me-2"></i>Dashboard</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold px-4 py-3 rounded-pill" id="tech-assignments-tab" data-bs-toggle="pill" data-bs-target="#tech-assignments" type="button" role="tab"><i class="bi bi-list-task me-2"></i>My Assignments</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold px-4 py-3 rounded-pill" id="tech-active-tab" data-bs-toggle="pill" data-bs-target="#tech-active" type="button" role="tab"><i class="bi bi-person-badge me-2"></i>Active Escorts</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold px-4 py-3 rounded-pill" id="tech-incident-tab" data-bs-toggle="pill" data-bs-target="#tech-incident" type="button" role="tab"><i class="bi bi-exclamation-octagon text-danger me-2"></i>Report Incident</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold px-4 py-3 rounded-pill" id="tech-history-tab" data-bs-toggle="pill" data-bs-target="#tech-history" type="button" role="tab"><i class="bi bi-clock-history me-2"></i>Visit Archive</button>
+        </li>
+    </ul>
+</div>
+
+                    
+<div class="col-xl-12">
+    <div class="tab-content" id="techTabsContent">
+        <div class="tab-pane fade show active" id="tech-overview" role="tabpanel">
+            <div class="notification-feed">
+                        <c:choose>
+                            <c:when test="${empty notifications}">
+                                <div class="text-center py-5">
+                                    <div class="p-5 bg-white rounded-5 shadow-sm inline-block">
+                                        <i class="bi bi-broadcast fs-1 text-slate-200 mb-3 d-block"></i>
+                                        <h5 class="fw-bold text-slate-800 mb-1">Quiet Wavefront</h5>
+                                        <p class="text-slate-400 mb-0">No active alerts at this moment.</p>
+                                    </div>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="n" items="${notifications}">
+                                    <div class="notification-card hover-lift transition-300 mb-4">
+                                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                                            <div class="card-body p-4 p-md-5">
+                                                <div class="row align-items-center">
+                                                    <div class="col-auto">
+                                                        <c:choose>
+                                                            <c:when test="${n.type == 'ASSIGNMENT'}">
+                                                                <div class="p-4 bg-primary bg-opacity-10 text-primary rounded-4">
+                                                                    <i class="bi bi-person-check-fill fs-3"></i>
+                                                                </div>
+                                                            </c:when>
+                                                            <c:when test="${n.type == 'CHECKIN'}">
+                                                                <div class="p-4 bg-success bg-opacity-10 text-success rounded-4">
+                                                                    <i class="bi bi-geo-alt-fill fs-3"></i>
+                                                                </div>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <div class="p-4 bg-slate-100 text-slate-600 rounded-4">
+                                                                    <i class="bi bi-info-circle-fill fs-3"></i>
+                                                                </div>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </div>
+                                                    <div class="col ms-md-2">
+                                                        <div class="d-flex justify-content-between align-items-start mb-1">
+                                                            <h5 class="fw-bold text-slate-900 mb-0">${n.title}</h5>
+                                                            <span class="small text-slate-400 fw-medium">${n.date}</span>
+                                                        </div>
+                                                        <p class="fs-6 text-slate-700 fw-medium mb-3">${n.content}</p>
+                                                        <div class="p-3 bg-slate-50 border border-slate-100 rounded-3">
+                                                            <span class="small text-slate-500 fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">Protocol Details</span>
+                                                            <p class="small text-slate-600 mb-0 italic">${n.details}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+        </div>
+        <div class="tab-pane fade" id="tech-assignments" role="tabpanel">
+            <div class="card border-0 shadow-sm rounded-5 overflow-hidden mb-5">
+                <div class="card-header bg-white p-4 border-0 border-bottom border-light">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 p-2 rounded-3 text-primary me-3">
+                            <i class="bi bi-clock-history fs-5"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0 text-slate-800">Awaiting Check-In</h5>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr class="bg-slate-50">
+                                    <th class="ps-4 py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Visitor Name</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Company</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Purpose</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Visit Date</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Status</th>
+                                    <c:if test="${!isTech}">
+                                        <th class="pe-4 py-4 text-end text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Actions</th>
+                                    </c:if>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${empty awaitingCheckIn}">
+                                        <tr>
+                                            <td colspan="${isTech ? 5 : 6}" class="text-center py-5">
+                                                <i class="bi bi-inbox fs-1 text-slate-200 mb-3 d-block"></i>
+                                                <p class="text-slate-400 fw-medium">No approved visitors awaiting activation in this sector.</p>
+                                            </td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="a" items="${awaitingCheckIn}">
+                                            <tr>
+                                                <td class="ps-4 py-4">
+                                                    <div class="fw-bold text-slate-900">${a.visitor.fullName}</div>
+                                                    <div class="small text-slate-400">ID: ${a.visitor.nationalIdPassport}</div>
+                                                </td>
+                                                <td class="py-4">
+                                                    <span class="text-slate-600 fw-medium">${a.visitor.company}</span>
+                                                </td>
+                                                <td class="py-4">
+                                                    <span class="badge bg-slate-100 text-slate-600 border border-slate-200 px-3 py-2 rounded-pill font-monospace small">
+                                                        ${a.visitor.purposeOfVisit}
+                                                    </span>
+                                                </td>
+                                                <td class="py-4 text-slate-600">
+                                                    <i class="bi bi-calendar-event me-2 text-slate-400"></i>${a.visitor.visitDate}
+                                                </td>
+                                                <td class="py-4">
+                                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-bold">
+                                                        <i class="bi bi-shield-check me-1"></i>Approved
+                                                    </span>
+                                                </td>
+                                                <c:if test="${isSecurity || isAdmin}">
+                                                    <td class="pe-4 py-4 text-end">
+                                                        <button class="btn btn-slate-900 text-white px-3 py-2 rounded-3 hover-lift transition-300 me-2" 
+                                                                data-bs-toggle="modal" data-bs-target="#checkinModal${a.visitor.visitorId}" title="Perform Check-In">
+                                                            <i class="bi bi-box-arrow-in-right me-1"></i>CHECK-IN
+                                                        </button>
+                                                    </td>
+                                                </c:if>
+                                                <c:if test="${isManager}">
+                                                    <td class="pe-4 py-4 text-end text-muted small italic">Awaiting Arrival</td>
+                                                </c:if>
+                                            </tr>
+
+                                            <!-- CHECK-IN MODAL (Redesigned) -->
+                                            <div class="modal fade" id="checkinModal${a.visitor.visitorId}" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content border-0 shadow-lg rounded-5 overflow-hidden">
+                                                        <div class="modal-header bg-slate-900 text-white p-4 border-0">
+                                                            <h5 class="modal-title fw-black">Security Activation</h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form action="${pageContext.request.contextPath}/visitor-portal/checkin" method="post">
+                                                            <div class="modal-body p-5">
+                                                                <input type="hidden" name="visitorId" value="${a.visitor.visitorId}">
+                                                                <div class="mb-4">
+                                                                    <label class="form-label small fw-black text-uppercase text-slate-400">Visitor Profile</label>
+                                                                    <div class="p-3 bg-slate-50 rounded-4 border border-slate-100">
+                                                                        <div class="fw-bold text-slate-900">${a.visitor.fullName}</div>
+                                                                        <div class="small text-slate-500">${a.visitor.company} | ${a.visitor.purposeOfVisit}</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-4">
+                                                                    <label class="form-label small fw-black text-uppercase text-slate-400">Assigned Badge</label>
+                                                                    <input type="text" name="badge" class="form-control border rounded-4 py-3 bg-slate-50" placeholder="e.g. VIS-SEC-001">
+                                                                </div>
+                                                                <div class="mb-2">
+                                                                    <label class="form-label small fw-black text-uppercase text-slate-400">Protocol Escort</label>
+                                                                    <select name="escortId" class="form-select border rounded-4 py-3 bg-slate-50">
+                                                                        <option value="">Select Personnel...</option>
+                                                                        <c:forEach var="s" items="${staffList}">
+                                                                            <option value="${s.userId}">${s.fullName} (${s.role})</option>
+                                                                        </c:forEach>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer p-4 border-0">
+                                                                <button type="button" class="btn btn-slate-100 text-slate-600 px-4 py-3 rounded-4 fw-bold" data-bs-dismiss="modal">CANCEL</button>
+                                                                <button type="submit" class="btn btn-primary px-4 py-3 rounded-4 fw-black shadow-lg">INITIALIZE SESSION</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="tech-active" role="tabpanel">
+            <div class="card border-0 shadow-sm rounded-5 overflow-hidden">
+                <div class="card-header bg-white p-4 border-0 border-bottom border-light">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 p-2 rounded-3 text-success me-3">
+                            <i class="bi bi-person-walking fs-5"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0 text-slate-800">Active Sessions</h5>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr class="bg-slate-50">
+                                    <th class="ps-4 py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Visitor</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Company</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Purpose</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Check-In Time</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Location</th>
+                                    <c:if test="${!isTech}">
+                                        <th class="pe-4 py-4 text-end text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Protocol</th>
+                                    </c:if>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${empty activeVisitors}">
+                                        <tr>
+                                            <td colspan="${isTech ? 5 : 6}" class="text-center py-5">
+                                                <div class="p-5">
+                                                    <i class="bi bi-radar fs-1 text-slate-200 mb-3 d-block"></i>
+                                                    <p class="text-slate-400 fw-medium">All sessions terminated. No active visitor signals detected.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="v" items="${activeVisitors}">
+                                            <tr>
+                                                <td class="ps-4 py-4">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="p-2 bg-slate-100 rounded-circle me-3">
+                                                            <i class="bi bi-person text-slate-500"></i>
+                                                        </div>
+                                                        <div>
+                                                            <div class="fw-bold text-slate-900">${v.visitor.fullName}</div>
+                                                            <div class="small fw-bold text-primary">ID: VR-${v.visitor.visitorId}</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="py-4">
+                                                    <span class="text-slate-600 fw-medium">${v.visitor.company}</span>
+                                                </td>
+                                                <td class="py-4">
+                                                    <span class="badge bg-slate-100 text-slate-600 border border-slate-200 px-3 py-2 rounded-pill small">
+                                                        ${v.visitor.purposeOfVisit}
+                                                    </span>
+                                                </td>
+                                                <td class="py-4">
+                                                    <div class="text-slate-800 fw-bold">${v.checkInTime.toLocalTime().toString().substring(0, 5)}</div>
+                                                    <div class="small text-slate-400">${v.checkInTime.toLocalDate()}</div>
+                                                </td>
+                                                <td class="py-4">
+                                                    <span class="badge bg-indigo-50 text-indigo-500 border border-indigo-100 px-3 py-2 rounded-3">
+                                                        <i class="bi bi-building me-2"></i>${v.visitor.departmentToVisit}
+                                                    </span>
+                                                </td>
+                                                <td class="pe-4 py-4 text-end">
+                                                    <c:choose>
+                                                        <c:when test="${isTechnician}">
+                                                            <a href="${pageContext.request.contextPath}/visitor-portal/report-incident?visitorId=${v.visitor.visitorId}" 
+                                                               class="btn btn-outline-danger btn-sm rounded-3 px-3 py-2 fw-bold hover-lift transition-300">
+                                                                <i class="bi bi-exclamation-octagon me-1"></i>REPORT
+                                                            </a>
+                                                        </c:when>
+                                                        <c:when test="${isSecurity}">
+                                                            <button class="btn btn-warning text-white px-4 py-2 rounded-4 fw-black shadow-sm hover-lift transition-300" 
+                                                                    data-bs-toggle="modal" data-bs-target="#checkoutModal${v.checkId}">
+                                                                <i class="bi bi-box-arrow-right me-2"></i>LOG OUT
+                                                            </button>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-bold">
+                                                                <i class="bi bi-broadcast me-2"></i>ACTIVE
+                                                            </span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                            </tr>
+
+                                            <c:if test="${isSecurity}">
+                                                <!-- CHECK-OUT MODAL (Redesigned) -->
+                                                <div class="modal fade" id="checkoutModal${v.checkId}" tabindex="-1">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content border-0 shadow-lg rounded-5 overflow-hidden">
+                                                            <div class="modal-header bg-warning p-4 border-0">
+                                                                <h5 class="modal-title fw-black">Session Termination</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <form action="${pageContext.request.contextPath}/visitor-portal/checkout/${v.checkId}" method="post">
+                                                                <div class="modal-body p-5">
+                                                                    <div class="text-center mb-4">
+                                                                        <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-circle inline-block mb-3">
+                                                                            <i class="bi bi-exclamation-triangle fs-2"></i>
+                                                                        </div>
+                                                                        <h6 class="fw-bold text-slate-900">Finalizing visit for ${v.visitor.fullName}</h6>
+                                                                        <p class="small text-slate-500">Duration documented: ${durationMap[v.checkId]}</p>
+                                                                    </div>
+                                                                    <div class="space-y-3">
+                                                                        <div class="p-3 border border-slate-100 bg-slate-50 rounded-4">
+                                                                            <div class="form-check form-switch custom-switch">
+                                                                                <input class="form-check-input" type="checkbox" name="equipmentConfirmed" id="equip${v.checkId}" value="true" checked>
+                                                                                <label class="form-check-label fw-bold text-slate-700" for="equip${v.checkId}">All Equipment Recovered</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="p-3 border border-slate-100 bg-slate-50 rounded-4 mt-3">
+                                                                            <div class="form-check form-switch custom-switch">
+                                                                                <input class="form-check-input" type="checkbox" name="badgeReturned" id="badge${v.checkId}" value="true" checked>
+                                                                                <label class="form-check-label fw-bold text-slate-700" for="badge${v.checkId}">Access Badge Deactivated</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer p-4 border-0">
+                                                                    <button type="button" class="btn btn-slate-100 text-slate-600 px-4 py-3 rounded-4 fw-bold" data-bs-dismiss="modal">CANCEL</button>
+                                                                    <button type="submit" class="btn btn-warning text-white px-4 py-3 rounded-4 fw-black shadow-lg">CONFIRM DEPARTURE</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="tech-incident" role="tabpanel">
+            
+        </div>
+        <div class="tab-pane fade" id="tech-history" role="tabpanel">
+            <div class="d-flex justify-content-end mb-3 mt-2">
+                    <a href="${pageContext.request.contextPath}/visitor-portal/history/export-pdf" class="btn btn-white border border-light text-slate-600 px-4 py-2 rounded-4 shadow-sm fw-bold">
+                        <i class="bi bi-download me-2"></i>EXPORT LOGS
+                    </a>
+                </div>
+            <div class="card border-0 shadow-sm rounded-5 overflow-hidden">
+                <div class="card-header bg-white p-4 border-0 border-bottom border-light">
+                    <div class="d-flex align-items-center">
+                        <div class="p-2 bg-slate-900 rounded-3 text-white me-3">
+                            <i class="bi bi-archive fs-5"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0 text-slate-800">Visit Logs</h5>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr class="bg-slate-50">
+                                    <th class="ps-4 py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Visitor Name</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Company</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Purpose</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Visit Date</th>
+                                    <th class="py-4 text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Final Status</th>
+                                    <c:if test="${!isTech}">
+                                        <th class="pe-4 py-4 text-end text-uppercase small fw-black text-slate-400" style="letter-spacing: 1px;">Authorized By</th>
+                                    </c:if>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${empty pastVisits}">
+                                        <tr>
+                                            <td colspan="${isTech ? 5 : 6}" class="text-center py-5">
+                                                <div class="p-5">
+                                                    <i class="bi bi-journal-x fs-1 text-slate-200 mb-3 d-block"></i>
+                                                    <p class="text-slate-400 fw-medium">Archive is empty. No historical sessions recorded.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="v" items="${pastVisits}">
+                                            <tr>
+                                                <td class="ps-4 py-4">
+                                                    <div class="fw-bold text-slate-900">${v.visitor.fullName}</div>
+                                                    <div class="small font-monospace text-slate-400">#VR-${v.visitor.visitorId}</div>
+                                                </td>
+                                                <td class="py-4 text-slate-600 fw-medium">${v.visitor.company}</td>
+                                                <td class="py-4">
+                                                    <span class="badge bg-slate-100 text-slate-600 border border-slate-200 px-3 py-2 rounded-pill small fw-medium">
+                                                        ${v.visitor.purposeOfVisit}
+                                                    </span>
+                                                </td>
+                                                <td class="py-4">
+                                                    <div class="text-slate-700 fw-bold">${v.visitor.visitDate}</div>
+                                                    <div class="small text-slate-400">${v.checkInTime.toLocalTime().toString().substring(0, 5)} - ${v.checkOutTime.toLocalTime().toString().substring(0, 5)}</div>
+                                                </td>
+                                                <td class="py-4">
+                                                    <span class="badge bg-slate-900 text-white rounded-pill px-3 py-2 fw-black small" style="background: #0f172a;">
+                                                        CLOSED
+                                                    </span>
+                                                </td>
+                                                <c:if test="${!isTech}">
+                                                    <td class="pe-4 py-4 text-end">
+                                                        <div class="d-flex align-items-center justify-content-end">
+                                                            <div class="me-2 text-end">
+                                                                <div class="small fw-bold text-slate-800">${v.escort.fullName}</div>
+                                                                <div class="small text-slate-400">Protocol Escort</div>
+                                                            </div>
+                                                            <div class="p-2 bg-slate-100 rounded-circle"><i class="bi bi-shield-check text-slate-500"></i></div>
+                                                        </div>
+                                                    </td>
+                                                </c:if>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                </c:otherwise>

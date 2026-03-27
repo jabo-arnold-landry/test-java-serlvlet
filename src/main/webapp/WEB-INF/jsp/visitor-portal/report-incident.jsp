@@ -7,7 +7,7 @@
     <title>SPCMS - Security Protocol Report</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <jsp:include page="../common/visitor-header.jsp"/>
+    <jsp:include page="../common/styles.jsp"/>
     <style>
         :root {
             --slate-50: #f8fafc;
@@ -34,13 +34,12 @@
         .incident-header { background: linear-gradient(135deg, var(--slate-900) 0%, #1e293b 100%); color: white; padding: 3rem 0; border-radius: 0 0 3rem 3rem; margin-bottom: -4rem; }
     </style>
 </head>
-<body class="visitor-app">
+<body>
 
-    <jsp:include page="../common/visitor-sidebar.jsp">
-        <jsp:param name="pageName" value="active" />
-    </jsp:include>
+    <jsp:include page="../common/sidebar.jsp"/>
+    <jsp:include page="../common/topbar.jsp"/>
 
-    <div class="vp-content-area p-0">
+    <div class="main-content p-0">
         <div class="incident-header">
             <div class="container-fluid px-5">
                 <div class="d-flex align-items-center justify-content-between">
