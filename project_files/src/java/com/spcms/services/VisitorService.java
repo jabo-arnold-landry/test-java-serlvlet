@@ -1,0 +1,126 @@
+package com.spcms.services;
+
+import com.spcms.models.Visitor;
+import com.spcms.models.VisitApproval;
+import com.spcms.models.VisitorCheckInOut;
+import com.spcms.repositories.VisitorRepository;
+import com.spcms.repositories.VisitApprovalRepository;
+import com.spcms.repositories.VisitorCheckInOutRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@Transactional
+public class VisitorService {
+
+    @Autowired
+    private VisitorRepository visitorRepository;
+
+    @Autowired
+    private VisitApprovalRepository visitApprovalRepository;
+
+    @Autowired
+    private VisitorCheckInOutRepository visitorCheckInOutRepository;
+
+    // ==================== Visitor Registration ====================
+
+    public Visitor registerVisitor(Visitor visitor) {
+        // Generate a unique pass number
+        visitor.setPassNumber("VP-" + System.currentTimeMillis());
+        return visitorRepository.save(visitor);
+    }
+
+    public Optional<Visitor> getVisitorById(Long id) {
+        return visitorRepository.findById(id);
+    }
+
+    public List<Visitor> getAllVisitors() {
+        return visitorRepository.findAll();
+    }
+
+    public List<Visitor> getVisitorsByDate(LocalDate date) {
+        return visitorRepository.findByVisitDate(date);
+    }
+
+    public List<Visitor> getVisitorsByDateRange(LocalDate start, LocalDate end) {
+        return visitorRepository.findByVisitDateBetween(start, end);
+    }
+
+    // ==================== Approval Workflow ====================
+
+    public VisitApproval submitForApproval(Long visitorId) {
+        Visitor visitor = visitorRepository.findById(visitorId)
+                .orElseThrow(() -> new RuntimeException("Visitor not found: " + visitorId));
+        VisitApproval approval = VisitApproval.builder()
+                .visitor(visitor)
+                .status(VisitApproval.ApprovalStatus.PENDING)
+                .build();
+        return visitApprovalRepository.save(approval);
+    }
+
+    public VisitApproval approveVisit(Long approvalId, Long managerId) {
+        VisitApproval approval = visitApprovalRepository.findById(approvalId)
+                .orElseThrow(() -> new RuntimeException("Approval not found: " + approvalId));
+        var manager = new com.spcms.models.User();
+        manager.setUserId(managerId);
+        approval.setApprovedBy(manager);
+        approval.setStatus(VisitApproval.ApprovalStatus.APPROVED);
+        approval.setDecisionTime(LocalDateTime.now());
+        approval.setNotificationSent(true); // TODO: send actual notification
+        return visitApprovalRepository.save(approval);
+    }
+
+    public VisitApproval rejectVisit(Long approvalId, Long managerId, String reason) {
+        VisitApproval approval = visitApprovalRepository.findById(approvalId)
+                .orElseThrow(() -> new RuntimeException("Approval not found: " + approvalId));
+        var manager = new com.spcms.models.User();
+        manager.setUserId(managerId);
+        approval.setApprovedBy(manager);
+        approval.setStatus(VisitApproval.ApprovalStatus.REJECTED);
+        approval.setDecisionTime(LocalDateTime.now());
+        approval.setRemarks(reason);
+        return visitApprovalRepository.save(approval);
+    }
+
+    public List<VisitApproval> getPendingApprovals() {
+        return visitApprovalRepository.findByStatus(VisitApproval.ApprovalStatus.PENDING);
+    }
+
+    // ==================== Check-In / Check-Out ====================
+
+    public VisitorCheckInOut checkIn(Long visitorId, String temporaryBadge, Long escortId) {
+        Visitor visitor = visitorRepository.findById(visitorId)
+                .orElseThrow(() -> new RuntimeException("Visitor not found: " + visitorId));
+        var escort = new com.spcms.models.User();
+        escort.setUserId(escortId);
+
+        VisitorCheckInOut checkInOut = VisitorCheckInOut.builder()
+                .visitor(visitor)
+                .checkInTime(LocalDateTime.now())
+                .temporaryBadge(temporaryBadge)
+                .escort(escort)
+                .equipmentConfirmedOut(false)
+                .visitClosed(false)
+                .build();
+        return visitorCheckInOutRepository.save(checkInOut);
+    }
+
+    public VisitorCheckInOut checkOut(Long checkId, boolean equipmentConfirmed) {
+        VisitorCheckInOut checkInOut = visitorCheckInOutRepository.findById(checkId)
+                .orElseThrow(() -> new RuntimeException("Check-in record not found: " + checkId));
+        checkInOut.setCheckOutTime(LocalDateTime.now());
+        checkInOut.setEquipmentConfirmedOut(equipmentConfirmed);
+        checkInOut.setVisitClosed(true);
+        return visitorCheckInOutRepository.save(checkInOut);
+    }
+
+    public List<VisitorCheckInOut> getActiveVisitors() {
+        return visitorCheckInOutRepository.findActiveVisitors();
+    }
+}
