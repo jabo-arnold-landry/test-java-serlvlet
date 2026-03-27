@@ -45,6 +45,10 @@ public class MaintenanceService {
         return upsMaintenanceRepository.findOverdue(LocalDate.now());
     }
 
+    public List<UpsMaintenance> getUpcomingUpsMaintenance() {
+        return upsMaintenanceRepository.findUpcoming(LocalDate.now(), LocalDate.now().plusDays(30));
+    }
+
     public List<UpsMaintenance> getUpsMaintenanceByDateRange(LocalDate start, LocalDate end) {
         return upsMaintenanceRepository.findByMaintenanceDateBetween(start, end);
     }
@@ -77,6 +81,10 @@ public class MaintenanceService {
 
     public List<CoolingMaintenance> getOverdueCoolingMaintenance() {
         return coolingMaintenanceRepository.findOverdue(LocalDate.now());
+    }
+
+    public List<CoolingMaintenance> getUpcomingCoolingMaintenance() {
+        return coolingMaintenanceRepository.findUpcoming(LocalDate.now(), LocalDate.now().plusDays(30));
     }
 
     public List<CoolingMaintenance> getCoolingMaintenanceByDateRange(LocalDate start, LocalDate end) {
