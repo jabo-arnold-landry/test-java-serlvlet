@@ -1,7 +1,9 @@
 package com.spcms.services;
 
 import com.spcms.models.Alert;
+import com.spcms.models.AlertAcknowledgment;
 import com.spcms.models.User;
+import com.spcms.repositories.AlertAcknowledgmentRepository;
 import com.spcms.repositories.AlertRepository;
 import com.spcms.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.mail.internet.MimeMessage;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,6 +40,9 @@ public class AlertService {
 
     @Autowired
     private AlertRepository alertRepository;
+
+    @Autowired
+    private AlertAcknowledgmentRepository alertAcknowledgmentRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -184,8 +192,120 @@ public class AlertService {
     }
 
     @Transactional(readOnly = true)
+    public List<Alert> getUnacknowledgedAlertsForUser(Long userId) {
+        if (userId == null) {
+            return getUnacknowledgedAlerts();
+        }
+        return alertRepository.findUnacknowledgedByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Alert> getAcknowledgedAlerts(LocalDate fromDate,
+                                             LocalDate toDate,
+                                             Alert.AlertType alertType) {
+        return alertRepository.findByIsAcknowledgedTrue().stream()
+                .filter(alert -> alertType == null || alert.getAlertType() == alertType)
+                .filter(alert -> {
+                    if (fromDate == null) {
+                        return true;
+                    }
+                    return alert.getCreatedAt() != null &&
+                            !alert.getCreatedAt().toLocalDate().isBefore(fromDate);
+                })
+                .filter(alert -> {
+                    if (toDate == null) {
+                        return true;
+                    }
+                    return alert.getCreatedAt() != null &&
+                            !alert.getCreatedAt().toLocalDate().isAfter(toDate);
+                })
+                .sorted(Comparator
+                        .comparing(Alert::getAcknowledgedAt, Comparator.nullsLast(Comparator.reverseOrder()))
+                        .thenComparing(Alert::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Alert> getAcknowledgedAlertsForUser(Long userId,
+                                                    LocalDate fromDate,
+                                                    LocalDate toDate,
+                                                    Alert.AlertType alertType) {
+        if (userId == null) {
+            return getAcknowledgedAlerts(fromDate, toDate, alertType);
+        }
+
+        return alertAcknowledgmentRepository.findByUserUserId(userId).stream()
+            .sorted(Comparator.comparing(AlertAcknowledgment::getAcknowledgedAt,
+                Comparator.nullsLast(Comparator.reverseOrder())))
+            .map(AlertAcknowledgment::getAlert)
+                .filter(Objects::nonNull)
+                .filter(alert -> alertType == null || alert.getAlertType() == alertType)
+                .filter(alert -> {
+                    if (fromDate == null) {
+                        return true;
+                    }
+                    return alert.getCreatedAt() != null &&
+                            !alert.getCreatedAt().toLocalDate().isBefore(fromDate);
+                })
+                .filter(alert -> {
+                    if (toDate == null) {
+                        return true;
+                    }
+                    return alert.getCreatedAt() != null &&
+                            !alert.getCreatedAt().toLocalDate().isAfter(toDate);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public long countUnacknowledgedAlerts() {
         return alertRepository.countByIsAcknowledgedFalse();
+    }
+
+    @Transactional(readOnly = true)
+    public long countUnacknowledgedAlertsForUser(Long userId) {
+        if (userId == null) {
+            return countUnacknowledgedAlerts();
+        }
+        return alertRepository.countUnacknowledgedByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isAcknowledgedByUser(Long alertId, Long userId) {
+        if (alertId == null || userId == null) {
+            return false;
+        }
+        return alertAcknowledgmentRepository.existsByAlertAlertIdAndUserUserId(alertId, userId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<LocalDateTime> getAcknowledgedAtForUser(Long alertId, Long userId) {
+        if (alertId == null || userId == null) {
+            return Optional.empty();
+        }
+        return alertAcknowledgmentRepository.findByAlertAlertIdAndUserUserId(alertId, userId)
+                .map(AlertAcknowledgment::getAcknowledgedAt);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Long, LocalDateTime> getAcknowledgedAtMapForUser(Long userId, List<Alert> alerts) {
+        if (userId == null || alerts == null || alerts.isEmpty()) {
+            return Map.of();
+        }
+
+        List<Long> alertIds = alerts.stream()
+                .map(Alert::getAlertId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        if (alertIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return alertAcknowledgmentRepository.findByUserUserIdAndAlertAlertIdIn(userId, alertIds).stream()
+                .collect(Collectors.toMap(
+                        ack -> ack.getAlert().getAlertId(),
+                        AlertAcknowledgment::getAcknowledgedAt,
+                        (left, right) -> left));
     }
 
     // ==================== Alert Generators ====================
@@ -300,8 +420,19 @@ public class AlertService {
     public Alert acknowledgeAlert(Long alertId, Long userId) {
         Alert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new RuntimeException("Alert not found: " + alertId));
-        var user = new com.spcms.models.User();
-        user.setUserId(userId);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+
+        if (!alertAcknowledgmentRepository.existsByAlertAlertIdAndUserUserId(alertId, userId)) {
+            AlertAcknowledgment acknowledgment = AlertAcknowledgment.builder()
+                .alert(alert)
+                .user(user)
+                .acknowledgedAt(LocalDateTime.now())
+                .build();
+            alertAcknowledgmentRepository.save(acknowledgment);
+        }
+
+        // Keep legacy fields updated for backward compatibility views.
         alert.setIsAcknowledged(true);
         alert.setAcknowledgedBy(user);
         alert.setAcknowledgedAt(LocalDateTime.now());

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +32,9 @@
         .info-row:last-child { border-bottom:none; }
         .info-label { color:#6b7280; font-size:14px; }
         .info-value { font-weight:600; font-size:14px; }
+        .info-row.message-row { align-items:flex-start; gap:16px; }
+        .info-value.message-full { max-width:70%; text-align:right; white-space:normal; word-break:break-word; line-height:1.45; }
+        .insight-card { background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:14px; }
     </style>
 </head>
 <body>
@@ -44,6 +48,7 @@
                 <h4 style="font-weight:700;margin:0;">Alert Details</h4>
                 <p class="text-muted mb-0" style="font-size:14px;">
                     <span class="alert-type-badge alert-type-${alert.alertType}">${alert.alertType}</span>
+                    <span class="badge bg-${alertSeverityClass} ms-1">${alertSeverityLabel} (${alertSeverityScore})</span>
                     <span class="ms-2">${alert.equipmentType} ID: ${alert.equipmentId}</span>
                 </p>
             </div>
@@ -167,6 +172,34 @@
             <!-- Right Column: Details & History -->
             <div class="col-lg-7">
                 <div class="alert-detail-card mb-4">
+                    <h6 style="font-weight:600;margin-bottom:15px;"><i class="bi bi-cpu"></i> Warning Intelligence</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="insight-card text-center">
+                                <small class="text-muted d-block">Severity</small>
+                                <strong class="text-dark">${alertSeverityLabel}</strong>
+                                <div class="small text-muted">Score: ${alertSeverityScore}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="insight-card text-center">
+                                <small class="text-muted d-block">SLA Status</small>
+                                <strong class="${fn:contains(alertSlaStatus, 'Breached') ? 'text-danger' : 'text-success'}">${alertSlaStatus}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="insight-card text-center">
+                                <small class="text-muted d-block">Repeat (24h)</small>
+                                <strong class="text-dark">${alertRepeatCount24h}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning mt-3 mb-0" role="alert">
+                        <strong><i class="bi bi-lightbulb"></i> Recommended Action:</strong> ${alertRecommendation}
+                    </div>
+                </div>
+
+                <div class="alert-detail-card mb-4">
                     <h6 style="font-weight:600;margin-bottom:15px;"><i class="bi bi-info-circle"></i> Alert Information</h6>
                     <div class="info-row">
                         <span class="info-label">Alert ID</span>
@@ -180,9 +213,9 @@
                         <span class="info-label">Equipment</span>
                         <span class="info-value">${alert.equipmentType} (ID: ${alert.equipmentId})</span>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">Message</span>
-                        <span class="info-value">${alert.message}</span>
+                    <div class="info-row message-row">
+                        <span class="info-label">Full Warning Message</span>
+                        <span class="info-value message-full">${alert.message}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Created At</span>

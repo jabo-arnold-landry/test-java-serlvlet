@@ -1,35 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SPCMS - Alerts</title>
+    <title>SPCMS - Past Warnings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <jsp:include page="../common/styles.jsp"/>
     <style>
-        .alert-type-badge { font-size:11px; padding:4px 9px; border-radius:12px; font-weight:600; }
+        .alert-type-badge { font-size:11px; padding:4px 10px; border-radius:12px; font-weight:600; }
         .alert-type-HIGH_TEMP { background:rgba(239,68,68,0.1); color:#ef4444; }
         .alert-type-HUMIDITY { background:rgba(59,130,246,0.1); color:#3b82f6; }
         .alert-type-LOW_BATTERY { background:rgba(245,158,11,0.1); color:#f59e0b; }
         .alert-type-UPS_OVERLOAD { background:rgba(239,68,68,0.1); color:#ef4444; }
         .alert-type-MAINTENANCE_DUE { background:rgba(139,92,246,0.1); color:#8b5cf6; }
         .alert-type-EQUIPMENT_FAULT { background:rgba(239,68,68,0.1); color:#ef4444; }
-        .alerts-table { width:100%; margin-bottom:0; }
-        .alerts-table th { white-space:nowrap; font-size:12px; }
-        .alerts-table td { font-size:13px; vertical-align:middle; }
-        .severity-score { white-space:nowrap; }
-        .sla-cell { min-width:110px; }
-        .sla-badge { display:inline-block; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .sla-detail { display:block; margin-top:3px; font-size:11px; color:#6b7280; line-height:1.2; white-space:nowrap; }
-        .alert-toolbar { display:flex; gap:10px; flex-wrap:wrap; }
-        .alert-toolbar .btn { min-width:120px; }
-        .alert-row-actions { display:flex; align-items:center; gap:6px; }
-        .alert-row-actions .btn { width:30px; height:30px; padding:0; display:inline-flex; align-items:center; justify-content:center; }
+        .filter-card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:16px; }
+        .history-table td, .history-table th { font-size:13px; }
+        .history-message { max-width:360px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .alert-view-modal .modal-dialog { max-width: 1100px; }
         .alert-view-modal .modal-content {
             border: 0;
@@ -77,155 +67,95 @@
             from { opacity: 0; transform: translateY(8px) scale(0.985); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-
-        @media (max-width: 1320px) {
-            .col-values,
-            .col-sent { display:none; }
-            .severity-score { display:none; }
-        }
-
-        @media (max-width: 1100px) {
-            .alerts-table td:nth-child(3) {
-                max-width:220px;
-            }
-        }
     </style>
 </head>
 <body>
     <jsp:include page="../common/sidebar.jsp"/>
     <jsp:include page="../common/topbar.jsp"/>
+
     <div class="main-content">
-        <c:if test="${not empty success}">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle-fill"></i> ${success}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        </c:if>
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-circle-fill"></i> ${error}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        </c:if>
-        
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <div>
-                <h4 style="font-weight:700;margin:0;">Active Warnings</h4>
-                <p class="text-muted mb-0" style="font-size:14px;">
-                    <span class="badge bg-danger">${unacknowledgedAlerts}</span> unacknowledged alerts for your account
-                </p>
+                <h4 style="font-weight:700;margin:0;">Past Warnings</h4>
+                <p class="text-muted mb-0" style="font-size:14px;">Warnings acknowledged by your account, with date filters.</p>
             </div>
-            <div class="alert-toolbar">
-                <a href="${pageContext.request.contextPath}/alerts/history" class="btn btn-outline-dark btn-sm">
-                    <i class="bi bi-clock-history"></i> Past Warnings
-                </a>
-                <sec:authorize access="!hasAnyRole('MANAGER','VIEWER')">
-                    <a href="${pageContext.request.contextPath}/alerts/settings" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-gear"></i> Settings
-                    </a>
-                    <a href="${pageContext.request.contextPath}/alerts/test" class="btn btn-outline-success btn-sm">
-                        <i class="bi bi-broadcast"></i> Simulation
-                    </a>
-                </sec:authorize>
-            </div>
+            <a href="${pageContext.request.contextPath}/alerts" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-arrow-left"></i> Back To Active Warnings
+            </a>
         </div>
-        
+
+        <div class="filter-card mb-4">
+            <form method="get" action="${pageContext.request.contextPath}/alerts/history" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label mb-1">From Date</label>
+                    <input type="date" name="fromDate" class="form-control form-control-sm" value="${fromDate}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label mb-1">To Date</label>
+                    <input type="date" name="toDate" class="form-control form-control-sm" value="${toDate}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label mb-1">Alert Type</label>
+                    <select name="alertType" class="form-select form-select-sm">
+                        <option value="">All Types</option>
+                        <c:forEach var="type" items="${alertTypes}">
+                            <option value="${type}" ${selectedAlertType == type ? 'selected' : ''}>${type}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                    <a href="${pageContext.request.contextPath}/alerts/history" class="btn btn-outline-secondary btn-sm">
+                        Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+
         <div class="table-container">
-            <table class="table table-hover alerts-table">
+            <table class="table table-hover history-table mb-0">
                 <thead>
                     <tr>
                         <th>Type</th>
-                        <th>Severity</th>
                         <th>Message</th>
                         <th>Equipment</th>
-                        <th class="col-values">Values</th>
-                        <th class="col-sent">Sent</th>
-                        <th>Status</th>
-                        <th>SLA</th>
+                        <th>Triggered At</th>
+                        <th>Acknowledged At</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="a" items="${alerts}">
-                    <tr class="${a.isAcknowledged ? '' : 'table-warning'}">
+                    <c:forEach var="a" items="${historyAlerts}">
+                    <tr>
                         <td>
                             <span class="alert-type-badge alert-type-${a.alertType}">
-                                <c:choose>
-                                    <c:when test="${a.alertType == 'HIGH_TEMP'}"><i class="bi bi-thermometer-high"></i></c:when>
-                                    <c:when test="${a.alertType == 'HUMIDITY'}"><i class="bi bi-droplet"></i></c:when>
-                                    <c:when test="${a.alertType == 'LOW_BATTERY'}"><i class="bi bi-battery-half"></i></c:when>
-                                    <c:when test="${a.alertType == 'UPS_OVERLOAD'}"><i class="bi bi-lightning"></i></c:when>
-                                    <c:otherwise><i class="bi bi-exclamation-triangle"></i></c:otherwise>
-                                </c:choose>
                                 ${a.alertType}
                             </span>
                         </td>
                         <td>
-                            <span class="badge bg-${severityClassById[a.alertId]}" title="${recommendationById[a.alertId]}">
-                                ${severityLabelById[a.alertId]}
-                            </span>
-                            <div class="small text-muted mt-1">Score: ${severityScoreById[a.alertId]}</div>
-                        </td>
-                        <td style="max-width:280px;">
-                            <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.message}">${a.message}</div>
-                            <a href="${pageContext.request.contextPath}/alerts/view/${a.alertId}"
-                               class="btn btn-link p-0 small text-decoration-none"
-                               title="View Full Warning Page">
-                                View full warning
-                            </a>
+                            <div class="history-message" title="${a.message}">${a.message}</div>
                         </td>
                         <td>${a.equipmentType} #${a.equipmentId}</td>
-                        <td class="col-values">
-                            <c:if test="${a.actualValue != null && a.thresholdValue != null}">
-                                <small class="text-danger fw-bold">${a.actualValue}</small> / 
-                                <small class="text-muted">${a.thresholdValue}</small>
-                            </c:if>
-                        </td>
-                        <td class="col-sent">
-                            <span class="badge ${a.isSent ? 'bg-success' : 'bg-secondary'}">
-                                ${a.isSent ? 'Yes' : 'No'}
-                            </span>
-                        </td>
+                        <td>${triggeredAtById[a.alertId]}</td>
+                        <td>${acknowledgedAtById[a.alertId]}</td>
                         <td>
-                            <span class="badge bg-danger">Pending</span>
-                        </td>
-                        <td class="sla-cell">
-                            <c:set var="slaText" value="${slaStatusById[a.alertId]}"/>
-                            <span class="badge ${fn:contains(slaText, 'Breached') ? 'bg-danger' : 'bg-light text-dark'} sla-badge" title="${slaText}">
-                                <c:choose>
-                                    <c:when test="${fn:contains(slaText, 'Breached by')}">Breached</c:when>
-                                    <c:when test="${fn:contains(slaText, 'Due in')}">Due Soon</c:when>
-                                    <c:otherwise>${slaText}</c:otherwise>
-                                </c:choose>
-                            </span>
-                            <c:if test="${fn:contains(slaText, 'Breached by')}">
-                                <span class="sla-detail">${fn:substringAfter(slaText, 'Breached by ')}</span>
-                            </c:if>
-                            <c:if test="${fn:contains(slaText, 'Due in')}">
-                                <span class="sla-detail">${fn:substringAfter(slaText, 'Due in ')}</span>
-                            </c:if>
-                        </td>
-                        <td>
-                            <div class="alert-row-actions">
-                                <a href="${pageContext.request.contextPath}/alerts/view/${a.alertId}"
-                                   class="btn btn-outline-primary btn-sm"
-                                   title="View Full Warning Page">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <form action="${pageContext.request.contextPath}/alerts/acknowledge/${a.alertId}" method="post" class="m-0">
-                                    <button type="submit" class="btn btn-success btn-sm" title="Acknowledge">
-                                        <i class="bi bi-check2"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            <a href="${pageContext.request.contextPath}/alerts/view/${a.alertId}"
+                               class="btn btn-outline-primary btn-sm"
+                               title="View Alert Page">
+                                <i class="bi bi-eye"></i>
+                            </a>
                         </td>
                     </tr>
                     </c:forEach>
-                    <c:if test="${empty alerts}">
-                    <tr><td colspan="9" class="text-center text-muted py-4">
-                        <i class="bi bi-bell-slash" style="font-size:32px;"></i>
-                        <p class="mb-0 mt-2">No active warnings. Acknowledged items are available in Past Warnings.</p>
-                    </td></tr>
+                    <c:if test="${empty historyAlerts}">
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="bi bi-clock-history" style="font-size:30px;"></i>
+                                <p class="mb-0 mt-2">No past warnings found for the selected filters.</p>
+                            </td>
+                        </tr>
                     </c:if>
                 </tbody>
             </table>
@@ -319,10 +249,7 @@
             </div>
         </div>
     </div>
-    
-    <!-- Global Alert Notification System -->
-    
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         (function() {
