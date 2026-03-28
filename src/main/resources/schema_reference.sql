@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS monitoring_log (
 
 CREATE TABLE IF NOT EXISTS incidents (
     incident_id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    equipment_type      ENUM('UPS','COOLING','OTHER') NOT NULL,
+    equipment_type      ENUM('UPS','COOLING','VISITOR','OTHER') NOT NULL,
     equipment_id        BIGINT,
     title               VARCHAR(255) NOT NULL,
     description         TEXT,

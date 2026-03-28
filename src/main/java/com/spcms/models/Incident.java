@@ -72,7 +72,7 @@ public class Incident {
     private LocalDateTime updatedAt;
 
     public enum EquipmentType {
-        UPS, COOLING, OTHER
+        UPS, COOLING, VISITOR, OTHER
     }
 
     public enum Severity {

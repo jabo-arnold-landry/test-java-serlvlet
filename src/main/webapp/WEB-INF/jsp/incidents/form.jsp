@@ -44,6 +44,7 @@
                         <select class="form-select" name="equipmentType" required>
                             <option value="UPS" ${incident.equipmentType == 'UPS' ? 'selected' : ''}>UPS</option>
                             <option value="COOLING" ${incident.equipmentType == 'COOLING' ? 'selected' : ''}>Cooling</option>
+                            <option value="VISITOR" ${incident.equipmentType == 'VISITOR' ? 'selected' : ''}>Visitor</option>
                             <option value="OTHER" ${incident.equipmentType == 'OTHER' ? 'selected' : ''}>Other</option>
                         </select>
                     </div>
