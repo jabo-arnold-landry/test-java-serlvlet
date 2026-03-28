@@ -1,0 +1,1568 @@
+diff --git a/.smarttomcat/spcms/conf/tomcat-users.xml b/.smarttomcat/spcms/conf/tomcat-users.xml
+index e5a9f06..0456129 100644
+--- a/.smarttomcat/spcms/conf/tomcat-users.xml
++++ b/.smarttomcat/spcms/conf/tomcat-users.xml
+@@ -1 +1,17 @@
+-<?xml version='1.0' encoding='cp1252'?>
++<?xml version="1.0" encoding="UTF-8"?>
++<!--
++  Licensed to the Apache Software Foundation (ASF) under one or more
++  contributor license agreements.  See the NOTICE file distributed with
++  this work for additional information regarding copyright ownership.
++  The ASF licenses this file to You under the Apache License, Version 2.0
++  (the "License"); you may not use this file except in compliance with
++  the License.  You may obtain a copy of the License at
++
++      http://www.apache.org/licenses/LICENSE-2.0
++
++  Unless required by applicable law or agreed to in writing, software
++  distributed under the License is distributed on an "AS IS" BASIS,
++  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++  See the License for the specific language governing permissions and
++  limitations under the License.
++-->
+@@ -15 +31 @@
+-</tomcat-users>
+\ No newline at end of file
++</tomcat-users>
+diff --git a/project_files/src/main/java/com/spcms/config/GlobalModelAttributes.java b/project_files/src/main/java/com/spcms/config/GlobalModelAttributes.java
+index 5fb3690..c1869a4 100644
+--- a/project_files/src/main/java/com/spcms/config/GlobalModelAttributes.java
++++ b/project_files/src/main/java/com/spcms/config/GlobalModelAttributes.java
+@@ -2,0 +3 @@ package com.spcms.config;
++import com.spcms.services.UserService;
+@@ -6,0 +8 @@ import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.security.core.Authentication;
+@@ -17,0 +20,3 @@ public class GlobalModelAttributes {
++    @Autowired
++    private UserService userService;
++
+@@ -19 +24 @@ public class GlobalModelAttributes {
+-    public int unacknowledgedAlerts() {
++    public int unacknowledgedAlerts(Authentication authentication) {
+@@ -21 +26,7 @@ public class GlobalModelAttributes {
+-            return Math.toIntExact(alertService.countUnacknowledgedAlerts());
++            if (authentication == null || authentication.getName() == null) {
++                return 0;
++            }
++            Long userId = userService.getUserByUsername(authentication.getName())
++                    .map(com.spcms.models.User::getUserId)
++                    .orElse(null);
++            return Math.toIntExact(alertService.countUnacknowledgedAlertsForUser(userId));
+diff --git a/project_files/src/main/java/com/spcms/controllers/AlertController.java b/project_files/src/main/java/com/spcms/controllers/AlertController.java
+index b299e9b..8c62823 100644
+--- a/project_files/src/main/java/com/spcms/controllers/AlertController.java
++++ b/project_files/src/main/java/com/spcms/controllers/AlertController.java
+@@ -11,0 +12,2 @@ import com.spcms.models.Ups;
++import com.spcms.util.AlertInsightUtil;
++import com.spcms.util.AlertInsightUtil.AlertInsight;
+@@ -15,0 +18 @@ import org.springframework.ui.Model;
++import org.springframework.format.annotation.DateTimeFormat;
+@@ -19,0 +23,6 @@ import java.math.BigDecimal;
++import java.time.LocalDate;
++import java.time.LocalDateTime;
++import java.time.format.DateTimeFormatter;
++import java.util.Comparator;
++import java.util.HashMap;
++import java.util.LinkedHashMap;
+@@ -45,3 +54,40 @@ public class AlertController {
+-    public String list(Model model) {
+-        model.addAttribute("alerts", alertService.getAllAlerts());
+-        model.addAttribute("unacknowledgedAlerts", alertService.countUnacknowledgedAlerts());
++    public String list(Model model, Authentication authentication) {
++        Long currentUserId = resolveCurrentUserId(authentication);
++        List<Alert> alerts = alertService.getUnacknowledgedAlertsForUser(currentUserId);
++        Map<Long, AlertInsight> insights = AlertInsightUtil.buildInsights(alerts, LocalDateTime.now());
++
++        alerts.sort(Comparator
++                .comparingInt((Alert alert) -> {
++                    if (alert.getAlertId() == null || !insights.containsKey(alert.getAlertId())) {
++                        return 0;
++                    }
++                    return insights.get(alert.getAlertId()).getSeverityScore();
++                })
++                .reversed()
++                .thenComparing(Alert::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())));
++
++        Map<Long, Integer> severityScoreById = new HashMap<>();
++        Map<Long, String> severityLabelById = new HashMap<>();
++        Map<Long, String> severityClassById = new HashMap<>();
++        Map<Long, String> slaStatusById = new HashMap<>();
++        Map<Long, String> recommendationById = new HashMap<>();
++
++        for (Alert alert : alerts) {
++            if (alert.getAlertId() == null) {
++                continue;
++            }
++            AlertInsight insight = insights.getOrDefault(alert.getAlertId(), AlertInsight.empty());
++            severityScoreById.put(alert.getAlertId(), insight.getSeverityScore());
++            severityLabelById.put(alert.getAlertId(), insight.getSeverityLabel());
++            severityClassById.put(alert.getAlertId(), severityBadgeClass(insight.getSeverityLabel()));
++            slaStatusById.put(alert.getAlertId(), insight.getSlaStatusText());
++            recommendationById.put(alert.getAlertId(), insight.getRecommendation());
++        }
++
++        model.addAttribute("alerts", alerts);
++        model.addAttribute("severityScoreById", severityScoreById);
++        model.addAttribute("severityLabelById", severityLabelById);
++        model.addAttribute("severityClassById", severityClassById);
++        model.addAttribute("slaStatusById", slaStatusById);
++        model.addAttribute("recommendationById", recommendationById);
++        model.addAttribute("unacknowledgedAlerts", alertService.countUnacknowledgedAlertsForUser(currentUserId));
+@@ -50,0 +97,49 @@ public class AlertController {
++    @GetMapping("/history")
++    public String history(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
++                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
++                          @RequestParam(required = false) Alert.AlertType alertType,
++                          Model model,
++                          Authentication authentication) {
++
++        Long currentUserId = resolveCurrentUserId(authentication);
++
++        LocalDate normalizedFrom = fromDate;
++        LocalDate normalizedTo = toDate;
++
++        if (normalizedFrom != null && normalizedTo != null && normalizedFrom.isAfter(normalizedTo)) {
++            LocalDate temp = normalizedFrom;
++            normalizedFrom = normalizedTo;
++            normalizedTo = temp;
++        }
++
++        List<Alert> historyAlerts = alertService.getAcknowledgedAlertsForUser(currentUserId, normalizedFrom, normalizedTo, alertType);
++        Map<Long, LocalDateTime> acknowledgedAtMap = alertService.getAcknowledgedAtMapForUser(currentUserId, historyAlerts);
++        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
++        Map<Long, String> triggeredAtById = new HashMap<>();
++        Map<Long, String> acknowledgedAtById = new HashMap<>();
++
++        for (Alert alert : historyAlerts) {
++            if (alert.getAlertId() == null) {
++                continue;
++            }
++            triggeredAtById.put(
++                    alert.getAlertId(),
++                    alert.getCreatedAt() != null ? alert.getCreatedAt().format(dateTimeFormatter) : "-");
++            acknowledgedAtById.put(
++                    alert.getAlertId(),
++                    acknowledgedAtMap.get(alert.getAlertId()) != null
++                        ? acknowledgedAtMap.get(alert.getAlertId()).format(dateTimeFormatter)
++                        : "-");
++        }
++
++        model.addAttribute("historyAlerts", historyAlerts);
++        model.addAttribute("fromDate", normalizedFrom);
++        model.addAttribute("toDate", normalizedTo);
++        model.addAttribute("selectedAlertType", alertType);
++        model.addAttribute("alertTypes", Alert.AlertType.values());
++        model.addAttribute("triggeredAtById", triggeredAtById);
++        model.addAttribute("acknowledgedAtById", acknowledgedAtById);
++        model.addAttribute("unacknowledgedAlerts", alertService.countUnacknowledgedAlertsForUser(currentUserId));
++        return "alerts/history";
++    }
++
+@@ -77,0 +173,31 @@ public class AlertController {
++            @GetMapping(value = "/details/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
++            @ResponseBody
++            public Map<String, Object> alertDetails(@PathVariable Long id, Authentication authentication) {
++            Alert alert = alertService.getAlertById(id)
++                .orElseThrow(() -> new RuntimeException("Alert not found: " + id));
++            Long currentUserId = resolveCurrentUserId(authentication);
++
++            AlertInsight insight = AlertInsightUtil.buildInsight(alert, alertService.getAllAlerts(), LocalDateTime.now());
++            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
++            boolean acknowledgedByCurrentUser = alertService.isAcknowledgedByUser(id, currentUserId);
++            LocalDateTime acknowledgedAtForCurrentUser = alertService.getAcknowledgedAtForUser(id, currentUserId).orElse(null);
++
++            Map<String, Object> details = new LinkedHashMap<>();
++            details.put("id", alert.getAlertId());
++            details.put("type", alert.getAlertType() != null ? alert.getAlertType().name() : "-");
++            details.put("equipment", (alert.getEquipmentType() != null ? alert.getEquipmentType().name() : "-") +
++                (alert.getEquipmentId() != null ? " #" + alert.getEquipmentId() : ""));
++            details.put("message", alert.getMessage() != null ? alert.getMessage() : "-");
++            details.put("thresholdValue", alert.getThresholdValue() != null ? alert.getThresholdValue().toPlainString() : "-");
++            details.put("actualValue", alert.getActualValue() != null ? alert.getActualValue().toPlainString() : "-");
++            details.put("sent", Boolean.TRUE.equals(alert.getIsSent()) ? "Yes" : "No");
++            details.put("status", acknowledgedByCurrentUser ? "Acknowledged" : "Pending");
++            details.put("createdAt", alert.getCreatedAt() != null ? alert.getCreatedAt().format(formatter) : "-");
++            details.put("acknowledgedAt", acknowledgedAtForCurrentUser != null ? acknowledgedAtForCurrentUser.format(formatter) : "-");
++            details.put("severity", insight.getSeverityLabel());
++            details.put("score", insight.getSeverityScore());
++            details.put("sla", insight.getSlaStatusText());
++            details.put("recommendation", insight.getRecommendation());
++            return details;
++            }
++
+@@ -83,0 +210,8 @@ public class AlertController {
++
++        AlertInsight insight = AlertInsightUtil.buildInsight(alert, alertService.getAllAlerts(), LocalDateTime.now());
++        model.addAttribute("alertSeverityScore", insight.getSeverityScore());
++        model.addAttribute("alertSeverityLabel", insight.getSeverityLabel());
++        model.addAttribute("alertSeverityClass", severityBadgeClass(insight.getSeverityLabel()));
++        model.addAttribute("alertSlaStatus", insight.getSlaStatusText());
++        model.addAttribute("alertRecommendation", insight.getRecommendation());
++        model.addAttribute("alertRepeatCount24h", insight.getRepeatCount24h());
+@@ -105,0 +240,22 @@ public class AlertController {
++    private String severityBadgeClass(String severity) {
++        if ("CRITICAL".equals(severity)) {
++            return "danger";
++        }
++        if ("HIGH".equals(severity)) {
++            return "warning text-dark";
++        }
++        if ("MEDIUM".equals(severity)) {
++            return "info text-dark";
++        }
++        return "secondary";
++    }
++
++    private Long resolveCurrentUserId(Authentication authentication) {
++        if (authentication == null || authentication.getName() == null) {
++            return null;
++        }
++        return userService.getUserByUsername(authentication.getName())
++                .map(User::getUserId)
++                .orElse(null);
++    }
++
+@@ -120 +276 @@ public class AlertController {
+-                        .data(payload, MediaType.APPLICATION_JSON));
++                        .data(java.util.Objects.requireNonNull(payload), MediaType.APPLICATION_JSON));
+diff --git a/project_files/src/main/java/com/spcms/controllers/DashboardController.java b/project_files/src/main/java/com/spcms/controllers/DashboardController.java
+index fbdae9d..d5150d8 100644
+--- a/project_files/src/main/java/com/spcms/controllers/DashboardController.java
++++ b/project_files/src/main/java/com/spcms/controllers/DashboardController.java
+@@ -4,0 +5,2 @@ import com.spcms.services.*;
++import com.spcms.util.AlertInsightUtil;
++import com.spcms.util.AlertInsightUtil.AlertInsight;
+@@ -5,0 +8 @@ import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.security.core.Authentication;
+@@ -10,0 +14,6 @@ import java.time.LocalDate;
++import java.time.format.DateTimeFormatter;
++import java.util.Comparator;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.stream.Collectors;
+@@ -33,0 +43,3 @@ public class DashboardController {
++        @Autowired
++        private UserService userService;
++
+@@ -35 +47,8 @@ public class DashboardController {
+-    public String dashboard(Model model) {
++        public String dashboard(Model model, Authentication authentication) {
++                Long currentUserId = null;
++                if (authentication != null && authentication.getName() != null) {
++                        currentUserId = userService.getUserByUsername(authentication.getName())
++                                        .map(User::getUserId)
++                                        .orElse(null);
++                }
++
+@@ -53 +72,53 @@ public class DashboardController {
+-        model.addAttribute("unacknowledgedAlerts", alertService.getUnacknowledgedAlerts().size());
++        List<Alert> unacknowledgedAlerts = alertService.getUnacknowledgedAlertsForUser(currentUserId);
++        Map<Alert.AlertType, Long> warningCounts = unacknowledgedAlerts.stream()
++                .filter(alert -> alert.getAlertType() != null)
++                .collect(Collectors.groupingBy(Alert::getAlertType, Collectors.counting()));
++        Map<Long, AlertInsight> warningInsights = AlertInsightUtil.buildInsights(unacknowledgedAlerts);
++
++        List<Alert> latestWarnings = unacknowledgedAlerts.stream()
++                .sorted(Comparator
++                        .comparingInt((Alert alert) -> {
++                            if (alert.getAlertId() == null || !warningInsights.containsKey(alert.getAlertId())) {
++                                return 0;
++                            }
++                            return warningInsights.get(alert.getAlertId()).getSeverityScore();
++                        })
++                        .reversed()
++                        .thenComparing(Alert::getCreatedAt,
++                                Comparator.nullsLast(Comparator.reverseOrder())))
++                .limit(5)
++                .collect(Collectors.toList());
++
++        Map<Long, String> dashboardWarningSeverityById = new HashMap<>();
++        Map<Long, String> dashboardWarningSeverityClassById = new HashMap<>();
++        Map<Long, String> dashboardWarningSlaById = new HashMap<>();
++                Map<Long, String> dashboardWarningTriggeredAtById = new HashMap<>();
++                Map<Long, String> dashboardWarningReadingById = new HashMap<>();
++                DateTimeFormatter warningDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
++
++        for (Alert warning : latestWarnings) {
++            if (warning.getAlertId() == null) {
++                continue;
++            }
++            AlertInsight insight = warningInsights.getOrDefault(warning.getAlertId(), AlertInsight.empty());
++            String severity = insight.getSeverityLabel();
++            dashboardWarningSeverityById.put(warning.getAlertId(), severity);
++            dashboardWarningSlaById.put(warning.getAlertId(), insight.getSlaStatusText());
++            dashboardWarningSeverityClassById.put(warning.getAlertId(), severityBadgeClass(severity));
++                        dashboardWarningTriggeredAtById.put(
++                                        warning.getAlertId(),
++                                        warning.getCreatedAt() != null ? warning.getCreatedAt().format(warningDateFormat) : "-");
++
++                        String readingSummary;
++                        if (warning.getActualValue() != null || warning.getThresholdValue() != null) {
++                                String actual = warning.getActualValue() != null ? warning.getActualValue().toPlainString() : "-";
++                                String threshold = warning.getThresholdValue() != null ? warning.getThresholdValue().toPlainString() : "-";
++                                String unit = measurementUnitForType(warning.getAlertType());
++                                readingSummary = actual + unit + " / " + threshold + unit;
++                        } else {
++                                readingSummary = "No sensor reading";
++                        }
++                        dashboardWarningReadingById.put(warning.getAlertId(), readingSummary);
++        }
++
++        model.addAttribute("unacknowledgedAlerts", unacknowledgedAlerts.size());
+@@ -55,0 +127,17 @@ public class DashboardController {
++        model.addAttribute("dashboardTotalWarnings", unacknowledgedAlerts.size());
++        model.addAttribute("dashboardHighTempWarnings",
++                warningCounts.getOrDefault(Alert.AlertType.HIGH_TEMP, 0L));
++        model.addAttribute("dashboardHumidityWarnings",
++                warningCounts.getOrDefault(Alert.AlertType.HUMIDITY, 0L));
++        model.addAttribute("dashboardLowBatteryWarnings",
++                warningCounts.getOrDefault(Alert.AlertType.LOW_BATTERY, 0L));
++        model.addAttribute("dashboardOverloadWarnings",
++                warningCounts.getOrDefault(Alert.AlertType.UPS_OVERLOAD, 0L));
++        model.addAttribute("dashboardMaintenanceDueWarnings",
++                warningCounts.getOrDefault(Alert.AlertType.MAINTENANCE_DUE, 0L));
++        model.addAttribute("dashboardWarnings", latestWarnings);
++        model.addAttribute("dashboardWarningSeverityById", dashboardWarningSeverityById);
++        model.addAttribute("dashboardWarningSeverityClassById", dashboardWarningSeverityClassById);
++        model.addAttribute("dashboardWarningSlaById", dashboardWarningSlaById);
++        model.addAttribute("dashboardWarningTriggeredAtById", dashboardWarningTriggeredAtById);
++        model.addAttribute("dashboardWarningReadingById", dashboardWarningReadingById);
+@@ -64,0 +153,25 @@ public class DashboardController {
++
++        private String severityBadgeClass(String severity) {
++                if ("CRITICAL".equals(severity)) {
++                        return "danger";
++                }
++                if ("HIGH".equals(severity)) {
++                        return "warning text-dark";
++                }
++                if ("MEDIUM".equals(severity)) {
++                        return "info text-dark";
++                }
++                return "secondary";
++        }
++
++        private String measurementUnitForType(Alert.AlertType alertType) {
++                if (alertType == Alert.AlertType.HIGH_TEMP) {
++                        return " C";
++                }
++                if (alertType == Alert.AlertType.HUMIDITY
++                                || alertType == Alert.AlertType.LOW_BATTERY
++                                || alertType == Alert.AlertType.UPS_OVERLOAD) {
++                        return "%";
++                }
++                return "";
++        }
+diff --git a/project_files/src/main/java/com/spcms/repositories/AlertRepository.java b/project_files/src/main/java/com/spcms/repositories/AlertRepository.java
+index c62e792..a2091a8 100644
+--- a/project_files/src/main/java/com/spcms/repositories/AlertRepository.java
++++ b/project_files/src/main/java/com/spcms/repositories/AlertRepository.java
+@@ -4,0 +5,2 @@ import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.data.jpa.repository.Query;
++import org.springframework.data.repository.query.Param;
+@@ -14,0 +17 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
++    List<Alert> findByIsAcknowledgedTrue();
+@@ -19,0 +23,18 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
++
++    @Query("""
++            select a from Alert a
++            where not exists (
++                select 1 from AlertAcknowledgment aa
++                where aa.alert = a and aa.user.userId = :userId
++            )
++            """)
++    List<Alert> findUnacknowledgedByUserId(@Param("userId") Long userId);
++
++    @Query("""
++            select count(a) from Alert a
++            where not exists (
++                select 1 from AlertAcknowledgment aa
++                where aa.alert = a and aa.user.userId = :userId
++            )
++            """)
++    long countUnacknowledgedByUserId(@Param("userId") Long userId);
+diff --git a/project_files/src/main/java/com/spcms/services/AlertService.java b/project_files/src/main/java/com/spcms/services/AlertService.java
+index 30a861f..6f153cd 100644
+--- a/project_files/src/main/java/com/spcms/services/AlertService.java
++++ b/project_files/src/main/java/com/spcms/services/AlertService.java
+@@ -3,0 +4 @@ import com.spcms.models.Alert;
++import com.spcms.models.AlertAcknowledgment;
+@@ -4,0 +6 @@ import com.spcms.models.User;
++import com.spcms.repositories.AlertAcknowledgmentRepository;
+@@ -16,0 +19 @@ import java.math.BigDecimal;
++import java.time.LocalDate;
+@@ -18,0 +22 @@ import java.time.format.DateTimeFormatter;
++import java.util.Comparator;
+@@ -21,0 +26 @@ import java.util.Map;
++import java.util.Objects;
+@@ -38,0 +44,3 @@ public class AlertService {
++    @Autowired
++    private AlertAcknowledgmentRepository alertAcknowledgmentRepository;
++
+@@ -185,0 +194,66 @@ public class AlertService {
++    @Transactional(readOnly = true)
++    public List<Alert> getUnacknowledgedAlertsForUser(Long userId) {
++        if (userId == null) {
++            return getUnacknowledgedAlerts();
++        }
++        return alertRepository.findUnacknowledgedByUserId(userId);
++    }
++
++    @Transactional(readOnly = true)
++    public List<Alert> getAcknowledgedAlerts(LocalDate fromDate,
++                                             LocalDate toDate,
++                                             Alert.AlertType alertType) {
++        return alertRepository.findByIsAcknowledgedTrue().stream()
++                .filter(alert -> alertType == null || alert.getAlertType() == alertType)
++                .filter(alert -> {
++                    if (fromDate == null) {
++                        return true;
++                    }
++                    return alert.getCreatedAt() != null &&
++                            !alert.getCreatedAt().toLocalDate().isBefore(fromDate);
++                })
++                .filter(alert -> {
++                    if (toDate == null) {
++                        return true;
++                    }
++                    return alert.getCreatedAt() != null &&
++                            !alert.getCreatedAt().toLocalDate().isAfter(toDate);
++                })
++                .sorted(Comparator
++                        .comparing(Alert::getAcknowledgedAt, Comparator.nullsLast(Comparator.reverseOrder()))
++                        .thenComparing(Alert::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
++                .collect(Collectors.toList());
++    }
++
++    @Transactional(readOnly = true)
++    public List<Alert> getAcknowledgedAlertsForUser(Long userId,
++                                                    LocalDate fromDate,
++                                                    LocalDate toDate,
++                                                    Alert.AlertType alertType) {
++        if (userId == null) {
++            return getAcknowledgedAlerts(fromDate, toDate, alertType);
++        }
++
++        return alertAcknowledgmentRepository.findByUserUserId(userId).stream()
++            .sorted(Comparator.comparing(AlertAcknowledgment::getAcknowledgedAt,
++                Comparator.nullsLast(Comparator.reverseOrder())))
++            .map(AlertAcknowledgment::getAlert)
++                .filter(Objects::nonNull)
++                .filter(alert -> alertType == null || alert.getAlertType() == alertType)
++                .filter(alert -> {
++                    if (fromDate == null) {
++                        return true;
++                    }
++                    return alert.getCreatedAt() != null &&
++                            !alert.getCreatedAt().toLocalDate().isBefore(fromDate);
++                })
++                .filter(alert -> {
++                    if (toDate == null) {
++                        return true;
++                    }
++                    return alert.getCreatedAt() != null &&
++                            !alert.getCreatedAt().toLocalDate().isAfter(toDate);
++                })
++                .collect(Collectors.toList());
++    }
++
+@@ -190,0 +265,46 @@ public class AlertService {
++    @Transactional(readOnly = true)
++    public long countUnacknowledgedAlertsForUser(Long userId) {
++        if (userId == null) {
++            return countUnacknowledgedAlerts();
++        }
++        return alertRepository.countUnacknowledgedByUserId(userId);
++    }
++
++    @Transactional(readOnly = true)
++    public boolean isAcknowledgedByUser(Long alertId, Long userId) {
++        if (alertId == null || userId == null) {
++            return false;
++        }
++        return alertAcknowledgmentRepository.existsByAlertAlertIdAndUserUserId(alertId, userId);
++    }
++
++    @Transactional(readOnly = true)
++    public Optional<LocalDateTime> getAcknowledgedAtForUser(Long alertId, Long userId) {
++        if (alertId == null || userId == null) {
++            return Optional.empty();
++        }
++        return alertAcknowledgmentRepository.findByAlertAlertIdAndUserUserId(alertId, userId)
++                .map(AlertAcknowledgment::getAcknowledgedAt);
++    }
++
++    @Transactional(readOnly = true)
++    public Map<Long, LocalDateTime> getAcknowledgedAtMapForUser(Long userId, List<Alert> alerts) {
++        if (userId == null || alerts == null || alerts.isEmpty()) {
++            return Map.of();
++        }
++
++        List<Long> alertIds = alerts.stream()
++                .map(Alert::getAlertId)
++                .filter(Objects::nonNull)
++                .collect(Collectors.toList());
++        if (alertIds.isEmpty()) {
++            return Map.of();
++        }
++
++        return alertAcknowledgmentRepository.findByUserUserIdAndAlertAlertIdIn(userId, alertIds).stream()
++                .collect(Collectors.toMap(
++                        ack -> ack.getAlert().getAlertId(),
++                        AlertAcknowledgment::getAcknowledgedAt,
++                        (left, right) -> left));
++    }
++
+@@ -303,2 +423,13 @@ public class AlertService {
+-        var user = new com.spcms.models.User();
+-        user.setUserId(userId);
++        User user = userRepository.findById(userId)
++            .orElseThrow(() -> new RuntimeException("User not found: " + userId));
++
++        if (!alertAcknowledgmentRepository.existsByAlertAlertIdAndUserUserId(alertId, userId)) {
++            AlertAcknowledgment acknowledgment = AlertAcknowledgment.builder()
++                .alert(alert)
++                .user(user)
++                .acknowledgedAt(LocalDateTime.now())
++                .build();
++            alertAcknowledgmentRepository.save(acknowledgment);
++        }
++
++        // Keep legacy fields updated for backward compatibility views.
+diff --git a/project_files/src/main/webapp/WEB-INF/jsp/alerts/list.jsp b/project_files/src/main/webapp/WEB-INF/jsp/alerts/list.jsp
+index e90d74e..810c191 100644
+--- a/project_files/src/main/webapp/WEB-INF/jsp/alerts/list.jsp
++++ b/project_files/src/main/webapp/WEB-INF/jsp/alerts/list.jsp
+@@ -2,0 +3,2 @@
++<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
++<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+@@ -13 +15 @@
+-        .alert-type-badge { font-size:12px; padding:5px 12px; border-radius:15px; font-weight:600; }
++        .alert-type-badge { font-size:11px; padding:4px 9px; border-radius:12px; font-weight:600; }
+@@ -19,0 +22,70 @@
++        .alerts-table { width:100%; margin-bottom:0; }
++        .alerts-table th { white-space:nowrap; font-size:12px; }
++        .alerts-table td { font-size:13px; vertical-align:middle; }
++        .severity-score { white-space:nowrap; }
++        .sla-cell { min-width:110px; }
++        .sla-badge { display:inline-block; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
++        .sla-detail { display:block; margin-top:3px; font-size:11px; color:#6b7280; line-height:1.2; white-space:nowrap; }
++        .alert-toolbar { display:flex; gap:10px; flex-wrap:wrap; }
++        .alert-toolbar .btn { min-width:120px; }
++        .alert-row-actions { display:flex; align-items:center; gap:6px; }
++        .alert-row-actions .btn { width:30px; height:30px; padding:0; display:inline-flex; align-items:center; justify-content:center; }
++        .alert-view-modal .modal-dialog { max-width: 1100px; }
++        .alert-view-modal .modal-content {
++            border: 0;
++            border-radius: 16px;
++            overflow: hidden;
++            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.24);
++            animation: modalReveal 0.22s ease-out;
++        }
++        .alert-view-modal .modal-header {
++            background: linear-gradient(120deg, #0f172a, #1e293b);
++            color: #fff;
++            border-bottom: 0;
++            padding: 14px 18px;
++        }
++        .alert-view-modal .modal-header .btn-close {
++            filter: invert(1) grayscale(100%);
++            opacity: 0.85;
++        }
++        .alert-view-modal .modal-header .btn-close:hover {
++            opacity: 1;
++            transform: scale(1.06);
++        }
++        .alert-view-modal .modal-body {
++            background: linear-gradient(180deg, #f8fafc, #f1f5f9);
++            padding: 18px;
++        }
++        .modal-kv-card {
++            background: #fff;
++            border: 1px solid #e2e8f0;
++            border-radius: 12px;
++            padding: 10px 12px;
++            min-height: 76px;
++            transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
++        }
++        .modal-kv-card:hover {
++            border-color: #cbd5e1;
++            transform: translateY(-1px);
++            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
++        }
++        .modal-kv-label { font-size:11px; color:#6b7280; text-transform:uppercase; letter-spacing:0.4px; }
++        .modal-kv-value { font-size:14px; font-weight:600; color:#1f2937; }
++        .modal-message { white-space:pre-wrap; word-break:break-word; }
++
++        @keyframes modalReveal {
++            from { opacity: 0; transform: translateY(8px) scale(0.985); }
++            to { opacity: 1; transform: translateY(0) scale(1); }
++        }
++
++        @media (max-width: 1320px) {
++            .col-values,
++            .col-sent { display:none; }
++            .severity-score { display:none; }
++        }
++
++        @media (max-width: 1100px) {
++            .alerts-table td:nth-child(3) {
++                max-width:220px;
++            }
++        }
+@@ -39 +111 @@
+-        <div class="d-flex justify-content-between align-items-center mb-4">
++        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+@@ -41 +113 @@
+-                <h4 style="font-weight:700;margin:0;">System Alerts</h4>
++                <h4 style="font-weight:700;margin:0;">Active Warnings</h4>
+@@ -43 +115 @@
+-                    <span class="badge bg-danger">${unacknowledgedAlerts}</span> unacknowledged alerts
++                    <span class="badge bg-danger">${unacknowledgedAlerts}</span> unacknowledged alerts for your account
+@@ -46,6 +118,13 @@
+-            <a href="${pageContext.request.contextPath}/alerts/settings" class="btn btn-outline-primary">
+-                <i class="bi bi-gear"></i> Settings
+-            </a>
+-            <a href="${pageContext.request.contextPath}/alerts/test" class="btn btn-outline-success">
+-                <i class="bi bi-broadcast"></i> Simulation
+-            </a>
++            <div class="alert-toolbar">
++                <a href="${pageContext.request.contextPath}/alerts/history" class="btn btn-outline-dark btn-sm">
++                    <i class="bi bi-clock-history"></i> Past Warnings
++                </a>
++                <sec:authorize access="!hasAnyRole('MANAGER','VIEWER')">
++                    <a href="${pageContext.request.contextPath}/alerts/settings" class="btn btn-outline-primary btn-sm">
++                        <i class="bi bi-gear"></i> Settings
++                    </a>
++                    <a href="${pageContext.request.contextPath}/alerts/test" class="btn btn-outline-success btn-sm">
++                        <i class="bi bi-broadcast"></i> Simulation
++                    </a>
++                </sec:authorize>
++            </div>
+@@ -55 +134 @@
+-            <table class="table table-hover">
++            <table class="table table-hover alerts-table">
+@@ -58,0 +138 @@
++                        <th>Severity</th>
+@@ -61,2 +141,2 @@
+-                        <th>Values</th>
+-                        <th>Sent</th>
++                        <th class="col-values">Values</th>
++                        <th class="col-sent">Sent</th>
+@@ -63,0 +144 @@
++                        <th>SLA</th>
+@@ -82,2 +163,13 @@
+-                        <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.message}">
+-                            ${a.message}
++                        <td>
++                            <span class="badge bg-${severityClassById[a.alertId]}" title="${recommendationById[a.alertId]}">
++                                ${severityLabelById[a.alertId]}
++                            </span>
++                            <div class="small text-muted mt-1">Score: ${severityScoreById[a.alertId]}</div>
++                        </td>
++                        <td style="max-width:280px;">
++                            <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.message}">${a.message}</div>
++                            <a href="${pageContext.request.contextPath}/alerts/view/${a.alertId}"
++                               class="btn btn-link p-0 small text-decoration-none"
++                               title="View Full Warning Page">
++                                View full warning
++                            </a>
+@@ -86 +178 @@
+-                        <td>
++                        <td class="col-values">
+@@ -92 +184 @@
+-                        <td>
++                        <td class="col-sent">
+@@ -98,2 +190,10 @@
+-                            <span class="badge ${a.isAcknowledged ? 'bg-success' : 'bg-danger'}">
+-                                ${a.isAcknowledged ? 'Acknowledged' : 'Pending'}
++                            <span class="badge bg-danger">Pending</span>
++                        </td>
++                        <td class="sla-cell">
++                            <c:set var="slaText" value="${slaStatusById[a.alertId]}"/>
++                            <span class="badge ${fn:contains(slaText, 'Breached') ? 'bg-danger' : 'bg-light text-dark'} sla-badge" title="${slaText}">
++                                <c:choose>
++                                    <c:when test="${fn:contains(slaText, 'Breached by')}">Breached</c:when>
++                                    <c:when test="${fn:contains(slaText, 'Due in')}">Due Soon</c:when>
++                                    <c:otherwise>${slaText}</c:otherwise>
++                                </c:choose>
+@@ -100,0 +201,6 @@
++                            <c:if test="${fn:contains(slaText, 'Breached by')}">
++                                <span class="sla-detail">${fn:substringAfter(slaText, 'Breached by ')}</span>
++                            </c:if>
++                            <c:if test="${fn:contains(slaText, 'Due in')}">
++                                <span class="sla-detail">${fn:substringAfter(slaText, 'Due in ')}</span>
++                            </c:if>
+@@ -103,2 +209,4 @@
+-                            <div class="btn-group btn-group-sm">
+-                                <a href="${pageContext.request.contextPath}/alerts/view/${a.alertId}" class="btn btn-outline-primary" title="View Details">
++                            <div class="alert-row-actions">
++                                <a href="${pageContext.request.contextPath}/alerts/view/${a.alertId}"
++                                   class="btn btn-outline-primary btn-sm"
++                                   title="View Full Warning Page">
+@@ -107,7 +215,5 @@
+-                                <c:if test="${!a.isAcknowledged}">
+-                                    <form action="${pageContext.request.contextPath}/alerts/acknowledge/${a.alertId}" method="post" style="display:inline;">
+-                                        <button type="submit" class="btn btn-success" title="Acknowledge">
+-                                            <i class="bi bi-check2"></i>
+-                                        </button>
+-                                    </form>
+-                                </c:if>
++                                <form action="${pageContext.request.contextPath}/alerts/acknowledge/${a.alertId}" method="post" class="m-0">
++                                    <button type="submit" class="btn btn-success btn-sm" title="Acknowledge">
++                                        <i class="bi bi-check2"></i>
++                                    </button>
++                                </form>
+@@ -119 +225 @@
+-                    <tr><td colspan="7" class="text-center text-muted py-4">
++                    <tr><td colspan="9" class="text-center text-muted py-4">
+@@ -121 +227 @@
+-                        <p class="mb-0 mt-2">No alerts recorded.</p>
++                        <p class="mb-0 mt-2">No active warnings. Acknowledged items are available in Past Warnings.</p>
+@@ -127,0 +234,88 @@
++
++    <div class="modal fade alert-view-modal" id="alertViewModal" tabindex="-1" aria-labelledby="alertViewModalLabel" aria-hidden="true">
++        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
++            <div class="modal-content">
++                <div class="modal-header">
++                    <h5 class="modal-title" id="alertViewModalLabel">Alert Details</h5>
++                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
++                </div>
++                <div class="modal-body">
++                    <div id="alertModalLoading" class="text-center py-4">
++                        <div class="spinner-border text-primary" role="status"></div>
++                        <p class="text-muted mt-2 mb-0">Loading alert details...</p>
++                    </div>
++                    <div id="alertModalError" class="alert alert-danger d-none mb-0"></div>
++                    <div id="alertModalContent" class="d-none">
++                        <div class="row g-3">
++                            <div class="col-md-4">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">Type</div>
++                                    <div id="modalType" class="modal-kv-value">-</div>
++                                </div>
++                            </div>
++                            <div class="col-md-4">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">Severity</div>
++                                    <div id="modalSeverity" class="modal-kv-value">-</div>
++                                </div>
++                            </div>
++                            <div class="col-md-4">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">Status</div>
++                                    <div id="modalStatus" class="modal-kv-value">-</div>
++                                </div>
++                            </div>
++                            <div class="col-md-6">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">Equipment</div>
++                                    <div id="modalEquipment" class="modal-kv-value">-</div>
++                                </div>
++                            </div>
++                            <div class="col-md-3">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">Actual</div>
++                                    <div id="modalActual" class="modal-kv-value">-</div>
++                                </div>
++                            </div>
++                            <div class="col-md-3">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">Threshold</div>
++                                    <div id="modalThreshold" class="modal-kv-value">-</div>
++                                </div>
++                            </div>
++                            <div class="col-md-6">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">Triggered At</div>
++                                    <div id="modalCreatedAt" class="modal-kv-value">-</div>
++                                </div>
++                            </div>
++                            <div class="col-md-6">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">Acknowledged At</div>
++                                    <div id="modalAcknowledgedAt" class="modal-kv-value">-</div>
++                                </div>
++                            </div>
++                            <div class="col-12">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">SLA</div>
++                                    <div id="modalSla" class="modal-kv-value">-</div>
++                                </div>
++                            </div>
++                            <div class="col-12">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">Message</div>
++                                    <div id="modalMessage" class="modal-kv-value modal-message">-</div>
++                                </div>
++                            </div>
++                            <div class="col-12">
++                                <div class="modal-kv-card">
++                                    <div class="modal-kv-label">Recommendation</div>
++                                    <div id="modalRecommendation" class="modal-kv-value modal-message">-</div>
++                                </div>
++                            </div>
++                        </div>
++                    </div>
++                </div>
++            </div>
++        </div>
++    </div>
+@@ -133 +327,92 @@
+-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
++    <script>
++        (function() {
++            const modalEl = document.getElementById('alertViewModal');
++            const titleEl = document.getElementById('alertViewModalLabel');
++            const loadingEl = document.getElementById('alertModalLoading');
++            const errorEl = document.getElementById('alertModalError');
++            const contentEl = document.getElementById('alertModalContent');
++            const fields = {
++                type: document.getElementById('modalType'),
++                severity: document.getElementById('modalSeverity'),
++                status: document.getElementById('modalStatus'),
++                equipment: document.getElementById('modalEquipment'),
++                actual: document.getElementById('modalActual'),
++                threshold: document.getElementById('modalThreshold'),
++                createdAt: document.getElementById('modalCreatedAt'),
++                acknowledgedAt: document.getElementById('modalAcknowledgedAt'),
++                sla: document.getElementById('modalSla'),
++                message: document.getElementById('modalMessage'),
++                recommendation: document.getElementById('modalRecommendation')
++            };
++
++            if (!modalEl || !titleEl || !loadingEl || !errorEl || !contentEl || typeof bootstrap === 'undefined') {
++                return;
++            }
++
++            const modal = new bootstrap.Modal(modalEl);
++
++            function resetModal() {
++                titleEl.textContent = 'Alert Details';
++                loadingEl.classList.remove('d-none');
++                errorEl.classList.add('d-none');
++                errorEl.textContent = '';
++                contentEl.classList.add('d-none');
++                Object.values(fields).forEach(function(field) {
++                    if (field) {
++                        field.textContent = '-';
++                    }
++                });
++            }
++
++            document.addEventListener('click', function(event) {
++                const trigger = event.target.closest('.open-alert-modal');
++                if (!trigger) {
++                    return;
++                }
++                event.preventDefault();
++
++                const alertUrl = trigger.getAttribute('data-alert-url');
++                const alertType = trigger.getAttribute('data-alert-type') || 'Alert';
++                if (!alertUrl) {
++                    return;
++                }
++
++                resetModal();
++                titleEl.textContent = alertType + ' Details';
++                modal.show();
++
++                fetch(alertUrl, { headers: { 'Accept': 'application/json' } })
++                    .then(function(response) {
++                        if (!response.ok) {
++                            throw new Error('Failed to load alert details.');
++                        }
++                        return response.json();
++                    })
++                    .then(function(data) {
++                        fields.type.textContent = data.type || '-';
++                        fields.severity.textContent = (data.severity || '-') + (data.score != null ? ' (' + data.score + ')' : '');
++                        fields.status.textContent = data.status || '-';
++                        fields.equipment.textContent = data.equipment || '-';
++                        fields.actual.textContent = data.actualValue || '-';
++                        fields.threshold.textContent = data.thresholdValue || '-';
++                        fields.createdAt.textContent = data.createdAt || '-';
++                        fields.acknowledgedAt.textContent = data.acknowledgedAt || '-';
++                        fields.sla.textContent = data.sla || '-';
++                        fields.message.textContent = data.message || '-';
++                        fields.recommendation.textContent = data.recommendation || '-';
++
++                        loadingEl.classList.add('d-none');
++                        contentEl.classList.remove('d-none');
++                    })
++                    .catch(function(error) {
++                        loadingEl.classList.add('d-none');
++                        errorEl.textContent = error.message || 'Unable to load alert details.';
++                        errorEl.classList.remove('d-none');
++                    });
++            });
++
++            modalEl.addEventListener('hidden.bs.modal', function() {
++                resetModal();
++            });
++        })();
++    </script>
+diff --git a/project_files/src/main/webapp/WEB-INF/jsp/alerts/view.jsp b/project_files/src/main/webapp/WEB-INF/jsp/alerts/view.jsp
+index c6dfad5..959fe17 100644
+--- a/project_files/src/main/webapp/WEB-INF/jsp/alerts/view.jsp
++++ b/project_files/src/main/webapp/WEB-INF/jsp/alerts/view.jsp
+@@ -3,0 +4 @@
++<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+@@ -33,0 +35,3 @@
++        .info-row.message-row { align-items:flex-start; gap:16px; }
++        .info-value.message-full { max-width:70%; text-align:right; white-space:normal; word-break:break-word; line-height:1.45; }
++        .insight-card { background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:14px; }
+@@ -46,0 +51 @@
++                    <span class="badge bg-${alertSeverityClass} ms-1">${alertSeverityLabel} (${alertSeverityScore})</span>
+@@ -168,0 +174,28 @@
++                <div class="alert-detail-card mb-4">
++                    <h6 style="font-weight:600;margin-bottom:15px;"><i class="bi bi-cpu"></i> Warning Intelligence</h6>
++                    <div class="row g-3">
++                        <div class="col-md-4">
++                            <div class="insight-card text-center">
++                                <small class="text-muted d-block">Severity</small>
++                                <strong class="text-dark">${alertSeverityLabel}</strong>
++                                <div class="small text-muted">Score: ${alertSeverityScore}</div>
++                            </div>
++                        </div>
++                        <div class="col-md-4">
++                            <div class="insight-card text-center">
++                                <small class="text-muted d-block">SLA Status</small>
++                                <strong class="${fn:contains(alertSlaStatus, 'Breached') ? 'text-danger' : 'text-success'}">${alertSlaStatus}</strong>
++                            </div>
++                        </div>
++                        <div class="col-md-4">
++                            <div class="insight-card text-center">
++                                <small class="text-muted d-block">Repeat (24h)</small>
++                                <strong class="text-dark">${alertRepeatCount24h}</strong>
++                            </div>
++                        </div>
++                    </div>
++                    <div class="alert alert-warning mt-3 mb-0" role="alert">
++                        <strong><i class="bi bi-lightbulb"></i> Recommended Action:</strong> ${alertRecommendation}
++                    </div>
++                </div>
++
+@@ -183,3 +216,3 @@
+-                    <div class="info-row">
+-                        <span class="info-label">Message</span>
+-                        <span class="info-value">${alert.message}</span>
++                    <div class="info-row message-row">
++                        <span class="info-label">Full Warning Message</span>
++                        <span class="info-value message-full">${alert.message}</span>
+diff --git a/project_files/src/main/webapp/WEB-INF/jsp/common/alert-notifications.jsp b/project_files/src/main/webapp/WEB-INF/jsp/common/alert-notifications.jsp
+index 44e3726..edecebf 100644
+--- a/project_files/src/main/webapp/WEB-INF/jsp/common/alert-notifications.jsp
++++ b/project_files/src/main/webapp/WEB-INF/jsp/common/alert-notifications.jsp
+@@ -1,2 +1,2 @@
+-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
++<%@ page language="java" contentType="text/html; charset=UTF-8"
++pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+@@ -6,22 +6,22 @@
+-.toast-stack { 
+-    position: fixed; 
+-    bottom: 16px; 
+-    right: 16px; 
+-    z-index: 1100; 
+-    display: flex; 
+-    flex-direction: column; 
+-    gap: 12px; 
+-    align-items: flex-end; 
+-}
+-
+-.live-toast-card { 
+-    min-width: 320px; 
+-    max-width: 420px; 
+-    background: #f8f9fa; 
+-    border-radius: 8px; 
+-    padding: 16px; 
+-    display: flex; 
+-    align-items: flex-start; 
+-    box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+-    border-left: 4px solid var(--toast-accent, #0ea5e9); 
+-    animation: fadeInUp 0.3s ease; 
++  .toast-stack {
++    position: fixed;
++    bottom: 16px;
++    right: 16px;
++    z-index: 1100;
++    display: flex;
++    flex-direction: column;
++    gap: 12px;
++    align-items: flex-end;
++  }
++
++  .live-toast-card {
++    min-width: 320px;
++    max-width: 420px;
++    background: #f8f9fa;
++    border-radius: 8px;
++    padding: 16px;
++    display: flex;
++    align-items: flex-start;
++    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
++    border-left: 4px solid var(--toast-accent, #0ea5e9);
++    animation: fadeInUp 0.3s ease;
+@@ -29,13 +29,13 @@
+-}
+-
+-.live-toast-icon { 
+-    width: 32px; 
+-    height: 32px; 
+-    border-radius: 50%; 
+-    display: flex; 
+-    align-items: center; 
+-    justify-content: center; 
+-    font-size: 16px; 
+-    background: var(--toast-bg, rgba(14,165,233,0.15)); 
+-    color: var(--toast-accent, #0ea5e9); 
+-    flex-shrink: 0; 
++  }
++
++  .live-toast-icon {
++    width: 32px;
++    height: 32px;
++    border-radius: 50%;
++    display: flex;
++    align-items: center;
++    justify-content: center;
++    font-size: 16px;
++    background: var(--toast-bg, rgba(14, 165, 233, 0.15));
++    color: var(--toast-accent, #0ea5e9);
++    flex-shrink: 0;
+@@ -43 +43 @@
+-}
++  }
+@@ -45,2 +45,2 @@
+-.live-toast-body { 
+-    flex: 1; 
++  .live-toast-body {
++    flex: 1;
+@@ -48 +48 @@
+-}
++  }
+@@ -50,5 +50,5 @@
+-.live-toast-title { 
+-    font-weight: 600; 
+-    color: #212529; 
+-    margin: 0 0 4px 0; 
+-    font-size: 14px; 
++  .live-toast-title {
++    font-weight: 600;
++    color: #212529;
++    margin: 0 0 4px 0;
++    font-size: 14px;
+@@ -56 +56 @@
+-}
++  }
+@@ -58,4 +58,4 @@
+-.live-toast-msg { 
+-    color: #6c757d; 
+-    font-size: 13px; 
+-    margin: 0 0 4px 0; 
++  .live-toast-msg {
++    color: #6c757d;
++    font-size: 13px;
++    margin: 0 0 4px 0;
+@@ -63 +63 @@
+-}
++  }
+@@ -65,4 +65,4 @@
+-.live-toast-meta { 
+-    color: #adb5bd; 
+-    font-size: 11px; 
+-    margin: 0; 
++  .live-toast-meta {
++    color: #adb5bd;
++    font-size: 11px;
++    margin: 0;
+@@ -70,9 +70,9 @@
+-}
+-
+-.live-toast-close { 
+-    border: none; 
+-    background: transparent; 
+-    color: #6c757d; 
+-    cursor: pointer; 
+-    padding: 4px; 
+-    margin-left: 8px; 
++  }
++
++  .live-toast-close {
++    border: none;
++    background: transparent;
++    color: #6c757d;
++    cursor: pointer;
++    padding: 4px;
++    margin-left: 8px;
+@@ -81 +81 @@
+-}
++  }
+@@ -83 +83 @@
+-.live-toast-close:hover {
++  .live-toast-close:hover {
+@@ -85 +85 @@
+-}
++  }
+@@ -87,4 +87,10 @@
+-@keyframes fadeInUp { 
+-    from { opacity: 0; transform: translateY(20px); } 
+-    to { opacity: 1; transform: translateY(0); } 
+-}
++  @keyframes fadeInUp {
++    from {
++      opacity: 0;
++      transform: translateY(20px);
++    }
++    to {
++      opacity: 1;
++      transform: translateY(0);
++    }
++  }
+@@ -96,2 +102,2 @@
+-// Global Alert Notification System
+-(function() {
++  // Global Alert Notification System
++  (function () {
+@@ -100,2 +106 @@
+-        console.log('GÜán+Å Alert system already initialized, skipping.');
+-        return;
++      return;
+@@ -105,2 +109,0 @@
+-    console.log('=ƒÜÇ Alert Notification System Initializing...');
+-    
+@@ -108,2 +111,2 @@
+-    const CONTEXT_PATH = '${pageContext.request.contextPath}';
+-    
++    const CONTEXT_PATH = "${pageContext.request.contextPath}";
++
+@@ -111,2 +114,6 @@
+-        baseUrl: CONTEXT_PATH,
+-        lastSeenId: 0
++      baseUrl: CONTEXT_PATH,
++      lastSeenId: 0,
++      sseConnected: false,
++      reconnectTimer: null,
++      pollTimer: null,
++      fetchInFlight: false,
+@@ -114,3 +121,3 @@
+-    
+-    const toastStack = document.getElementById('alertToastStack');
+-    
++
++    const toastStack = document.getElementById("alertToastStack");
++
+@@ -118,2 +125 @@
+-        console.error('G¥î Alert toast stack container not found!');
+-        return;
++      return;
+@@ -121,3 +127 @@
+-    
+-    console.log('G£à Toast stack found, base URL:', alertPoll.baseUrl);
+-    
++
+@@ -125,6 +129,36 @@
+-        HIGH_TEMP:       { accent: '#dc3545', bg: 'rgba(220,53,69,0.1)',  icon: 'bi-exclamation-triangle-fill', label: 'High Temperature Alert' },
+-        HUMIDITY:        { accent: '#0d6efd', bg: 'rgba(13,110,253,0.1)', icon: 'bi-droplet-fill',              label: 'Humidity Alert' },
+-        UPS_OVERLOAD:    { accent: '#fd7e14', bg: 'rgba(253,126,20,0.1)', icon: 'bi-lightning-charge-fill',      label: 'UPS Overload Alert' },
+-        LOW_BATTERY:     { accent: '#ffc107', bg: 'rgba(255,193,7,0.1)',  icon: 'bi-battery-half',              label: 'Low Battery Alert' },
+-        MAINTENANCE_DUE: { accent: '#198754', bg: 'rgba(25,135,84,0.1)', icon: 'bi-tools',                     label: 'Maintenance Due' },
+-        default:         { accent: '#0ea5e9', bg: 'rgba(14,165,233,0.1)', icon: 'bi-info-circle-fill',          label: 'System Alert' }
++      HIGH_TEMP: {
++        accent: "#dc3545",
++        bg: "rgba(220,53,69,0.1)",
++        icon: "bi-exclamation-triangle-fill",
++        label: "High Temperature Alert",
++      },
++      HUMIDITY: {
++        accent: "#0d6efd",
++        bg: "rgba(13,110,253,0.1)",
++        icon: "bi-droplet-fill",
++        label: "Humidity Alert",
++      },
++      UPS_OVERLOAD: {
++        accent: "#fd7e14",
++        bg: "rgba(253,126,20,0.1)",
++        icon: "bi-lightning-charge-fill",
++        label: "UPS Overload Alert",
++      },
++      LOW_BATTERY: {
++        accent: "#ffc107",
++        bg: "rgba(255,193,7,0.1)",
++        icon: "bi-battery-half",
++        label: "Low Battery Alert",
++      },
++      MAINTENANCE_DUE: {
++        accent: "#198754",
++        bg: "rgba(25,135,84,0.1)",
++        icon: "bi-tools",
++        label: "Maintenance Due",
++      },
++      default: {
++        accent: "#0ea5e9",
++        bg: "rgba(14,165,233,0.1)",
++        icon: "bi-info-circle-fill",
++        label: "System Alert",
++      },
+@@ -134,53 +168,79 @@
+-        console.log('=ƒöö Rendering alert card:', data);
+-        
+-        const style = alertStyles[data.type] || alertStyles.default;
+-        const card = document.createElement('div');
+-        card.className = 'live-toast-card';
+-        card.style.setProperty('--toast-accent', style.accent);
+-        card.style.setProperty('--toast-bg', style.bg);
+-
+-        const iconWrap = document.createElement('div');
+-        iconWrap.className = 'live-toast-icon';
+-        const icon = document.createElement('i');
+-        icon.className = 'bi ' + style.icon;
+-        iconWrap.appendChild(icon);
+-
+-        const body = document.createElement('div');
+-        body.className = 'live-toast-body';
+-        
+-        const titleEl = document.createElement('div');
+-        titleEl.className = 'live-toast-title';
+-        titleEl.textContent = style.label;
+-        
+-        const msgEl = document.createElement('div');
+-        msgEl.className = 'live-toast-msg';
+-        msgEl.textContent = data.message || 'Alert triggered';
+-        
+-        const metaEl = document.createElement('div');
+-        metaEl.className = 'live-toast-meta';
+-        const metaParts = [];
+-        if (data.equipmentType) metaParts.push(data.equipmentType);
+-        if (data.equipmentId) metaParts.push('ID: ' + data.equipmentId);
+-        if (data.createdAt) metaParts.push(new Date(data.createdAt).toLocaleString());
+-        metaEl.textContent = metaParts.join(' \u2022 ');
+-        
+-        body.append(titleEl, msgEl, metaEl);
+-
+-        const closeBtn = document.createElement('button');
+-        closeBtn.className = 'live-toast-close';
+-        closeBtn.setAttribute('aria-label', 'Close');
+-        closeBtn.innerHTML = '\u00d7';
+-        closeBtn.addEventListener('click', function() { card.remove(); });
+-
+-        card.append(iconWrap, body, closeBtn);
+-        toastStack.prepend(card);
+-        
+-        // Limit to 5 toasts at once
+-        while (toastStack.childElementCount > 5) {
+-            toastStack.lastElementChild.remove();
+-        }
+-        
+-        // Auto-remove after 10 seconds
+-        setTimeout(function() {
+-            if (card.parentNode) card.remove();
+-        }, 10000);
++      const style = alertStyles[data.type] || alertStyles.default;
++      const card = document.createElement("div");
++      card.className = "live-toast-card";
++      card.style.setProperty("--toast-accent", style.accent);
++      card.style.setProperty("--toast-bg", style.bg);
++
++      const iconWrap = document.createElement("div");
++      iconWrap.className = "live-toast-icon";
++      const icon = document.createElement("i");
++      icon.className = "bi " + style.icon;
++      iconWrap.appendChild(icon);
++
++      const body = document.createElement("div");
++      body.className = "live-toast-body";
++
++      const titleEl = document.createElement("div");
++      titleEl.className = "live-toast-title";
++      titleEl.textContent = style.label;
++
++      const msgEl = document.createElement("div");
++      msgEl.className = "live-toast-msg";
++      msgEl.textContent = data.message || "Alert triggered";
++
++      const metaEl = document.createElement("div");
++      metaEl.className = "live-toast-meta";
++      const metaParts = [];
++      if (data.equipmentType) metaParts.push(data.equipmentType);
++      if (data.equipmentId) metaParts.push("ID: " + data.equipmentId);
++      if (data.createdAt)
++        metaParts.push(new Date(data.createdAt).toLocaleString());
++      metaEl.textContent = metaParts.join(" \u2022 ");
++
++      body.append(titleEl, msgEl, metaEl);
++
++      const closeBtn = document.createElement("button");
++      closeBtn.className = "live-toast-close";
++      closeBtn.setAttribute("aria-label", "Close");
++      closeBtn.innerHTML = "\u00d7";
++      closeBtn.addEventListener("click", function () {
++        card.remove();
++      });
++
++      card.append(iconWrap, body, closeBtn);
++      toastStack.prepend(card);
++
++      // Limit to 5 toasts at once
++      while (toastStack.childElementCount > 5) {
++        toastStack.lastElementChild.remove();
++      }
++
++      // Auto-remove after 10 seconds
++      setTimeout(function () {
++        if (card.parentNode) card.remove();
++      }, 10000);
++    }
++
++    function clearReconnectTimer() {
++      if (alertPoll.reconnectTimer) {
++        clearTimeout(alertPoll.reconnectTimer);
++        alertPoll.reconnectTimer = null;
++      }
++    }
++
++    function scheduleSseReconnect() {
++      if (document.visibilityState === "hidden" || alertPoll.reconnectTimer) {
++        return;
++      }
++      alertPoll.reconnectTimer = setTimeout(function () {
++        alertPoll.reconnectTimer = null;
++        startSse();
++      }, 5000);
++    }
++
++    function closeSseConnection() {
++      if (window.alertEventSource) {
++        window.alertEventSource.close();
++        window.alertEventSource = null;
++      }
++      alertPoll.sseConnected = false;
+@@ -191,7 +251,27 @@
+-        var sseUrl = alertPoll.baseUrl + '/alerts/stream';
+-        console.log('=ƒöù Starting SSE connection to:', sseUrl);
+-        
+-        try {
+-            if (window.alertEventSource) {
+-                window.alertEventSource.close();
+-                console.log('=ƒöî Closed existing SSE connection');
++      if (document.visibilityState === "hidden") {
++        return;
++      }
++      if (typeof EventSource === "undefined") {
++        return;
++      }
++
++      var sseUrl = alertPoll.baseUrl + "/alerts/stream";
++
++      try {
++        closeSseConnection();
++        clearReconnectTimer();
++
++        var es = new EventSource(sseUrl);
++        window.alertEventSource = es;
++
++        es.onopen = function () {
++          alertPoll.sseConnected = true;
++        };
++
++        var handler = function (event) {
++          if (!event || !event.data) return;
++          try {
++            var data = JSON.parse(event.data);
++            if (data && data.id && data.id > alertPoll.lastSeenId) {
++              alertPoll.lastSeenId = data.id;
++              renderAlertCard(data);
+@@ -199,41 +279,23 @@
+-            
+-            var es = new EventSource(sseUrl);
+-            window.alertEventSource = es;
+-            
+-            es.onopen = function() {
+-                console.log('G£à SSE connection OPENED and ready');
+-            };
+-            
+-            var handler = function(event) {
+-                console.log('=ƒô¿ SSE event received:', event.type, event.data);
+-                if (!event || !event.data) return;
+-                try {
+-                    var data = JSON.parse(event.data);
+-                    if (data && data.id && data.id > alertPoll.lastSeenId) {
+-                        alertPoll.lastSeenId = data.id;
+-                        renderAlertCard(data);
+-                    }
+-                } catch (e) {
+-                    console.error('G¥î SSE parse error:', e);
+-                }
+-            };
+-            
+-            // Listen for named 'alert' events
+-            es.addEventListener('alert', handler);
+-            
+-            // Fallback: generic messages
+-            es.onmessage = function(event) {
+-                if (event.data && event.data !== 'connected') {
+-                    handler(event);
+-                }
+-            };
+-            
+-            es.onerror = function() {
+-                console.warn('GÜán+Å SSE error / connection lost, retrying in 5s...');
+-                es.close();
+-                setTimeout(startSse, 5000);
+-            };
+-        } catch (error) {
+-            console.error('G¥î Failed to start SSE:', error);
+-            setTimeout(startSse, 5000);
+-        }
++          } catch (e) {
++            // Ignore malformed events and continue listening.
++          }
++        };
++
++        // Listen for named 'alert' events
++        es.addEventListener("alert", handler);
++
++        // Fallback: generic messages
++        es.onmessage = function (event) {
++          if (event.data && event.data !== "connected") {
++            handler(event);
++          }
++        };
++
++        es.onerror = function () {
++          closeSseConnection();
++          scheduleSseReconnect();
++        };
++      } catch (error) {
++        closeSseConnection();
++        scheduleSseReconnect();
++      }
+@@ -244,15 +306,33 @@
+-        var pollUrl = alertPoll.baseUrl + '/alerts/latest?sinceId=' + alertPoll.lastSeenId;
+-        
+-        fetch(pollUrl, { headers: { 'Accept': 'application/json' } })
+-        .then(function(res) { return res.ok ? res.json() : null; })
+-        .then(function(data) {
+-            if (data && data.id && data.id > alertPoll.lastSeenId) {
+-                var isFirstPoll = (alertPoll.lastSeenId === 0);
+-                alertPoll.lastSeenId = data.id;
+-                
+-                // Only show toast for new alerts that occur *after* page load
+-                if (!isFirstPoll) {
+-                    renderAlertCard(data);
+-                } else {
+-                    console.log('=ƒöç Silently initialized lastSeenId to', data.id);
+-                }
++      if (
++        document.visibilityState === "hidden" ||
++        alertPoll.sseConnected ||
++        alertPoll.fetchInFlight
++      ) {
++        return;
++      }
++
++      var pollUrl =
++        alertPoll.baseUrl + "/alerts/latest?sinceId=" + alertPoll.lastSeenId;
++
++      alertPoll.fetchInFlight = true;
++      fetch(pollUrl, { headers: { Accept: "application/json" } })
++        .then(function (res) {
++          if (!res.ok) {
++            return null;
++          }
++
++          var contentType = res.headers.get("Content-Type") || "";
++          if (contentType.indexOf("application/json") === -1) {
++            return null;
++          }
++
++          return res.json();
++        })
++        .then(function (data) {
++          if (data && data.id && data.id > alertPoll.lastSeenId) {
++            var isFirstPoll = alertPoll.lastSeenId === 0;
++            alertPoll.lastSeenId = data.id;
++
++            // Only show toast for new alerts that occur *after* page load
++            if (!isFirstPoll) {
++              renderAlertCard(data);
+@@ -259,0 +340 @@
++          }
+@@ -261,2 +342,5 @@
+-        .catch(function(error) {
+-            console.error('G¥î Poll error:', error);
++        .catch(function () {
++          // Keep silent; fallback polling retries automatically.
++        })
++        .finally(function () {
++          alertPoll.fetchInFlight = false;
+@@ -268,3 +352,15 @@
+-        console.log('=ƒÜÇ Initializing alert system with context path:', alertPoll.baseUrl);
+-        
+-        // Start SSE (primary)
++      // Start SSE (primary)
++      startSse();
++
++      // Start polling as backup every 10 seconds (used when SSE is unavailable)
++      alertPoll.pollTimer = setInterval(pollLatestAlert, 10000);
++      // Also do one immediate poll
++      setTimeout(pollLatestAlert, 500);
++
++      // Pause network activity when tab is not visible and resume when visible.
++      document.addEventListener("visibilitychange", function () {
++        if (document.visibilityState === "hidden") {
++          clearReconnectTimer();
++          closeSseConnection();
++          return;
++        }
+@@ -272,5 +368,12 @@
+-        
+-        // Start polling as backup every 3 seconds
+-        setInterval(pollLatestAlert, 3000);
+-        // Also do one immediate poll
+-        setTimeout(pollLatestAlert, 500);
++        pollLatestAlert();
++      });
++
++      // Ensure intervals and open sockets are not leaked on page unload.
++      window.addEventListener("beforeunload", function () {
++        clearReconnectTimer();
++        closeSseConnection();
++        if (alertPoll.pollTimer) {
++          clearInterval(alertPoll.pollTimer);
++          alertPoll.pollTimer = null;
++        }
++      });
+@@ -280,9 +383,9 @@
+-    window.testAlert = function() {
+-        renderAlertCard({
+-            id: Date.now(),
+-            type: 'HIGH_TEMP',
+-            message: 'This is a manual test alert!',
+-            equipmentType: 'Test',
+-            equipmentId: '0',
+-            createdAt: new Date().toISOString()
+-        });
++    window.testAlert = function () {
++      renderAlertCard({
++        id: Date.now(),
++        type: "HIGH_TEMP",
++        message: "This is a manual test alert!",
++        equipmentType: "Test",
++        equipmentId: "0",
++        createdAt: new Date().toISOString(),
++      });
+@@ -292,2 +395,2 @@
+-    if (document.readyState === 'loading') {
+-        document.addEventListener('DOMContentLoaded', initializeAlerts);
++    if (document.readyState === "loading") {
++      document.addEventListener("DOMContentLoaded", initializeAlerts);
+@@ -295 +398 @@
+-        initializeAlerts();
++      initializeAlerts();
+@@ -297 +400 @@
+-})();
++  })();
