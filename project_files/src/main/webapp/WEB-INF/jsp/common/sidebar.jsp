@@ -15,11 +15,18 @@
             <a href="${pageContext.request.contextPath}/cooling" class="nav-link"><i class="bi bi-snow2"></i> Cooling Units</a>
             <a href="${pageContext.request.contextPath}/equipment" class="nav-link"><i class="bi bi-hdd-rack-fill"></i> Equipment</a>
 
+            <div class="nav-section-label">Maintenance</div>
+            <a href="${pageContext.request.contextPath}/maintenance" class="nav-link"><i class="bi bi-wrench-adjustable-circle"></i> Maintenance Scheduler</a>
+            <a href="${pageContext.request.contextPath}/maintenance/ups/new" class="nav-link"><i class="bi bi-battery-charging text-primary"></i> UPS Maintenance</a>
+            <a href="${pageContext.request.contextPath}/maintenance/cooling/new" class="nav-link"><i class="bi bi-snow2 text-info"></i> Cooling Maintenance</a>
+            <a href="${pageContext.request.contextPath}/maintenance/history" class="nav-link"><i class="bi bi-clock-history text-warning"></i> Maintenance History</a>
+
             <div class="nav-section-label">Operations</div>
             <a href="${pageContext.request.contextPath}/monitoring" class="nav-link"><i class="bi bi-speedometer2"></i> Monitoring</a>
-            <a href="${pageContext.request.contextPath}/maintenance" class="nav-link"><i class="bi bi-wrench-adjustable-circle"></i> Maintenance</a>
             <a href="${pageContext.request.contextPath}/decisions" class="nav-link"><i class="bi bi-check2-square"></i> Decision Making</a>
             <a href="${pageContext.request.contextPath}/incidents" class="nav-link"><i class="bi bi-exclamation-triangle-fill"></i> Incidents</a>
+            <a href="${pageContext.request.contextPath}/maintenance-costs" class="nav-link"><i class="bi bi-graph-up-arrow text-success"></i> Cost Analysis</a>
+            <a href="${pageContext.request.contextPath}/maintenance/reports" class="nav-link"><i class="bi bi-clipboard2-data"></i> Maintenance Reports</a>
         </sec:authorize>
         
         <a href="${pageContext.request.contextPath}/alerts" class="nav-link"><i class="bi bi-bell-fill"></i> Alerts</a>
@@ -52,7 +59,7 @@
             <a href="${pageContext.request.contextPath}/reports/cost-of-maintenance" class="nav-link"><i class="bi bi-calculator"></i> Maintenance Costs</a>
             <a href="${pageContext.request.contextPath}/reports/downtime-analysis" class="nav-link"><i class="bi bi-graph-up"></i> Downtime Analysis</a>
             <a href="${pageContext.request.contextPath}/reports/monthly-quarterly" class="nav-link"><i class="bi bi-calendar-month"></i> Monthly/Quarterly</a>
-                    <a href="${pageContext.request.contextPath}/reports/maintenance-history" class="nav-link"><i class="bi bi-clock-history"></i> Maintenance History</a>
+            <a href="${pageContext.request.contextPath}/reports/maintenance-history" class="nav-link"><i class="bi bi-clock-history"></i> Maintenance History</a>
             <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
                 <a href="${pageContext.request.contextPath}/decisions/report" class="nav-link"><i class="bi bi-clipboard-data"></i> Decision Report</a>
             </sec:authorize>
