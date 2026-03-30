@@ -430,6 +430,7 @@ CREATE TABLE IF NOT EXISTS shift_reports (
     visit_duration_summary  TEXT,
     visitor_incident        TEXT,
 
+    status                  VARCHAR(20) DEFAULT 'OPEN',
     created_at              DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (staff_id) REFERENCES users(user_id)
 );
