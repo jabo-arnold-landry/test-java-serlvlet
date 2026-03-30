@@ -66,7 +66,7 @@ public class MaintenanceReminderService {
             alertService.createMaintenanceDueAlert(
                     Alert.EquipmentCategory.UPS,
                     m.getUps() != null ? m.getUps().getUpsId() : null,
-                    message
+                    message, false
             );
         }
 
@@ -80,7 +80,7 @@ public class MaintenanceReminderService {
             alertService.createMaintenanceDueAlert(
                     Alert.EquipmentCategory.UPS,
                     m.getUps() != null ? m.getUps().getUpsId() : null,
-                    message
+                    message, false
             );
         }
 
@@ -102,7 +102,7 @@ public class MaintenanceReminderService {
             alertService.createMaintenanceDueAlert(
                     Alert.EquipmentCategory.COOLING,
                     m.getCoolingUnit() != null ? m.getCoolingUnit().getCoolingId() : null,
-                    message
+                    message, false
             );
         }
 
@@ -116,7 +116,7 @@ public class MaintenanceReminderService {
             alertService.createMaintenanceDueAlert(
                     Alert.EquipmentCategory.COOLING,
                     m.getCoolingUnit() != null ? m.getCoolingUnit().getCoolingId() : null,
-                    message
+                    message, false
             );
         }
 

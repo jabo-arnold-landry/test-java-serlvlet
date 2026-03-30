@@ -85,8 +85,12 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Technician</label>
-                        <input type="text" class="form-control" name="technician"
-                               value="${upsMaintenance.technician}" placeholder="Technician name"/>
+                        <select class="form-select" name="technician">
+                            <option value="">-- Select Technician --</option>
+                            <c:forEach var="tech" items="${technicianList}">
+                                <option value="${tech.fullName}" ${upsMaintenance.technician == tech.fullName ? 'selected' : ''}>${tech.fullName}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Vendor</label>
@@ -139,39 +143,66 @@
             </form>
         </div>
 
-        <!-- Quarterly Scheduling (only show on create mode) -->
-        <c:if test="${!isEdit}">
-            <div class="stat-card mt-4">
-                <h6 class="fw-bold mb-3"><i class="bi bi-calendar-check text-success"></i> Schedule Quarterly Preventive Maintenance</h6>
-                <p class="text-muted" style="font-size:13px;">Automatically create 4 quarterly preventive maintenance records for a UPS unit.</p>
+        <!-- ==================== Quarterly UPS Maintenance Scheduler ==================== -->
+        <div class="card border-0 shadow-lg mt-5" style="border-left:5px solid #0d6efd !important;">
+            <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #0d6efd, #6610f2);">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-calendar3 me-2" style="font-size:1.3rem;"></i>
+                    Quarterly UPS Maintenance Scheduler
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-primary border-0 d-flex align-items-center mb-4" style="background: #e8f0fe;">
+                    <i class="bi bi-info-circle-fill fs-4 me-3 text-primary"></i>
+                    <div>
+                        <strong>Auto-Suggested Date:</strong> The next maintenance date is automatically set to
+                        <span class="badge bg-primary fs-6">today + 3 months</span>.
+                        You can <strong>override</strong> it manually below.
+                    </div>
+                </div>
+
+                <!-- Flash messages -->
+                <c:if test="${not empty success}">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>${success}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </c:if>
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>${error}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </c:if>
+
                 <form action="${pageContext.request.contextPath}/maintenance/ups/schedule-quarterly" method="post">
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">UPS <span class="text-danger">*</span></label>
-                            <select class="form-select" name="upsId" required>
-                                <option value="">-- Select UPS --</option>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold"><i class="bi bi-battery-charging text-primary me-1"></i>UPS Unit <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-lg" name="upsId" required>
+                                <option value="">-- Choose UPS --</option>
                                 <c:forEach var="upsUnit" items="${upsList}">
-                                    <option value="${upsUnit.upsId}">
-                                        ${upsUnit.assetTag} - ${upsUnit.upsName}
-                                    </option>
+                                    <option value="${upsUnit.upsId}">${upsUnit.assetTag} - ${upsUnit.upsName}</option>
                                 </c:forEach>
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Technician <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="technician" required/>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold"><i class="bi bi-calendar-date me-1"></i>Current Date</label>
+                            <input type="date" class="form-control form-control-lg" name="startDate" id="qStartDate" required readonly style="background:#f0f0f0;">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Vendor <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="vendor" required/>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold"><i class="bi bi-calendar-plus me-1 text-success"></i>Next Quarter Maintenance Date</label>
+                            <input type="date" class="form-control form-control-lg border-success" name="nextDueDate" id="qNextDate" required>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-lg text-white w-100 shadow" style="background: linear-gradient(135deg, #0d6efd, #6610f2);">
+                                <i class="bi bi-calendar-plus"></i> Schedule Quarterly
+                            </button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-calendar-check"></i> Schedule 4 Quarterly Maintenances
-                    </button>
                 </form>
             </div>
-        </c:if>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -181,6 +212,11 @@
             var label = document.getElementById('fileLabel');
             if (input.files && input.files[0]) {
                 var file = input.files[0];
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size exceeds 10MB limit. Please choose a smaller file.');
+                    input.value = '';
+                    return;
+                }
                 label.innerHTML = '<strong>' + file.name + '</strong> (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
                 area.classList.add('has-file');
             } else {
@@ -188,6 +224,32 @@
                 area.classList.remove('has-file');
             }
         }
+
+        // Set default maintenance date to today if empty (new form only)
+        document.addEventListener('DOMContentLoaded', function() {
+            var maintDateInput = document.querySelector('input[name="maintenanceDate"]');
+            if (maintDateInput && !maintDateInput.value) {
+                maintDateInput.value = new Date().toISOString().split('T')[0];
+            }
+
+            // Quarterly scheduler: auto-suggest next date = today + 3 months
+            var qStartDate = document.getElementById('qStartDate');
+            var qNextDate = document.getElementById('qNextDate');
+            if (qStartDate && qNextDate) {
+                var today = new Date();
+                qStartDate.value = today.toISOString().split('T')[0];
+                var suggestedDate = new Date(today);
+                suggestedDate.setMonth(suggestedDate.getMonth() + 3);
+                qNextDate.value = suggestedDate.toISOString().split('T')[0];
+
+                qStartDate.addEventListener('change', function() {
+                    var d = new Date(this.value);
+                    d.setMonth(d.getMonth() + 3);
+                    qNextDate.value = d.toISOString().split('T')[0];
+                });
+            }
+        });
     </script>
 </body>
 </html>
+

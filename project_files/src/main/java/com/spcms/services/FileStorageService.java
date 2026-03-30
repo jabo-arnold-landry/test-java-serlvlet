@@ -48,6 +48,12 @@ public class FileStorageService {
             return null;
         }
 
+        // Validate file size (max 10MB)
+        long maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.getSize() > maxSize) {
+            throw new IllegalArgumentException("File size exceeds the maximum allowed size of 10MB");
+        }
+
         try {
             String originalName = file.getOriginalFilename();
             String extension = "";

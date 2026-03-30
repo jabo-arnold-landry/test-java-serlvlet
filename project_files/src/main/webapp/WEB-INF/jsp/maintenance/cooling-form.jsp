@@ -92,8 +92,12 @@
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Technician</label>
-                        <input type="text" class="form-control" name="technician"
-                               value="${coolingMaintenance.technician}" placeholder="Technician name"/>
+                        <select class="form-select" name="technician">
+                            <option value="">-- Select Technician --</option>
+                            <c:forEach var="tech" items="${technicianList}">
+                                <option value="${tech.fullName}" ${coolingMaintenance.technician == tech.fullName ? 'selected' : ''}>${tech.fullName}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Vendor</label>
@@ -140,8 +144,68 @@
                 </div>
             </form>
         </div>
-    </div>
 
+        <!-- ==================== Quarterly Cooling Maintenance Scheduler ==================== -->
+        <div class="card border-0 shadow-lg mt-5" style="border-left:5px solid #0dcaf0 !important;">
+            <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #0dcaf0, #0d6efd);">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-calendar3 me-2" style="font-size:1.3rem;"></i>
+                    Quarterly Cooling Maintenance Scheduler
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-info border-0 d-flex align-items-center mb-4" style="background: #e7f6ff;">
+                    <i class="bi bi-info-circle-fill fs-4 me-3 text-info"></i>
+                    <div>
+                        <strong>Auto-Suggested Date:</strong> The next maintenance date is automatically set to
+                        <span class="badge bg-info text-dark fs-6">today + 3 months</span>.
+                        You can <strong>override</strong> it manually below.
+                    </div>
+                </div>
+
+                <!-- Flash messages -->
+                <c:if test="${not empty success}">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>${success}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </c:if>
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>${error}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </c:if>
+
+                <form action="${pageContext.request.contextPath}/maintenance/cooling/schedule-quarterly" method="post">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold"><i class="bi bi-snow2 text-info me-1"></i>Cooling Unit <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-lg" name="coolingUnitId" required>
+                                <option value="">-- Choose Cooling Unit --</option>
+                                <c:forEach var="c" items="${coolingList}">
+                                    <option value="${c.coolingId}">${c.assetTag} - ${c.unitName}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold"><i class="bi bi-calendar-date me-1"></i>Current Date</label>
+                            <input type="date" class="form-control form-control-lg" name="startDate" id="qStartDate" required readonly style="background:#f0f0f0;">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold"><i class="bi bi-calendar-plus me-1 text-success"></i>Next Quarter Maintenance Date</label>
+                            <input type="date" class="form-control form-control-lg border-success" name="nextMaintenanceDate" id="qNextDate" required>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-lg text-white w-100 shadow" style="background: linear-gradient(135deg, #0dcaf0, #0d6efd);">
+                                <i class="bi bi-calendar-plus"></i> Schedule Quarterly
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function handleFileSelect(input) {
@@ -149,6 +213,11 @@
             var label = document.getElementById('fileLabel');
             if (input.files && input.files[0]) {
                 var file = input.files[0];
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size exceeds 10MB limit. Please choose a smaller file.');
+                    input.value = '';
+                    return;
+                }
                 label.innerHTML = '<strong>' + file.name + '</strong> (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
                 area.classList.add('has-file');
             } else {
@@ -156,6 +225,32 @@
                 area.classList.remove('has-file');
             }
         }
+
+        // Set default maintenance date to today if empty (new form only)
+        document.addEventListener('DOMContentLoaded', function() {
+            var maintDateInput = document.querySelector('input[name="maintenanceDate"]');
+            if (maintDateInput && !maintDateInput.value) {
+                maintDateInput.value = new Date().toISOString().split('T')[0];
+            }
+
+            // Quarterly scheduler: auto-suggest next date = today + 3 months
+            var qStartDate = document.getElementById('qStartDate');
+            var qNextDate = document.getElementById('qNextDate');
+            if (qStartDate && qNextDate) {
+                var today = new Date();
+                qStartDate.value = today.toISOString().split('T')[0];
+                var suggestedDate = new Date(today);
+                suggestedDate.setMonth(suggestedDate.getMonth() + 3);
+                qNextDate.value = suggestedDate.toISOString().split('T')[0];
+
+                qStartDate.addEventListener('change', function() {
+                    var d = new Date(this.value);
+                    d.setMonth(d.getMonth() + 3);
+                    qNextDate.value = d.toISOString().split('T')[0];
+                });
+            }
+        });
     </script>
 </body>
 </html>
+
