@@ -62,6 +62,12 @@ public class MonitoringLog {
     @Column(name = "cooling_performance")
     private String coolingPerformance;
 
+    @Column(name = "reading_time")
+    private LocalDateTime readingTime;
+
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -234,40 +240,6 @@ public class MonitoringLog {
 
     public void setReadingTime(LocalDateTime readingTime) {
         this.readingTime = readingTime;
-    }
-
-
-
-    public BigDecimal getInputVoltage() {
-        return inputVoltage;
-    }
-
-    public void setInputVoltage(BigDecimal inputVoltage) {
-        this.inputVoltage = inputVoltage;
-    }
-
-    public BigDecimal getOutputVoltage() {
-        return outputVoltage;
-    }
-
-    public void setOutputVoltage(BigDecimal outputVoltage) {
-        this.outputVoltage = outputVoltage;
-    }
-
-    public String getBatteryStatus() {
-        return batteryStatus;
-    }
-
-    public void setBatteryStatus(String batteryStatus) {
-        this.batteryStatus = batteryStatus;
-    }
-
-    public Integer getRuntimeRemaining() {
-        return runtimeRemaining;
-    }
-
-    public void setRuntimeRemaining(Integer runtimeRemaining) {
-        this.runtimeRemaining = runtimeRemaining;
     }
 
     public String getNotes() {
