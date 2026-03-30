@@ -381,7 +381,34 @@ CREATE TABLE IF NOT EXISTS visitor_check_in_out (
 );
 
 -- ============================================================
--- 9. SHIFT & DAILY REPORTS
+-- 9. DECISION REQUESTS
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS decision_requests (
+    decision_id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    request_type        ENUM('MAINTENANCE_BUDGET','EQUIPMENT_REPLACEMENT','UPS_PROCUREMENT','COOLING_PROCUREMENT') NOT NULL,
+    title               VARCHAR(150) NOT NULL,
+    description         TEXT,
+    amount              DECIMAL(12,2),
+    requested_by        BIGINT NOT NULL,
+    equipment_id        BIGINT,
+    ups_id              BIGINT,
+    cooling_id          BIGINT,
+    status              ENUM('PENDING','APPROVED','REJECTED') DEFAULT 'PENDING',
+    approved_by         BIGINT,
+    decision_time       DATETIME,
+    remarks             TEXT,
+    created_at          DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (requested_by) REFERENCES users(user_id),
+    FOREIGN KEY (approved_by) REFERENCES users(user_id),
+    FOREIGN KEY (equipment_id) REFERENCES equipment(equipment_id),
+    FOREIGN KEY (ups_id) REFERENCES ups(ups_id),
+    FOREIGN KEY (cooling_id) REFERENCES cooling_unit(cooling_id)
+);
+
+-- ============================================================
+-- 10. SHIFT & DAILY REPORTS
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS shift_reports (
@@ -493,6 +520,9 @@ CREATE INDEX idx_incident_severity ON incidents(severity);
 CREATE INDEX idx_alert_type ON alerts(alert_type);
 CREATE INDEX idx_alert_sent ON alerts(is_sent);
 CREATE INDEX idx_visitor_date ON visitors(visit_date);
+CREATE INDEX idx_decision_status ON decision_requests(status);
+CREATE INDEX idx_decision_type ON decision_requests(request_type);
+CREATE INDEX idx_decision_created ON decision_requests(created_at);
 CREATE INDEX idx_shift_date ON shift_reports(shift_date);
 CREATE INDEX idx_daily_date ON daily_consolidated_reports(report_date);
 CREATE INDEX idx_equipment_status ON equipment(maintenance_status);

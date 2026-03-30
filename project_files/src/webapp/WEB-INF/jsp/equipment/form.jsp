@@ -128,6 +128,34 @@
                     </div>
                 </div>
 
+                <h6 class="fw-bold mb-3">Power &amp; Environmental Monitoring</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <label class="form-label">Power Source</label>
+                        <input type="text" class="form-control" name="powerSource" value="${equipment.powerSource}" placeholder="e.g., Utility, UPS"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Connected PDU</label>
+                        <input type="text" class="form-control" name="connectedPdu" value="${equipment.connectedPdu}"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Temperature Range</label>
+                        <input type="text" class="form-control" name="temperatureRange" value="${equipment.temperatureRange}" placeholder="e.g., 18-27C"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Humidity Level</label>
+                        <input type="text" class="form-control" name="humidityLevel" value="${equipment.humidityLevel}" placeholder="e.g., 45%"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Power Consumption (kW)</label>
+                        <input type="number" step="0.01" class="form-control" name="powerConsumption" value="${equipment.powerConsumption}"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Cooling Zone</label>
+                        <input type="text" class="form-control" name="coolingZone" value="${equipment.coolingZone}"/>
+                    </div>
+                </div>
+
                 <h6 class="fw-bold mb-3">Procurement & Warranty</h6>
                 <div class="row g-3 mb-4">
                     <div class="col-md-3">
