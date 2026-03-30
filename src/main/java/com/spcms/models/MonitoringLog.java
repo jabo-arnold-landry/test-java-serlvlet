@@ -26,6 +26,10 @@ public class MonitoringLog {
     @Column(name = "equipment_id")
     private Long equipmentId;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "recorded_by")
+    private User recordedBy;
+
     @Column(name = "temperature")
     private BigDecimal temperature;
 
@@ -47,6 +51,15 @@ public class MonitoringLog {
     @Column(name = "supply_air_temp")
     private BigDecimal supplyAirTemp;
 
+    @Column(name = "cooling_performance")
+    private String coolingPerformance;
+
+    @Column(name = "reading_time")
+    private LocalDateTime readingTime;
+
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -61,6 +74,9 @@ public class MonitoringLog {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        if (readingTime == null) {
+            readingTime = LocalDateTime.now();
+        }
     }
 
     @PreUpdate
@@ -91,6 +107,14 @@ public class MonitoringLog {
 
     public void setEquipmentId(Long equipmentId) {
         this.equipmentId = equipmentId;
+    }
+
+    public User getRecordedBy() {
+        return recordedBy;
+    }
+
+    public void setRecordedBy(User recordedBy) {
+        this.recordedBy = recordedBy;
     }
 
     public BigDecimal getTemperature() {
@@ -172,5 +196,29 @@ public class MonitoringLog {
 
     public void setSupplyAirTemp(BigDecimal supplyAirTemp) {
         this.supplyAirTemp = supplyAirTemp;
+    }
+
+    public String getCoolingPerformance() {
+        return coolingPerformance;
+    }
+
+    public void setCoolingPerformance(String coolingPerformance) {
+        this.coolingPerformance = coolingPerformance;
+    }
+
+    public LocalDateTime getReadingTime() {
+        return readingTime;
+    }
+
+    public void setReadingTime(LocalDateTime readingTime) {
+        this.readingTime = readingTime;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

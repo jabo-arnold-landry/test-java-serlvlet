@@ -100,7 +100,7 @@ public class Incident {
     }
 
     public enum IncidentStatus {
-        IN_PROGRESS, RESOLVED
+        OPEN, IN_PROGRESS, RESOLVED, CLOSED
     }
 
     @PrePersist

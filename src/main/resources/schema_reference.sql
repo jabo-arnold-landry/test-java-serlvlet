@@ -478,6 +478,19 @@ CREATE TABLE IF NOT EXISTS daily_consolidated_reports (
     generated_at            DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS report_logs (
+    report_id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    report_type          VARCHAR(80) NOT NULL,
+    generated_by         BIGINT,
+    file_format          VARCHAR(10) NOT NULL,
+    file_path            VARCHAR(500),
+    filters_used         TEXT,
+    status               ENUM('SUCCESS','FAILED') NOT NULL,
+    error_message        TEXT,
+    generated_at         DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (generated_by) REFERENCES users(user_id)
+);
+
 -- ============================================================
 -- INDEXES
 -- ============================================================

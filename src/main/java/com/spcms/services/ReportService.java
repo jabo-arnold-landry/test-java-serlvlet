@@ -3,6 +3,8 @@ package com.spcms.services;
 import com.spcms.models.DailyConsolidatedReport;
 import com.spcms.models.MonitoringLog;
 import com.spcms.models.Incident;
+import com.spcms.models.BranchPerformanceReport;
+import com.spcms.models.CostAnalysisReport;
 import com.spcms.repositories.*;
 import com.spcms.util.ReportCalculationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,15 @@ public class ReportService {
 
         @Autowired
         private VisitorCheckInOutRepository visitorCheckInOutRepository;
+
+        @Autowired
+        private BranchPerformanceReportRepository branchPerformanceReportRepository;
+
+        @Autowired
+        private CostAnalysisReportRepository costAnalysisReportRepository;
+
+        @Autowired
+        private UserRepository userRepository;
 
         // ==================== Daily Consolidated Report ====================
 
@@ -181,5 +192,129 @@ public class ReportService {
          */
         public List<DailyConsolidatedReport> getLoadTrend(LocalDate start, LocalDate end) {
                 return dailyReportRepository.findByReportDateBetweenOrderByReportDateDesc(start, end);
+        }
+
+        // ==================== Branch Reports ====================
+
+        public List<String> getAllBranches() {
+                List<String> branches = userRepository.findAll().stream()
+                                .map(com.spcms.models.User::getBranch)
+                                .filter(branch -> branch != null && !branch.isBlank())
+                                .distinct()
+                                .sorted()
+                                .collect(Collectors.toList());
+
+                if (branches.isEmpty()) {
+                        branches.add("Main Data Center");
+                }
+
+                return branches;
+        }
+
+        @Transactional(noRollbackFor = Exception.class)
+        public BranchPerformanceReport generateBranchPerformanceReport(String branch, LocalDate date) {
+                String normalizedBranch = normalizeBranch(branch);
+                Optional<BranchPerformanceReport> existing = branchPerformanceReportRepository
+                                .findByBranchAndReportDate(normalizedBranch, date);
+                if (existing.isPresent()) {
+                        return existing.get();
+                }
+
+                DailyConsolidatedReport daily = generateDailyReport(date);
+
+                BranchPerformanceReport report = BranchPerformanceReport.builder()
+                                .branch(normalizedBranch)
+                                .reportDate(date)
+                                .avgDailyLoad(daily.getAvgDailyLoad())
+                                .peakLoad(daily.getAvgDailyLoad())
+                                .totalUpsAlarms(daily.getTotalUpsAlarms())
+                                .failoverToGenerator(false)
+                                .avgRoomTemperature(daily.getAvgRoomTemperature())
+                                .highestTempRecorded(daily.getHighestTempRecorded())
+                                .coolingFailure(false)
+                                .totalIncidents(daily.getTotalIncidents())
+                                .criticalIncidents(daily.getCriticalIncidents())
+                                .totalDowntimeMin(daily.getTotalDowntimeMin())
+                                .mttrMinutes(daily.getMttrMinutes())
+                                .mtbfHours(daily.getMtbfHours())
+                                .totalVisitors(daily.getTotalVisitors())
+                                .overstayedVisitors(0)
+                                .userCount(userRepository.findByBranch(normalizedBranch).size())
+                                .build();
+
+                return branchPerformanceReportRepository.save(report);
+        }
+
+        public Optional<BranchPerformanceReport> getBranchPerformanceReport(String branch, LocalDate date) {
+                return branchPerformanceReportRepository.findByBranchAndReportDate(normalizeBranch(branch), date);
+        }
+
+        public List<BranchPerformanceReport> getBranchPerformanceReportsInRange(String branch, LocalDate start, LocalDate end) {
+                return branchPerformanceReportRepository.findByBranchAndReportDateBetweenOrderByReportDateDesc(
+                                normalizeBranch(branch), start, end);
+        }
+
+        public List<BranchPerformanceReport> getBranchPerformanceReportsByDate(LocalDate date) {
+                return branchPerformanceReportRepository.findByReportDate(date);
+        }
+
+        // ==================== Cost Analysis ====================
+
+        @Transactional(noRollbackFor = Exception.class)
+        public CostAnalysisReport generateCostAnalysisReport(LocalDate date, String branch) {
+                String normalizedBranch = normalizeBranch(branch);
+                Optional<CostAnalysisReport> existing = costAnalysisReportRepository
+                                .findByBranchAndReportDate(normalizedBranch, date);
+                if (existing.isPresent()) {
+                        return existing.get();
+                }
+
+                LocalDateTime dayStart = date.atStartOfDay();
+                LocalDateTime dayEnd = date.atTime(LocalTime.MAX);
+                Integer downtime = incidentRepository.sumDowntimeMinutes(dayStart, dayEnd);
+                int downtimeMinutes = downtime != null ? downtime : 0;
+                int totalIncidents = incidentRepository.findByCreatedAtBetween(dayStart, dayEnd).size();
+                BigDecimal hourlyLoss = BigDecimal.ZERO;
+                BigDecimal downtimeCost = hourlyLoss.multiply(BigDecimal.valueOf(downtimeMinutes))
+                                .divide(BigDecimal.valueOf(60), 2, java.math.RoundingMode.HALF_UP);
+
+                CostAnalysisReport report = CostAnalysisReport.builder()
+                                .reportDate(date)
+                                .branch(normalizedBranch)
+                                .totalMaintenanceCost(BigDecimal.ZERO)
+                                .upsMaintenanceCost(BigDecimal.ZERO)
+                                .coolingMaintenanceCost(BigDecimal.ZERO)
+                                .preventiveMaintenanceCost(BigDecimal.ZERO)
+                                .correctiveMaintenanceCost(BigDecimal.ZERO)
+                                .totalRepairCost(BigDecimal.ZERO)
+                                .criticalIncidentCost(BigDecimal.ZERO)
+                                .totalDowntimeMinutes(downtimeMinutes)
+                                .costPerHourLoss(hourlyLoss)
+                                .totalDowntimeCost(downtimeCost)
+                                .totalMaintenanceCostAll(BigDecimal.ZERO)
+                                .totalOperationalCost(downtimeCost)
+                                .maintenanceCostPerHour(BigDecimal.ZERO)
+                                .totalIncidents(totalIncidents)
+                                .maintenanceEvents(0)
+                                .build();
+
+                return costAnalysisReportRepository.save(report);
+        }
+
+        public Optional<CostAnalysisReport> getCostAnalysisReport(String branch, LocalDate date) {
+                return costAnalysisReportRepository.findByBranchAndReportDate(normalizeBranch(branch), date);
+        }
+
+        public List<CostAnalysisReport> getCostAnalysisReportsInRange(String branch, LocalDate start, LocalDate end) {
+                return costAnalysisReportRepository.findByBranchAndReportDateBetweenOrderByReportDateDesc(
+                                normalizeBranch(branch), start, end);
+        }
+
+        public List<CostAnalysisReport> getCostAnalysisReportsInRange(LocalDate start, LocalDate end) {
+                return costAnalysisReportRepository.findByReportDateBetweenOrderByReportDateDesc(start, end);
+        }
+
+        private String normalizeBranch(String branch) {
+                return (branch == null || branch.isBlank()) ? "Main Data Center" : branch;
         }
 }

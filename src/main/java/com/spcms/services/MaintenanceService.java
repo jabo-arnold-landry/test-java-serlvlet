@@ -143,14 +143,6 @@ maintenance.setUps(ups);
             coolingMaintenanceRepository.save(maintenance);
         }
     }
-    public List<UpsMaintenance> getAllUpsMaintenance() {
-        return upsMaintenanceRepository.findAll();
-    }
-
-    public List<CoolingMaintenance> getAllCoolingMaintenance() {
-        return coolingMaintenanceRepository.findAll();
-    }
-
     public java.math.BigDecimal getTotalUpsCost() {
         return getAllUpsMaintenance().stream()
                 .filter(m -> m.getMaintenanceCost() != null)
