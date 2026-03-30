@@ -20,7 +20,7 @@ public class ShiftReportController {
 
     @GetMapping
     public String list(Model model) {
-        model.addAttribute("reports", shiftReportService.getShiftReportsByDate(LocalDate.now()));
+        model.addAttribute("shifts", shiftReportService.getShiftReportsByDate(LocalDate.now()));
         return "shift-reports/list";
     }
 
@@ -47,13 +47,20 @@ public class ShiftReportController {
 
     @PostMapping("/handover/{reportId}")
     public String addHandoverNote(@PathVariable Long reportId,
-                                   @ModelAttribute ShiftHandoverNote note,
-                                   RedirectAttributes redirectAttributes) {
+            @ModelAttribute ShiftHandoverNote note,
+            RedirectAttributes redirectAttributes) {
         ShiftReport report = shiftReportService.getShiftReportById(reportId)
                 .orElseThrow(() -> new RuntimeException("Report not found"));
         note.setShiftReport(report);
         shiftReportService.addHandoverNote(note);
         redirectAttributes.addFlashAttribute("success", "Handover note added");
         return "redirect:/shift-reports/view/" + reportId;
+    }
+
+    @PostMapping("/close/{id}")
+    public String closeShift(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        shiftReportService.closeShift(id);
+        redirectAttributes.addFlashAttribute("success", "Shift closed successfully");
+        return "redirect:/shift-reports";
     }
 }

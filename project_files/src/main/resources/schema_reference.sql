@@ -216,7 +216,7 @@ CREATE TABLE IF NOT EXISTS incidents (
     title               VARCHAR(255) NOT NULL,
     description         TEXT,
     severity            ENUM('LOW','MEDIUM','HIGH','CRITICAL') NOT NULL,
-    status              ENUM('OPEN','IN_PROGRESS','RESOLVED','CLOSED') DEFAULT 'OPEN',
+    status              ENUM('IN_PROGRESS','RESOLVED') DEFAULT 'IN_PROGRESS',
     reported_by         BIGINT,
     assigned_to         BIGINT,
     downtime_start      DATETIME,
@@ -430,6 +430,7 @@ CREATE TABLE IF NOT EXISTS shift_reports (
     visit_duration_summary  TEXT,
     visitor_incident        TEXT,
 
+    status                  VARCHAR(20) DEFAULT 'OPEN',
     created_at              DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (staff_id) REFERENCES users(user_id)
 );
