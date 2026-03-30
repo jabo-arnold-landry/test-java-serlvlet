@@ -137,6 +137,14 @@ public class SecurityConfig {
                     new AntPathRequestMatcher("/equipment/delete/**")
                 ).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
 
+                // Decision Requests - MANAGER, TECHNICIAN, ADMIN (approval ADMIN only)
+                .requestMatchers(
+                    new AntPathRequestMatcher("/decisions/approve/**"),
+                    new AntPathRequestMatcher("/decisions/reject/**")
+                ).hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/decisions/report")).hasAnyRole("MANAGER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/decisions/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
+
                 // All other pages - authenticated
                 .anyRequest().authenticated()
             )

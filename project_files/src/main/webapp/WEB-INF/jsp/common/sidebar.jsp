@@ -18,6 +18,7 @@
             <div class="nav-section-label">Operations</div>
             <a href="${pageContext.request.contextPath}/monitoring" class="nav-link"><i class="bi bi-speedometer2"></i> Monitoring</a>
             <a href="${pageContext.request.contextPath}/maintenance" class="nav-link"><i class="bi bi-wrench-adjustable-circle"></i> Maintenance</a>
+            <a href="${pageContext.request.contextPath}/decisions" class="nav-link"><i class="bi bi-check2-square"></i> Decision Making</a>
             <a href="${pageContext.request.contextPath}/incidents" class="nav-link"><i class="bi bi-exclamation-triangle-fill"></i> Incidents</a>
         </sec:authorize>
         
@@ -52,6 +53,9 @@
             <a href="${pageContext.request.contextPath}/reports/downtime-analysis" class="nav-link"><i class="bi bi-graph-up"></i> Downtime Analysis</a>
             <a href="${pageContext.request.contextPath}/reports/monthly-quarterly" class="nav-link"><i class="bi bi-calendar-month"></i> Monthly/Quarterly</a>
                     <a href="${pageContext.request.contextPath}/reports/maintenance-history" class="nav-link"><i class="bi bi-clock-history"></i> Maintenance History</a>
+            <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
+                <a href="${pageContext.request.contextPath}/decisions/report" class="nav-link"><i class="bi bi-clipboard-data"></i> Decision Report</a>
+            </sec:authorize>
         </sec:authorize>
         
         <sec:authorize access="hasAnyRole('TECHNICIAN', 'MANAGER', 'ADMIN')">
