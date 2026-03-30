@@ -403,13 +403,9 @@ public class DataInitializer implements CommandLineRunner {
         return MonitoringLog.builder()
                 .equipmentType(MonitoringLog.EquipmentType.COOLING)
                 .equipmentId(unit.getCoolingId())
-                .recordedBy(recorder)
                 .supplyAirTemp(supplyTemp)
                 .returnAirTemp(returnTemp)
-                .humidityPercent(humidity)
-                .coolingPerformance(performance)
-                .readingTime(LocalDateTime.now().minusHours((seed % 72)).minusMinutes(index * 7L))
-                .notes("Auto-seeded cooling monitoring reading")
+                .humidity(humidity)
                 .build();
     }
 

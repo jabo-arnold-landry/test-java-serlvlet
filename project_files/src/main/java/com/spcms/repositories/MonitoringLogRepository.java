@@ -12,6 +12,9 @@ import org.springframework.data.repository.query.Param;
 public interface MonitoringLogRepository extends JpaRepository<MonitoringLog, Long> {
     long countByEquipmentTypeAndEquipmentId(MonitoringLog.EquipmentType type, Long equipmentId);
 
+        List<MonitoringLog> findByEquipmentTypeAndEquipmentIdOrderByCreatedAtDesc(
+                        MonitoringLog.EquipmentType type, Long equipmentId);
+
     List<MonitoringLog> findByEquipmentTypeAndEquipmentIdOrderByReadingTimeDesc(
             MonitoringLog.EquipmentType type, Long equipmentId);
 

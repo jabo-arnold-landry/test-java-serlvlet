@@ -54,7 +54,7 @@ public class IncidentController {
     public String list(Model model) {
         model.addAttribute("incidents", incidentService.getAllIncidents());
         model.addAttribute("openCount",
-                incidentService.getIncidentsByStatus(Incident.IncidentStatus.OPEN).size());
+                incidentService.getIncidentsByStatus(Incident.IncidentStatus.IN_PROGRESS).size());
         return "incidents/list";
     }
 
@@ -118,7 +118,7 @@ public class IncidentController {
         model.addAttribute("totalCount", todayIncidents.size());
         model.addAttribute("resolvedCount", resolvedIncidents.size());
         model.addAttribute("openCount",
-                todayIncidents.stream().filter(i -> i.getStatus() == Incident.IncidentStatus.OPEN).count());
+                todayIncidents.stream().filter(i -> i.getStatus() == Incident.IncidentStatus.IN_PROGRESS).count());
         model.addAttribute("inProgressCount",
                 todayIncidents.stream().filter(i -> i.getStatus() == Incident.IncidentStatus.IN_PROGRESS).count());
         model.addAttribute("criticalCount",
