@@ -1,0 +1,123 @@
+</c:choose>
+        </div>
+    </div>
+
+    <style>
+        :root {
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-400: #94a3b8;
+            --slate-600: #475569;
+            --slate-900: #0f172a;
+        }
+        .bg-slate-50 { background-color: var(--slate-50) !important; }
+        .bg-slate-100 { background-color: var(--slate-100) !important; }
+        .bg-slate-900 { background-color: var(--slate-900) !important; }
+        .text-slate-400 { color: var(--slate-400) !important; }
+        .text-slate-900 { color: var(--slate-900) !important; }
+        .border-slate-100 { border-color: var(--slate-100) !important; }
+        
+        .btn-slate-900 { 
+            background-color: var(--slate-900); 
+            color: white; 
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-slate-900:hover { 
+            background-color: #1e293b; 
+            color: #3b82f6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .hover-up:hover { transform: translateY(-5px); box-shadow: 0 1rem 3rem rgba(0,0,0,0.1) !important; }
+        .hover-bg-primary:hover { background-color: #f8fafc !important; }
+        .transition-300 { transition: all 0.3s ease-in-out; }
+        .fw-black { font-weight: 800; }
+        .p-5 { padding: 3rem !important; }
+        .rounded-5 { border-radius: 2rem !important; }
+        .icon-box { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; }
+        
+        .custom-switch .form-check-input:checked {
+            background-color: #10b981;
+            border-color: #10b981;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('dailyTrafficChart')) {
+                const ctxD = document.getElementById('dailyTrafficChart').getContext('2d');
+                new Chart(ctxD, {
+                    type: 'line',
+                    data: {
+                        labels: [<c:forEach var="entry" items="${dailyStats}" varStatus="status">'${entry.key}'${status.last ? '' : ','}</c:forEach>],
+                        datasets: [{
+                            label: 'Today Visitors',
+                            data: [<c:forEach var="entry" items="${dailyStats}" varStatus="status">${entry.value}${status.last ? '' : ','}</c:forEach>],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            }
+
+            if (document.getElementById('monthlyVolumeChart')) {
+                const ctxM = document.getElementById('monthlyVolumeChart').getContext('2d');
+                new Chart(ctxM, {
+                    type: 'bar',
+                    data: {
+                        labels: [<c:forEach var="entry" items="${monthlyStats}" varStatus="status">'${entry.key}'${status.last ? '' : ','}</c:forEach>],
+                        datasets: [{
+                            label: 'Monthly Volume',
+                            data: [<c:forEach var="entry" items="${monthlyStats}" varStatus="status">${entry.value}${status.last ? '' : ','}</c:forEach>],
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 8
+                        }]
+                    },
+                    options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            }
+        });
+
+        function downloadCSV(filename, rows) {
+            const content = rows.map(r => r.join(',')).join('\n');
+            const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportTrafficData() {
+            const rows = [['Month', 'Visitor Count']];
+            <c:forEach var="entry" items="${monthlyStats}">
+                rows.push(['<c:out value="${entry.key}"/>', '${entry.value}']);
+            </c:forEach>
+            downloadCSV('monthly_traffic_report.csv', rows);
+        }
+
+        function exportIncidentData() {
+            const rows = [['Title', 'Severity', 'Status']];
+            <c:forEach var="inc" items="${allIncidents}">
+                rows.push(['<c:out value="${inc.title}"/>', '${inc.severity}', '${inc.status}']);
+            </c:forEach>
+            downloadCSV('security_incident_log.csv', rows);
+        }
+
+        function exportMovementData() {
+            const rows = [['Visitor', 'Company', 'Status']];
+            <c:forEach var="v" items="${recentVisits}">
+                rows.push(['<c:out value="${v.visitorName}"/>', '<c:out value="${v.company}"/>', '${v.status}']);
+            </c:forEach>
+            downloadCSV('movement_audit_log.csv', rows);
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

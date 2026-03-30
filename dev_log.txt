@@ -1,0 +1,5 @@
+ac5c36b feat: Initialize Spring Boot project with Maven and implement IncidentController for incident management and reporting.
+abfd4b2 Merge branch 'dev' of https://github.com/jabo-arnold-landry/test-java-serlvlet into dev
+768256a Merge dev into rosine-branch: resolve conflicts in IncidentController and config
+b07f189 i made a change to incident part and i add icident
+173a6a8 Merge dev to regis/leon/herve-tasks
