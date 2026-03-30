@@ -113,7 +113,9 @@ public class SecurityConfig {
                     new AntPathRequestMatcher("/equipment/new"),
                     new AntPathRequestMatcher("/equipment/save"),
                     new AntPathRequestMatcher("/equipment/edit/**"),
-                    new AntPathRequestMatcher("/equipment/delete/**")
+                    new AntPathRequestMatcher("/equipment/delete/**"),
+                    new AntPathRequestMatcher("/equipment/download/**"),
+                    new AntPathRequestMatcher("/equipment/remove-file/**")
                 ).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
 
                 // All other pages - authenticated

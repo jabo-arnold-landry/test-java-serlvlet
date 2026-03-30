@@ -34,6 +34,10 @@ public class MonitoringLog {
     @Column(name = "equipment_id")
     private Long equipmentId;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "recorded_by")
+    private User recordedBy;
+
     @Column(name = "temperature")
     private BigDecimal temperature;
 
@@ -95,6 +99,9 @@ public class MonitoringLog {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        if (readingTime == null) {
+            readingTime = LocalDateTime.now();
+        }
     }
 
     @PreUpdate
@@ -125,6 +132,14 @@ public class MonitoringLog {
 
     public void setEquipmentId(Long equipmentId) {
         this.equipmentId = equipmentId;
+    }
+
+    public User getRecordedBy() {
+        return recordedBy;
+    }
+
+    public void setRecordedBy(User recordedBy) {
+        this.recordedBy = recordedBy;
     }
 
     public BigDecimal getTemperature() {

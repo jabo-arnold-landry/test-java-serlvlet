@@ -100,6 +100,25 @@ public class SecurityConfig {
                     new AntPathRequestMatcher("/reports/sla-compliance/**")
                 ).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
 
+                // Compliance report UI
+                .requestMatchers(
+                    new AntPathRequestMatcher("/compliance/reports/generate"),
+                    new AntPathRequestMatcher("/compliance/reports/viewer"),
+                    new AntPathRequestMatcher("/compliance/reports/history")
+                ).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/compliance/reports/dashboard"))
+                .hasAnyRole("MANAGER", "ADMIN")
+
+                // Compliance report APIs (technician-limited + full)
+                .requestMatchers(
+                    new AntPathRequestMatcher("/api/reports/maintenance"),
+                    new AntPathRequestMatcher("/api/reports/shift/**"),
+                    new AntPathRequestMatcher("/api/reports/export"),
+                    new AntPathRequestMatcher("/api/reports/logs")
+                ).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/api/reports/**"))
+                .hasAnyRole("MANAGER", "ADMIN")
+
                 // Maintenance - TECHNICIAN, MANAGER, ADMIN
                 .requestMatchers(new AntPathRequestMatcher("/maintenance/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN")
 

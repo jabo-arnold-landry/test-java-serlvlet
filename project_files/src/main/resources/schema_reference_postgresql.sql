@@ -476,6 +476,19 @@ CREATE TABLE IF NOT EXISTS daily_consolidated_reports (
     generated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS report_logs (
+    report_id            BIGSERIAL PRIMARY KEY,
+    report_type          VARCHAR(80) NOT NULL,
+    generated_by         BIGINT,
+    file_format          VARCHAR(10) NOT NULL,
+    file_path            VARCHAR(500),
+    filters_used         TEXT,
+    status               VARCHAR(20) NOT NULL,
+    error_message        TEXT,
+    generated_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (generated_by) REFERENCES users(user_id)
+);
+
 -- ============================================================
 -- INDEXES
 -- ============================================================
