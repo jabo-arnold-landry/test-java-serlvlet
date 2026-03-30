@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +16,9 @@
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div><h4 style="font-weight:700;margin:0;">Shift Handover Reports</h4></div>
-            <a href="${pageContext.request.contextPath}/shift-reports/new" class="btn btn-primary"><i class="bi bi-journal-text"></i> Start New Shift</a>
+            <sec:authorize access="hasAnyRole('TECHNICIAN', 'MANAGER', 'SECURITY')">
+                <a href="${pageContext.request.contextPath}/shift-reports/new" class="btn btn-primary"><i class="bi bi-journal-text"></i> Start New Shift</a>
+            </sec:authorize>
         </div>
         
         <div class="table-container">
@@ -26,8 +29,8 @@
                     <tr>
                         <td><strong>${s.shiftDate}</strong></td>
                         <td><span class="badge bg-secondary">${s.shiftType}</span></td>
-                        <td>${s.staff.fullName}</td>
-                        <td><span class="badge ${s.logoutTime == null ? 'bg-success' : 'bg-dark'}">${s.logoutTime == null ? 'OPEN' : 'CLOSED'}</span></td>
+                        <td>${s.staff != null ? s.staff.fullName : 'N/A'}</td>
+                        <td><span class="badge ${s.status == 'OPEN' ? 'bg-success' : 'bg-dark'}">${s.status}</span></td>
                         <td><small>${s.rootCauseSummary != null ? s.rootCauseSummary : 'No major events'}</small></td>
                         <td>
                             <a href="${pageContext.request.contextPath}/shift-reports/view/${s.reportId}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i> View Details</a>

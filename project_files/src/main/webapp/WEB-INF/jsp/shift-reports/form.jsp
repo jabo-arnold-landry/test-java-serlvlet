@@ -55,11 +55,16 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
             <div class="card-body pt-0">
               <div class="row g-3">
                 <div class="col-md-3">
-                  <label class="form-label text-muted small fw-bold">TECHNICIAN ID</label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-hash"></i></span>
-                    <input type="number" class="form-control border-start-0" name="staff.userId" placeholder="Enter ID" required />
-                  </div>
+                  <label class="form-label text-muted small fw-bold">TECHNICIAN</label>
+                  <c:choose>
+                    <c:when test="${not empty currentUser}">
+                      <input type="text" class="form-control" value="${currentUser.fullName}" readonly />
+                      <input type="hidden" name="staff.userId" value="${currentUser.userId}" />
+                    </c:when>
+                    <c:otherwise>
+                      <input type="text" class="form-control" value="Unknown user" readonly />
+                    </c:otherwise>
+                  </c:choose>
                 </div>
                 <div class="col-md-3">
                   <label class="form-label text-muted small fw-bold">SHIFT TYPE</label>
@@ -71,11 +76,11 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                 </div>
                 <div class="col-md-3">
                   <label class="form-label text-muted small fw-bold">SHIFT DATE</label>
-                  <input type="date" class="form-control" name="shiftDate" required />
+                  <input type="date" class="form-control" name="shiftDate" value="${shiftReport.shiftDate}" required />
                 </div>
                 <div class="col-md-3">
                   <label class="form-label text-muted small fw-bold">LOGIN TIME</label>
-                  <input type="datetime-local" class="form-control" name="loginTime" />
+                  <input type="datetime-local" class="form-control" name="loginTime" value="${shiftReport.loginTime}" />
                 </div>
               </div>
             </div>

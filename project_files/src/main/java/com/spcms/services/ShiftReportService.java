@@ -7,8 +7,10 @@ import com.spcms.repositories.ShiftHandoverNoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +38,10 @@ public class ShiftReportService {
         return shiftReportRepository.findByShiftDateOrderByCreatedAtDesc(date);
     }
 
+    public List<ShiftReport> getAllShiftReports() {
+        return shiftReportRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+    }
+
     public List<ShiftReport> getShiftReportsByStaff(Long staffId) {
         return shiftReportRepository.findByStaff_UserIdOrderByShiftDateDesc(staffId);
     }
@@ -52,6 +58,7 @@ public class ShiftReportService {
         ShiftReport report = shiftReportRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Shift report not found"));
         report.setStatus(ShiftReport.ShiftStatus.CLOSED);
+        report.setLogoutTime(LocalDateTime.now());
         shiftReportRepository.save(report);
     }
 

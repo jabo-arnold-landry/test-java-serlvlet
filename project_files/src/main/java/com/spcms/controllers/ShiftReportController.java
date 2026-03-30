@@ -2,14 +2,18 @@ package com.spcms.controllers;
 
 import com.spcms.models.ShiftReport;
 import com.spcms.models.ShiftHandoverNote;
+import com.spcms.models.User;
+import com.spcms.repositories.UserRepository;
 import com.spcms.services.ShiftReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/shift-reports")
@@ -18,20 +22,47 @@ public class ShiftReportController {
     @Autowired
     private ShiftReportService shiftReportService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping
     public String list(Model model) {
-        model.addAttribute("shifts", shiftReportService.getShiftReportsByDate(LocalDate.now()));
+        model.addAttribute("reports", shiftReportService.getAllShiftReports());
         return "shift-reports/list";
     }
 
     @GetMapping("/new")
-    public String showCreateForm(Model model) {
-        model.addAttribute("shiftReport", new ShiftReport());
+    public String showCreateForm(Model model, Authentication authentication) {
+        ShiftReport report = new ShiftReport();
+        report.setShiftDate(LocalDate.now());
+        report.setLoginTime(LocalDateTime.now());
+
+        User currentUser = getCurrentUser(authentication);
+        if (currentUser != null) {
+            report.setStaff(currentUser);
+            model.addAttribute("currentUser", currentUser);
+        }
+
+        model.addAttribute("shiftReport", report);
         return "shift-reports/form";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute ShiftReport report, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute ShiftReport report, Authentication authentication, RedirectAttributes redirectAttributes) {
+        User currentUser = getCurrentUser(authentication);
+        if (currentUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Unable to resolve the logged-in user.");
+            return "redirect:/login";
+        }
+
+        report.setStaff(currentUser);
+        if (report.getShiftDate() == null) {
+            report.setShiftDate(LocalDate.now());
+        }
+        if (report.getLoginTime() == null) {
+            report.setLoginTime(LocalDateTime.now());
+        }
+
         shiftReportService.createShiftReport(report);
         redirectAttributes.addFlashAttribute("success", "Shift report saved");
         return "redirect:/shift-reports";
@@ -62,5 +93,12 @@ public class ShiftReportController {
         shiftReportService.closeShift(id);
         redirectAttributes.addFlashAttribute("success", "Shift closed successfully");
         return "redirect:/shift-reports";
+    }
+
+    private User getCurrentUser(Authentication authentication) {
+        if (authentication == null || authentication.getName() == null) {
+            return null;
+        }
+        return userRepository.findByUsername(authentication.getName()).orElse(null);
     }
 }

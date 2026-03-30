@@ -109,7 +109,15 @@ public class SecurityConfig {
                 // Incidents - TECHNICIAN, MANAGER, ADMIN, SECURITY
                 .requestMatchers(new AntPathRequestMatcher("/incidents/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN", "SECURITY")
 
-                // Shift reports - TECHNICIAN, MANAGER, ADMIN, SECURITY
+                // Shift reports create/update - TECHNICIAN, MANAGER, SECURITY (ADMIN view-only)
+                .requestMatchers(
+                    new AntPathRequestMatcher("/shift-reports/new"),
+                    new AntPathRequestMatcher("/shift-reports/save"),
+                    new AntPathRequestMatcher("/shift-reports/handover/**"),
+                    new AntPathRequestMatcher("/shift-reports/close/**")
+                ).hasAnyRole("TECHNICIAN", "MANAGER", "SECURITY")
+
+                // Shift reports view - TECHNICIAN, MANAGER, ADMIN, SECURITY
                 .requestMatchers(new AntPathRequestMatcher("/shift-reports/**")).hasAnyRole("TECHNICIAN", "MANAGER", "ADMIN", "SECURITY")
 
                 // Alerts - All authenticated
