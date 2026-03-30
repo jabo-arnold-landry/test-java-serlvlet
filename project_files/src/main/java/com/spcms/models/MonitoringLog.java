@@ -72,6 +72,18 @@ public class MonitoringLog {
     @JoinColumn(name = "recorded_by_user_id")
     private User recordedBy;
 
+    @Column(name = "input_voltage", precision = 10, scale = 2)
+    private BigDecimal inputVoltage;
+
+    @Column(name = "output_voltage", precision = 10, scale = 2)
+    private BigDecimal outputVoltage;
+
+    @Column(name = "battery_status", length = 50)
+    private String batteryStatus;
+
+    @Column(name = "runtime_remaining")
+    private Integer runtimeRemaining;
+
     @Column(columnDefinition = "TEXT")
     private String notes;
 
@@ -218,6 +230,38 @@ public class MonitoringLog {
 
     public void setRecordedBy(User recordedBy) {
         this.recordedBy = recordedBy;
+    }
+
+    public BigDecimal getInputVoltage() {
+        return inputVoltage;
+    }
+
+    public void setInputVoltage(BigDecimal inputVoltage) {
+        this.inputVoltage = inputVoltage;
+    }
+
+    public BigDecimal getOutputVoltage() {
+        return outputVoltage;
+    }
+
+    public void setOutputVoltage(BigDecimal outputVoltage) {
+        this.outputVoltage = outputVoltage;
+    }
+
+    public String getBatteryStatus() {
+        return batteryStatus;
+    }
+
+    public void setBatteryStatus(String batteryStatus) {
+        this.batteryStatus = batteryStatus;
+    }
+
+    public Integer getRuntimeRemaining() {
+        return runtimeRemaining;
+    }
+
+    public void setRuntimeRemaining(Integer runtimeRemaining) {
+        this.runtimeRemaining = runtimeRemaining;
     }
 
     public String getNotes() {

@@ -29,8 +29,13 @@ public class UpsController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Ups ups, RedirectAttributes redirectAttributes) {
-        upsService.createUps(ups);
-        redirectAttributes.addFlashAttribute("success", "UPS saved successfully");
+        if (ups.getUpsId() != null) {
+            upsService.updateUps(ups);
+            redirectAttributes.addFlashAttribute("success", "UPS updated successfully");
+        } else {
+            upsService.createUps(ups);
+            redirectAttributes.addFlashAttribute("success", "UPS saved successfully");
+        }
         return "redirect:/ups";
     }
 
