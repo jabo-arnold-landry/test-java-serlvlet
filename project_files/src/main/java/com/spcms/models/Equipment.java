@@ -96,6 +96,7 @@ public class Equipment {
 
     // === Procurement Information ===
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "purchase_date")
     private LocalDate purchaseDate;
 
@@ -108,9 +109,11 @@ public class Equipment {
     @Column(name = "invoice_number", length = 50)
     private String invoiceNumber;
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "warranty_start_date")
     private LocalDate warrantyStartDate;
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "warranty_expiry_date")
     private LocalDate warrantyExpiryDate;
 
@@ -126,9 +129,11 @@ public class Equipment {
     @Column(name = "maintenance_status", length = 20)
     private MaintenanceStatus maintenanceStatus = MaintenanceStatus.ACTIVE;
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "last_maintenance_date")
     private LocalDate lastMaintenanceDate;
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "next_maintenance_due")
     private LocalDate nextMaintenanceDue;
 
@@ -169,18 +174,23 @@ public class Equipment {
 
     // === Lifecycle Management ===
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "installation_date")
     private LocalDate installationDate;
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "commissioning_date")
     private LocalDate commissioningDate;
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "end_of_life")
     private LocalDate endOfLife;
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "end_of_support")
     private LocalDate endOfSupport;
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "disposal_date")
     private LocalDate disposalDate;
 
