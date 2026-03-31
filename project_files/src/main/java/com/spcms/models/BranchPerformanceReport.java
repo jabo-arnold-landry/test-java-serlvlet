@@ -33,9 +33,11 @@ public class BranchPerformanceReport {
     private BigDecimal peakLoad;
 
     @Column(name = "total_ups_alarms")
+    @Builder.Default
     private Integer totalUpsAlarms = 0;
 
     @Column(name = "failover_to_generator")
+    @Builder.Default
     private Boolean failoverToGenerator = false;
 
     // === Cooling Performance ===
@@ -47,17 +49,21 @@ public class BranchPerformanceReport {
     private BigDecimal highestTempRecorded;
 
     @Column(name = "cooling_failure")
+    @Builder.Default
     private Boolean coolingFailure = false;
 
     // === Incidents & Downtime ===
 
     @Column(name = "total_incidents")
+    @Builder.Default
     private Integer totalIncidents = 0;
 
     @Column(name = "critical_incidents")
+    @Builder.Default
     private Integer criticalIncidents = 0;
 
     @Column(name = "total_downtime_min")
+    @Builder.Default
     private Integer totalDowntimeMin = 0;
 
     @Column(name = "mttr_minutes", precision = 10, scale = 2)
@@ -69,14 +75,15 @@ public class BranchPerformanceReport {
     // === Visitor Summary ===
 
     @Column(name = "total_visitors")
+    @Builder.Default
     private Integer totalVisitors = 0;
 
-    @Column(name = "overstayed_visitors")
-    private Integer overstayedVisitors = 0;
+    @Column(name = "overstayed_visitors")    @Builder.Default    private Integer overstayedVisitors = 0;
 
     // === Metadata ===
 
     @Column(name = "user_count")
+    @Builder.Default
     private Integer userCount = 0;
 
     @Column(name = "generated_at", updatable = false)

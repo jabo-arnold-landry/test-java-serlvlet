@@ -19,7 +19,12 @@
                 <h4 style="font-weight:700;margin:0;">Cost Analysis Trend Report</h4>
                 <p class="text-muted mb-0" style="font-size:14px;">${selectedBranch} from ${startDate} to ${endDate}</p>
             </div>
-            <a href="${pageContext.request.contextPath}/reports/cost-analysis" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+            <div>
+                <a href="${pageContext.request.contextPath}/reports/cost-analysis/export-cost-range-pdf?branch=${selectedBranch}&start=${startDate}&end=${endDate}" class="btn btn-danger btn-sm me-2" title="Download as PDF">
+                    <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                </a>
+                <a href="${pageContext.request.contextPath}/reports/cost-analysis" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+            </div>
         </div>
 
         <div class="table-container">

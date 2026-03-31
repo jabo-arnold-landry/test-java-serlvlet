@@ -19,7 +19,12 @@
                 <h4 style="font-weight:700;margin:0;">Cost of Maintenance & Downtime Analysis</h4>
                 <p class="text-muted mb-0" style="font-size:14px;">Maintenance costs, repair costs, and downtime impact analysis</p>
             </div>
-            <a href="${pageContext.request.contextPath}/reports" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+            <div>
+                <a href="${pageContext.request.contextPath}/reports/cost-analysis/export-cost-analysis-pdf?branch=${selectedBranch}" class="btn btn-danger btn-sm me-2" title="Download as PDF">
+                    <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                </a>
+                <a href="${pageContext.request.contextPath}/reports" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+            </div>
         </div>
 
         <!-- Branch Selection & Navigation -->

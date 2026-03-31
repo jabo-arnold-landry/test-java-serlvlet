@@ -19,7 +19,14 @@
                 <h4 style="font-weight:700;margin:0;">Branch Performance Report</h4>
                 <p class="text-muted mb-0" style="font-size:14px;">Daily metrics for selected branch - Load, Temperature, Incidents, Downtime</p>
             </div>
-            <a href="${pageContext.request.contextPath}/reports" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+            <div class="d-flex gap-2">
+                <c:if test="${report != null}">
+                    <a href="${pageContext.request.contextPath}/reports/branch-performance/export-pdf?branch=${selectedBranch}" class="btn btn-danger">
+                        <i class="bi bi-file-pdf"></i> Download PDF
+                    </a>
+                </c:if>
+                <a href="${pageContext.request.contextPath}/reports" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+            </div>
         </div>
 
         <!-- Branch Selection -->

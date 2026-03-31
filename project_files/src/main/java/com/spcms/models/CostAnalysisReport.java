@@ -77,6 +77,7 @@ public class CostAnalysisReport {
     @Builder.Default private Integer totalIncidents = 0;
 
     @Column(name = "maintenance_events")
+    @Builder.Default
     private Integer maintenanceEvents = 0;
 
     // === Metadata ===

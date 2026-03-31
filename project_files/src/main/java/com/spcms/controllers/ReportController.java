@@ -14,10 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.nio.charset.StandardCharsets;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,7 +80,8 @@ public class ReportController {
         String filename = String.format("visitor_report_%s_%s_to_%s.pdf", type, start, end);
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 
-        try (com.lowagie.text.Document document = new com.lowagie.text.Document(com.lowagie.text.PageSize.A4.rotate())) {
+        com.lowagie.text.Document document = new com.lowagie.text.Document(com.lowagie.text.PageSize.A4.rotate());
+        try {
             com.lowagie.text.pdf.PdfWriter.getInstance(document, response.getOutputStream());
             document.open();
 
@@ -131,12 +134,13 @@ public class ReportController {
             footer.setFont(com.lowagie.text.FontFactory.getFont(com.lowagie.text.FontFactory.HELVETICA, 8, java.awt.Color.GRAY));
             document.add(footer);
 
+            document.close();
         } catch (com.lowagie.text.DocumentException e) {
             e.printStackTrace();
         }
     }
 
-    private com.lowagie.text.pdf.PdfPCell createVisitorCell(String text) {
+    private com.lowagie.text.pdf`.PdfPCell createVisitorCell(String text) {
         com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(text != null ? text : "", com.lowagie.text.FontFactory.getFont(com.lowagie.text.FontFactory.HELVETICA, 9)));
         cell.setPadding(5);
         return cell;
@@ -315,8 +319,8 @@ public class ReportController {
         SlaComplianceSummary summary = new SlaComplianceSummary(
                 sanitizedWindow,
                 reports.size(),
-                availabilityCompliance.setScale(2, BigDecimal.ROUND_HALF_UP),
-                BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_HALF_UP),
+                availabilityCompliance.setScale(2, RoundingMode.HALF_UP),
+                BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP),
                 totalDowntimeMinutes,
                 allowedDowntimeMinutes,
                 maxTemperature,

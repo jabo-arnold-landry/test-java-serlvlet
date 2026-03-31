@@ -15,7 +15,12 @@
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 style="font-weight:700;margin:0;">Maintenance Cost Report</h4>
-            <a href="${pageContext.request.contextPath}/reports" class="btn btn-outline-primary btn-sm">Back to Daily Report</a>
+            <div>
+                <a href="${pageContext.request.contextPath}/reports/cost-of-maintenance/export-pdf" class="btn btn-danger btn-sm me-2" title="Download as PDF">
+                    <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                </a>
+                <a href="${pageContext.request.contextPath}/reports" class="btn btn-outline-primary btn-sm">Back to Daily Report</a>
+            </div>
         </div>
 
         <div class="row g-4">
