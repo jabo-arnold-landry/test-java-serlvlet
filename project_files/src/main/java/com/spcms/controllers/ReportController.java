@@ -140,7 +140,7 @@ public class ReportController {
         }
     }
 
-    private com.lowagie.text.pdf`.PdfPCell createVisitorCell(String text) {
+    private com.lowagie.text.pdf.PdfPCell createVisitorCell(String text) {
         com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(text != null ? text : "", com.lowagie.text.FontFactory.getFont(com.lowagie.text.FontFactory.HELVETICA, 9)));
         cell.setPadding(5);
         return cell;
