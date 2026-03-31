@@ -119,6 +119,33 @@
         return null;
     }
 
+    function formatReportValue(column, row) {
+        const rawVal = row[column];
+        const isEmpty = rawVal === null || rawVal === undefined || String(rawVal).trim() === '';
+        if (!isEmpty) {
+            return rawVal;
+        }
+
+        if (reportType === 'equipment-health') {
+            const normalizedCol = String(column).replace(/[_\s]/g, '').toLowerCase();
+            const equipmentType = String(row.equipmentType || row.equipment_type || '').toUpperCase();
+
+            if (equipmentType === 'COOLING') {
+                if (normalizedCol === 'loadpercentage' || normalizedCol === 'batteryhealthstatus' || normalizedCol === 'estimatedruntimemin') {
+                    return 'N/A (Cooling)';
+                }
+            }
+
+            if (equipmentType === 'UPS') {
+                if (normalizedCol === 'roomtemperature' || normalizedCol === 'roomhumidity' || normalizedCol === 'compressorstatus' || normalizedCol === 'filtercleanstatus' || normalizedCol === 'coolantpressure') {
+                    return 'N/A (UPS)';
+                }
+            }
+        }
+
+        return '-';
+    }
+
     function renderTable(rows) {
         const thead = document.querySelector('#reportTable thead');
         const tbody = document.querySelector('#reportTable tbody');
@@ -144,7 +171,7 @@
             const tr = document.createElement('tr');
             columns.forEach(c => {
                 const td = document.createElement('td');
-                const val = row[c] ?? '';
+                const val = formatReportValue(c, row);
                 const badgeHtml = toBadge(val);
                 if (badgeHtml && (String(c).toLowerCase().includes('status') || String(c).toLowerCase().includes('severity') || String(c).toLowerCase().includes('health'))) {
                     td.innerHTML = badgeHtml;

@@ -421,6 +421,40 @@
                                     </table>
                                 </div>
                             </div>
+
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mt-4">
+                                <div class="card-header bg-white p-4 border-0 d-flex justify-content-between align-items-center">
+                                    <h5 class="fw-bold mb-0 text-dark">Overstayed Visitors</h5>
+                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2 small">
+                                        ${overstayedAlerts.size()} flagged
+                                    </span>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="bg-light text-muted small uppercase">
+                                            <tr>
+                                                <th class="px-4">Visitor</th>
+                                                <th class="px-4">Company</th>
+                                                <th class="px-4">Staying Duration</th>
+                                                <th class="px-4 text-end">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="v" items="${overstayedAlerts}">
+                                                <tr>
+                                                    <td class="px-4 py-3 fw-bold text-dark">${v.visitor.fullName}</td>
+                                                    <td class="px-4 py-3 small text-muted">${v.visitor.company}</td>
+                                                    <td class="px-4 py-3 fw-bold text-danger">${durationMap[v.checkId]}</td>
+                                                    <td class="px-4 py-3 text-end"><span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">OVERSTAYED</span></td>
+                                                </tr>
+                                            </c:forEach>
+                                            <c:if test="${empty overstayedAlerts}">
+                                                <tr><td colspan="4" class="text-center py-4 text-muted small italic">No overstayed visitors currently.</td></tr>
+                                            </c:if>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
 
                          <!-- TAB 4: AUDIT LOGS -->
@@ -452,6 +486,35 @@
                                             </c:forEach>
                                             <c:if test="${empty pastVisits}">
                                                 <tr><td colspan="5" class="text-center py-4 text-muted small">No historical records found.</td></tr>
+                                            </c:if>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mt-4">
+                                <div class="card-header bg-white p-4 border-0">
+                                    <h5 class="fw-bold mb-0 text-dark">High Frequency Visitors</h5>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="bg-light text-muted uppercase small">
+                                            <tr>
+                                                <th class="px-4 py-3">Visitor Name</th>
+                                                <th class="px-4 py-3">Company</th>
+                                                <th class="px-4 py-3 text-end">Visit Count</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="entry" items="${highFrequencyVisitors}">
+                                                <tr>
+                                                    <td class="px-4 py-3 fw-bold text-dark">${entry[0].fullName}</td>
+                                                    <td class="px-4 py-3 small text-muted">${entry[0].company}</td>
+                                                    <td class="px-4 py-3 text-end fw-bold text-primary">${entry[1]}</td>
+                                                </tr>
+                                            </c:forEach>
+                                            <c:if test="${empty highFrequencyVisitors}">
+                                                <tr><td colspan="3" class="text-center py-4 text-muted small">No high-frequency visitor data yet.</td></tr>
                                             </c:if>
                                         </tbody>
                                     </table>
