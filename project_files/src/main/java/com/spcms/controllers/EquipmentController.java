@@ -15,6 +15,9 @@ public class EquipmentController {
     @Autowired
     private EquipmentService equipmentService;
 
+    @Autowired
+    private com.spcms.services.FileStorageService fileStorageService;
+
     @GetMapping
     public String list(Model model) {
         model.addAttribute("equipmentList", equipmentService.getAllEquipment());
@@ -28,7 +31,30 @@ public class EquipmentController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute Equipment equipment, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute Equipment equipment, 
+                       @RequestParam(value = "configFile", required = false) org.springframework.web.multipart.MultipartFile configFile,
+                       @RequestParam(value = "diagramFile", required = false) org.springframework.web.multipart.MultipartFile diagramFile,
+                       @RequestParam(value = "maintenanceReportFile", required = false) org.springframework.web.multipart.MultipartFile maintenanceReportFile,
+                       @RequestParam(value = "photosFile", required = false) org.springframework.web.multipart.MultipartFile photosFile,
+                       RedirectAttributes redirectAttributes) {
+        
+        try {
+            if (configFile != null && !configFile.isEmpty()) {
+                equipment.setConfigFilePath(fileStorageService.storeServiceReport(configFile));
+            }
+            if (diagramFile != null && !diagramFile.isEmpty()) {
+                equipment.setNetworkDiagramRef(fileStorageService.storeServiceReport(diagramFile));
+            }
+            if (maintenanceReportFile != null && !maintenanceReportFile.isEmpty()) {
+                equipment.setMaintenanceReportPath(fileStorageService.storeServiceReport(maintenanceReportFile));
+            }
+            if (photosFile != null && !photosFile.isEmpty()) {
+                equipment.setPhotosPath(fileStorageService.storeServiceReport(photosFile));
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to upload file attachments.");
+        }
+
         equipmentService.createEquipment(equipment);
         redirectAttributes.addFlashAttribute("success", "Equipment saved successfully");
         return "redirect:/equipment";

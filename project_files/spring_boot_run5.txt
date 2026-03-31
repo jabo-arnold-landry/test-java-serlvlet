@@ -22411,3 +22411,2871 @@ java.lang.Exception: Apparent connection leak detected
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
 	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
 
+2026-03-31T16:45:43.654+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:45:43.666+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:45:43.679+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        sr1_0.report_id,
+        sr1_0.action_taken,
+        sr1_0.avg_humidity,
+        sr1_0.avg_input_voltage,
+        sr1_0.avg_output_voltage,
+        sr1_0.battery_runtime_remaining,
+        sr1_0.bypass_activated,
+        sr1_0.compressor_status,
+        sr1_0.corrective_maint_done,
+        sr1_0.created_at,
+        sr1_0.critical_incidents,
+        sr1_0.downtime_duration_min,
+        sr1_0.escort_name,
+        sr1_0.fan_status,
+        sr1_0.high_temp_alarm,
+        sr1_0.highest_temp_recorded,
+        sr1_0.humidity_alarm,
+        sr1_0.login_time,
+        sr1_0.logout_time,
+        sr1_0.lowest_temp_recorded,
+        sr1_0.max_load_percent,
+        sr1_0.min_battery_level,
+        sr1_0.num_incidents,
+        sr1_0.num_visitors,
+        sr1_0.overload_occurred,
+        sr1_0.photos_uploaded_path,
+        sr1_0.preventive_maint_done,
+        sr1_0.root_cause_summary,
+        sr1_0.shift_date,
+        sr1_0.shift_type,
+        sr1_0.spare_parts_used,
+        sr1_0.staff_id,
+        sr1_0.status,
+        sr1_0.visit_duration_summary,
+        sr1_0.visitor_approved_by,
+        sr1_0.visitor_incident 
+    from
+        shift_reports sr1_0 
+    order by
+        sr1_0.created_at desc
+Hibernate: 
+    select
+        sr1_0.report_id,
+        sr1_0.action_taken,
+        sr1_0.avg_humidity,
+        sr1_0.avg_input_voltage,
+        sr1_0.avg_output_voltage,
+        sr1_0.battery_runtime_remaining,
+        sr1_0.bypass_activated,
+        sr1_0.compressor_status,
+        sr1_0.corrective_maint_done,
+        sr1_0.created_at,
+        sr1_0.critical_incidents,
+        sr1_0.downtime_duration_min,
+        sr1_0.escort_name,
+        sr1_0.fan_status,
+        sr1_0.high_temp_alarm,
+        sr1_0.highest_temp_recorded,
+        sr1_0.humidity_alarm,
+        sr1_0.login_time,
+        sr1_0.logout_time,
+        sr1_0.lowest_temp_recorded,
+        sr1_0.max_load_percent,
+        sr1_0.min_battery_level,
+        sr1_0.num_incidents,
+        sr1_0.num_visitors,
+        sr1_0.overload_occurred,
+        sr1_0.photos_uploaded_path,
+        sr1_0.preventive_maint_done,
+        sr1_0.root_cause_summary,
+        sr1_0.shift_date,
+        sr1_0.shift_type,
+        sr1_0.spare_parts_used,
+        sr1_0.staff_id,
+        sr1_0.status,
+        sr1_0.visit_duration_summary,
+        sr1_0.visitor_approved_by,
+        sr1_0.visitor_incident 
+    from
+        shift_reports sr1_0 
+    order by
+        sr1_0.created_at desc
+2026-03-31T16:45:43.749+02:00 DEBUG 13288 --- [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:45:43.759+02:00 DEBUG 13288 --- [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:45:58.099+02:00 DEBUG 13288 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:45:58.105+02:00 DEBUG 13288 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+================== ERROR OCCURRED ==================
+URL: http://localhost:8081/spcms/alerts/stream
+Exception Type: org.springframework.web.context.request.async.AsyncRequestTimeoutException
+Message: null
+Full Stack Trace:
+org.springframework.web.context.request.async.AsyncRequestTimeoutException
+	at org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor.handleTimeout(TimeoutDeferredResultProcessingInterceptor.java:42)
+	at org.springframework.web.context.request.async.DeferredResultInterceptorChain.triggerAfterTimeout(DeferredResultInterceptorChain.java:81)
+	at org.springframework.web.context.request.async.WebAsyncManager.lambda$startDeferredResultProcessing$5(WebAsyncManager.java:439)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.springframework.web.context.request.async.StandardServletAsyncWebRequest.onTimeout(StandardServletAsyncWebRequest.java:184)
+	at org.apache.catalina.core.AsyncListenerWrapper.fireOnTimeout(AsyncListenerWrapper.java:44)
+	at org.apache.catalina.core.AsyncContextImpl.timeout(AsyncContextImpl.java:136)
+	at org.apache.catalina.connector.CoyoteAdapter.asyncDispatch(CoyoteAdapter.java:135)
+	at org.apache.coyote.AbstractProcessor.dispatch(AbstractProcessor.java:243)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:57)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+===================================================
+2026-03-31T16:45:58.635+02:00  INFO 13288 --- [nio-8081-exec-5] com.zaxxer.hikari.pool.ProxyLeakTask     : Previously reported leaked connection com.mysql.cj.jdbc.ConnectionImpl@175f859e on thread http-nio-8081-exec-4 was returned to the pool (unleaked)
+2026-03-31T16:46:13.754+02:00  WARN 13288 --- [l-1 housekeeper] com.zaxxer.hikari.pool.ProxyLeakTask     : Connection leak detection triggered for com.mysql.cj.jdbc.ConnectionImpl@67f798d0 on thread http-nio-8081-exec-4, stack trace follows
+
+java.lang.Exception: Apparent connection leak detected
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:128) ~[HikariCP-5.0.1.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:46) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:113) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:143) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getConnectionForTransactionManagement(LogicalConnectionManagedImpl.java:273) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:281) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:232) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:83) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:176) ~[spring-orm-6.1.6.jar:6.1.6]
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:420) ~[spring-orm-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:531) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:617) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:386) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720) ~[spring-aop-6.1.6.jar:6.1.6]
+	at com.spcms.services.UserService$$SpringCGLIB$$1.getUserByUsername(<generated>) ~[classes/:na]
+	at com.spcms.config.GlobalModelAttributes.unacknowledgedAlerts(GlobalModelAttributes.java:29) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.annotation.ModelFactory.invokeModelAttributeMethods(ModelFactory.java:143) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.annotation.ModelFactory.initModel(ModelFactory.java:112) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:910) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230) ~[spring-security-config-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-03-31T16:46:32.090+02:00 DEBUG 13288 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:46:32.103+02:00 DEBUG 13288 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+================== ERROR OCCURRED ==================
+URL: http://localhost:8081/spcms/alerts/stream
+Exception Type: org.springframework.web.context.request.async.AsyncRequestTimeoutException
+Message: null
+Full Stack Trace:
+org.springframework.web.context.request.async.AsyncRequestTimeoutException
+	at org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor.handleTimeout(TimeoutDeferredResultProcessingInterceptor.java:42)
+	at org.springframework.web.context.request.async.DeferredResultInterceptorChain.triggerAfterTimeout(DeferredResultInterceptorChain.java:81)
+	at org.springframework.web.context.request.async.WebAsyncManager.lambda$startDeferredResultProcessing$5(WebAsyncManager.java:439)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.springframework.web.context.request.async.StandardServletAsyncWebRequest.onTimeout(StandardServletAsyncWebRequest.java:184)
+	at org.apache.catalina.core.AsyncListenerWrapper.fireOnTimeout(AsyncListenerWrapper.java:44)
+	at org.apache.catalina.core.AsyncContextImpl.timeout(AsyncContextImpl.java:136)
+	at org.apache.catalina.connector.CoyoteAdapter.asyncDispatch(CoyoteAdapter.java:135)
+	at org.apache.coyote.AbstractProcessor.dispatch(AbstractProcessor.java:243)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:57)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+===================================================
+2026-03-31T16:46:32.108+02:00  INFO 13288 --- [nio-8081-exec-6] com.zaxxer.hikari.pool.ProxyLeakTask     : Previously reported leaked connection com.mysql.cj.jdbc.ConnectionImpl@35a30663 on thread http-nio-8081-exec-7 was returned to the pool (unleaked)
+2026-03-31T16:46:43.090+02:00 DEBUG 13288 --- [nio-8081-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:46:43.093+02:00 DEBUG 13288 --- [nio-8081-exec-7] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+================== ERROR OCCURRED ==================
+URL: http://localhost:8081/spcms/alerts/stream
+Exception Type: org.springframework.web.context.request.async.AsyncRequestTimeoutException
+Message: null
+Full Stack Trace:
+org.springframework.web.context.request.async.AsyncRequestTimeoutException
+	at org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor.handleTimeout(TimeoutDeferredResultProcessingInterceptor.java:42)
+	at org.springframework.web.context.request.async.DeferredResultInterceptorChain.triggerAfterTimeout(DeferredResultInterceptorChain.java:81)
+	at org.springframework.web.context.request.async.WebAsyncManager.lambda$startDeferredResultProcessing$5(WebAsyncManager.java:439)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.springframework.web.context.request.async.StandardServletAsyncWebRequest.onTimeout(StandardServletAsyncWebRequest.java:184)
+	at org.apache.catalina.core.AsyncListenerWrapper.fireOnTimeout(AsyncListenerWrapper.java:44)
+	at org.apache.catalina.core.AsyncContextImpl.timeout(AsyncContextImpl.java:136)
+	at org.apache.catalina.connector.CoyoteAdapter.asyncDispatch(CoyoteAdapter.java:135)
+	at org.apache.coyote.AbstractProcessor.dispatch(AbstractProcessor.java:243)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:57)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+===================================================
+2026-03-31T16:46:43.097+02:00  INFO 13288 --- [nio-8081-exec-7] com.zaxxer.hikari.pool.ProxyLeakTask     : Previously reported leaked connection com.mysql.cj.jdbc.ConnectionImpl@74c505c5 on thread http-nio-8081-exec-10 was returned to the pool (unleaked)
+2026-03-31T16:46:53.081+02:00 DEBUG 13288 --- [nio-8081-exec-9] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:46:53.084+02:00 DEBUG 13288 --- [nio-8081-exec-9] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+================== ERROR OCCURRED ==================
+URL: http://localhost:8081/spcms/alerts/stream
+Exception Type: org.springframework.web.context.request.async.AsyncRequestTimeoutException
+Message: null
+Full Stack Trace:
+org.springframework.web.context.request.async.AsyncRequestTimeoutException
+	at org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor.handleTimeout(TimeoutDeferredResultProcessingInterceptor.java:42)
+	at org.springframework.web.context.request.async.DeferredResultInterceptorChain.triggerAfterTimeout(DeferredResultInterceptorChain.java:81)
+	at org.springframework.web.context.request.async.WebAsyncManager.lambda$startDeferredResultProcessing$5(WebAsyncManager.java:439)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.springframework.web.context.request.async.StandardServletAsyncWebRequest.onTimeout(StandardServletAsyncWebRequest.java:184)
+	at org.apache.catalina.core.AsyncListenerWrapper.fireOnTimeout(AsyncListenerWrapper.java:44)
+	at org.apache.catalina.core.AsyncContextImpl.timeout(AsyncContextImpl.java:136)
+	at org.apache.catalina.connector.CoyoteAdapter.asyncDispatch(CoyoteAdapter.java:135)
+	at org.apache.coyote.AbstractProcessor.dispatch(AbstractProcessor.java:243)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:57)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+===================================================
+2026-03-31T16:46:53.091+02:00  INFO 13288 --- [nio-8081-exec-9] com.zaxxer.hikari.pool.ProxyLeakTask     : Previously reported leaked connection com.mysql.cj.jdbc.ConnectionImpl@3755d15b on thread http-nio-8081-exec-3 was returned to the pool (unleaked)
+2026-03-31T16:47:03.081+02:00 DEBUG 13288 --- [io-8081-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:47:03.084+02:00 DEBUG 13288 --- [io-8081-exec-10] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+================== ERROR OCCURRED ==================
+URL: http://localhost:8081/spcms/alerts/stream
+Exception Type: org.springframework.web.context.request.async.AsyncRequestTimeoutException
+Message: null
+Full Stack Trace:
+org.springframework.web.context.request.async.AsyncRequestTimeoutException
+	at org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor.handleTimeout(TimeoutDeferredResultProcessingInterceptor.java:42)
+	at org.springframework.web.context.request.async.DeferredResultInterceptorChain.triggerAfterTimeout(DeferredResultInterceptorChain.java:81)
+	at org.springframework.web.context.request.async.WebAsyncManager.lambda$startDeferredResultProcessing$5(WebAsyncManager.java:439)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.springframework.web.context.request.async.StandardServletAsyncWebRequest.onTimeout(StandardServletAsyncWebRequest.java:184)
+	at org.apache.catalina.core.AsyncListenerWrapper.fireOnTimeout(AsyncListenerWrapper.java:44)
+	at org.apache.catalina.core.AsyncContextImpl.timeout(AsyncContextImpl.java:136)
+	at org.apache.catalina.connector.CoyoteAdapter.asyncDispatch(CoyoteAdapter.java:135)
+	at org.apache.coyote.AbstractProcessor.dispatch(AbstractProcessor.java:243)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:57)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+===================================================
+2026-03-31T16:47:03.088+02:00  INFO 13288 --- [io-8081-exec-10] com.zaxxer.hikari.pool.ProxyLeakTask     : Previously reported leaked connection com.mysql.cj.jdbc.ConnectionImpl@356cb3c7 on thread http-nio-8081-exec-6 was returned to the pool (unleaked)
+2026-03-31T16:47:06.082+02:00 DEBUG 13288 --- [nio-8081-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:47:06.088+02:00 DEBUG 13288 --- [nio-8081-exec-1] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+================== ERROR OCCURRED ==================
+URL: http://localhost:8081/spcms/alerts/stream
+Exception Type: org.springframework.web.context.request.async.AsyncRequestTimeoutException
+Message: null
+Full Stack Trace:
+org.springframework.web.context.request.async.AsyncRequestTimeoutException
+	at org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor.handleTimeout(TimeoutDeferredResultProcessingInterceptor.java:42)
+	at org.springframework.web.context.request.async.DeferredResultInterceptorChain.triggerAfterTimeout(DeferredResultInterceptorChain.java:81)
+	at org.springframework.web.context.request.async.WebAsyncManager.lambda$startDeferredResultProcessing$5(WebAsyncManager.java:439)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.springframework.web.context.request.async.StandardServletAsyncWebRequest.onTimeout(StandardServletAsyncWebRequest.java:184)
+	at org.apache.catalina.core.AsyncListenerWrapper.fireOnTimeout(AsyncListenerWrapper.java:44)
+	at org.apache.catalina.core.AsyncContextImpl.timeout(AsyncContextImpl.java:136)
+	at org.apache.catalina.connector.CoyoteAdapter.asyncDispatch(CoyoteAdapter.java:135)
+	at org.apache.coyote.AbstractProcessor.dispatch(AbstractProcessor.java:243)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:57)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+===================================================
+2026-03-31T16:47:06.092+02:00  INFO 13288 --- [nio-8081-exec-1] com.zaxxer.hikari.pool.ProxyLeakTask     : Previously reported leaked connection com.mysql.cj.jdbc.ConnectionImpl@1faa77ce on thread http-nio-8081-exec-9 was returned to the pool (unleaked)
+2026-03-31T16:49:18.136+02:00 DEBUG 13288 --- [nio-8081-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:49:18.140+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:49:18.147+02:00 DEBUG 13288 --- [nio-8081-exec-2] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:49:18.152+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:49:18.191+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        a1_0.alert_id,
+        a1_0.acknowledged_at,
+        a1_0.acknowledged_by_user_id,
+        a1_0.actual_value,
+        a1_0.alert_type,
+        a1_0.created_at,
+        a1_0.equipment_id,
+        a1_0.equipment_type,
+        a1_0.is_acknowledged,
+        a1_0.is_sent,
+        a1_0.message,
+        a1_0.threshold_value,
+        a1_0.updated_at 
+    from
+        alerts a1_0 
+    where
+        a1_0.alert_id>? 
+    order by
+        a1_0.alert_id desc 
+    limit
+        ?
+Hibernate: 
+    select
+        a1_0.alert_id,
+        a1_0.acknowledged_at,
+        a1_0.acknowledged_by_user_id,
+        a1_0.actual_value,
+        a1_0.alert_type,
+        a1_0.created_at,
+        a1_0.equipment_id,
+        a1_0.equipment_type,
+        a1_0.is_acknowledged,
+        a1_0.is_sent,
+        a1_0.message,
+        a1_0.threshold_value,
+        a1_0.updated_at 
+    from
+        alerts a1_0 
+    where
+        a1_0.alert_id>? 
+    order by
+        a1_0.alert_id desc 
+    limit
+        ?
+2026-03-31T16:49:18.195+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T16:49:28.083+02:00 DEBUG 13288 --- [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:49:28.104+02:00 DEBUG 13288 --- [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:49:28.146+02:00 DEBUG 13288 --- [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        um1_0.maintenance_id,
+        um1_0.created_at,
+        um1_0.labor_cost,
+        um1_0.maintenance_cost,
+        um1_0.maintenance_date,
+        um1_0.maintenance_type,
+        um1_0.next_due_date,
+        um1_0.parts_cost,
+        um1_0.remarks,
+        um1_0.service_report_path,
+        um1_0.spare_parts_used,
+        um1_0.technician,
+        um1_0.ups_id,
+        um1_0.vendor 
+    from
+        ups_maintenance um1_0
+Hibernate: 
+    select
+        um1_0.maintenance_id,
+        um1_0.created_at,
+        um1_0.labor_cost,
+        um1_0.maintenance_cost,
+        um1_0.maintenance_date,
+        um1_0.maintenance_type,
+        um1_0.next_due_date,
+        um1_0.parts_cost,
+        um1_0.remarks,
+        um1_0.service_report_path,
+        um1_0.spare_parts_used,
+        um1_0.technician,
+        um1_0.ups_id,
+        um1_0.vendor 
+    from
+        ups_maintenance um1_0
+2026-03-31T16:49:28.160+02:00 DEBUG 13288 --- [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.ups_id,
+        u1_0.asset_tag,
+        u1_0.battery_current,
+        u1_0.battery_health_percentage,
+        u1_0.battery_voltage,
+        u1_0.brand,
+        u1_0.bypass_status,
+        u1_0.capacity_kva,
+        u1_0.created_at,
+        u1_0.current_load_kw,
+        u1_0.frequency_hz,
+        u1_0.generator_mode,
+        u1_0.input_voltage,
+        u1_0.installation_date,
+        u1_0.load_percentage,
+        u1_0.location_rack,
+        u1_0.location_room,
+        u1_0.location_zone,
+        u1_0.model,
+        u1_0.output_voltage,
+        u1_0.phase,
+        u1_0.power_factor,
+        u1_0.serial_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.ups_name 
+    from
+        ups u1_0 
+    where
+        u1_0.ups_id=?
+Hibernate: 
+    select
+        u1_0.ups_id,
+        u1_0.asset_tag,
+        u1_0.battery_current,
+        u1_0.battery_health_percentage,
+        u1_0.battery_voltage,
+        u1_0.brand,
+        u1_0.bypass_status,
+        u1_0.capacity_kva,
+        u1_0.created_at,
+        u1_0.current_load_kw,
+        u1_0.frequency_hz,
+        u1_0.generator_mode,
+        u1_0.input_voltage,
+        u1_0.installation_date,
+        u1_0.load_percentage,
+        u1_0.location_rack,
+        u1_0.location_room,
+        u1_0.location_zone,
+        u1_0.model,
+        u1_0.output_voltage,
+        u1_0.phase,
+        u1_0.power_factor,
+        u1_0.serial_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.ups_name 
+    from
+        ups u1_0 
+    where
+        u1_0.ups_id=?
+2026-03-31T16:49:28.181+02:00 DEBUG 13288 --- [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        cm1_0.maintenance_id,
+        cm1_0.cooling_id,
+        cm1_0.created_at,
+        cm1_0.filter_cleaning_date,
+        cm1_0.gas_refill_date,
+        cm1_0.labor_cost,
+        cm1_0.maintenance_cost,
+        cm1_0.maintenance_date,
+        cm1_0.maintenance_type,
+        cm1_0.next_maintenance_date,
+        cm1_0.parts_cost,
+        cm1_0.remarks,
+        cm1_0.service_report_path,
+        cm1_0.technician,
+        cm1_0.vendor 
+    from
+        cooling_maintenance cm1_0
+Hibernate: 
+    select
+        cm1_0.maintenance_id,
+        cm1_0.cooling_id,
+        cm1_0.created_at,
+        cm1_0.filter_cleaning_date,
+        cm1_0.gas_refill_date,
+        cm1_0.labor_cost,
+        cm1_0.maintenance_cost,
+        cm1_0.maintenance_date,
+        cm1_0.maintenance_type,
+        cm1_0.next_maintenance_date,
+        cm1_0.parts_cost,
+        cm1_0.remarks,
+        cm1_0.service_report_path,
+        cm1_0.technician,
+        cm1_0.vendor 
+    from
+        cooling_maintenance cm1_0
+2026-03-31T16:49:44.075+02:00 DEBUG 13288 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:49:44.085+02:00 DEBUG 13288 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:49:44.146+02:00 DEBUG 13288 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        i1_0.incident_id,
+        i1_0.action_taken,
+        i1_0.assigned_to,
+        i1_0.attachment_path,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.downtime_end,
+        i1_0.downtime_minutes,
+        i1_0.downtime_start,
+        i1_0.equipment_id,
+        i1_0.equipment_type,
+        i1_0.repair_cost,
+        i1_0.reported_by,
+        i1_0.resolved_at,
+        i1_0.resolved_by,
+        i1_0.root_cause,
+        i1_0.severity,
+        i1_0.status,
+        i1_0.title,
+        i1_0.updated_at,
+        i1_0.visitor_id 
+    from
+        incidents i1_0 
+    where
+        i1_0.created_at between ? and ?
+Hibernate: 
+    select
+        i1_0.incident_id,
+        i1_0.action_taken,
+        i1_0.assigned_to,
+        i1_0.attachment_path,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.downtime_end,
+        i1_0.downtime_minutes,
+        i1_0.downtime_start,
+        i1_0.equipment_id,
+        i1_0.equipment_type,
+        i1_0.repair_cost,
+        i1_0.reported_by,
+        i1_0.resolved_at,
+        i1_0.resolved_by,
+        i1_0.root_cause,
+        i1_0.severity,
+        i1_0.status,
+        i1_0.title,
+        i1_0.updated_at,
+        i1_0.visitor_id 
+    from
+        incidents i1_0 
+    where
+        i1_0.created_at between ? and ?
+2026-03-31T16:49:44.255+02:00 DEBUG 13288 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T16:49:44.271+02:00 DEBUG 13288 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T16:49:44.290+02:00 DEBUG 13288 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T16:49:47.784+02:00 DEBUG 13288 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:49:47.798+02:00 DEBUG 13288 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:49:47.813+02:00 DEBUG 13288 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date=?
+Hibernate: 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date=?
+2026-03-31T16:49:48.152+02:00  WARN 13288 --- [l-1 housekeeper] com.zaxxer.hikari.pool.ProxyLeakTask     : Connection leak detection triggered for com.mysql.cj.jdbc.ConnectionImpl@3755d15b on thread http-nio-8081-exec-2, stack trace follows
+
+java.lang.Exception: Apparent connection leak detected
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:128) ~[HikariCP-5.0.1.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:46) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:113) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:143) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getConnectionForTransactionManagement(LogicalConnectionManagedImpl.java:273) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:281) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:232) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:83) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:176) ~[spring-orm-6.1.6.jar:6.1.6]
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:420) ~[spring-orm-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:531) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:617) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:386) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720) ~[spring-aop-6.1.6.jar:6.1.6]
+	at com.spcms.services.UserService$$SpringCGLIB$$1.getUserByUsername(<generated>) ~[classes/:na]
+	at com.spcms.config.GlobalModelAttributes.unacknowledgedAlerts(GlobalModelAttributes.java:29) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.annotation.ModelFactory.invokeModelAttributeMethods(ModelFactory.java:143) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.annotation.ModelFactory.initModel(ModelFactory.java:112) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:910) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230) ~[spring-security-config-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-03-31T16:50:08.240+02:00 DEBUG 13288 --- [nio-8081-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:50:08.250+02:00 DEBUG 13288 --- [nio-8081-exec-7] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:50:08.257+02:00 DEBUG 13288 --- [nio-8081-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0
+2026-03-31T16:50:08.879+02:00 DEBUG 13288 --- [nio-8081-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:50:08.890+02:00 DEBUG 13288 --- [nio-8081-exec-8] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:50:38.879+02:00  WARN 13288 --- [l-1 housekeeper] com.zaxxer.hikari.pool.ProxyLeakTask     : Connection leak detection triggered for com.mysql.cj.jdbc.ConnectionImpl@1faa77ce on thread http-nio-8081-exec-8, stack trace follows
+
+java.lang.Exception: Apparent connection leak detected
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:128) ~[HikariCP-5.0.1.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:46) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:113) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:143) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getConnectionForTransactionManagement(LogicalConnectionManagedImpl.java:273) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:281) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:232) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:83) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:176) ~[spring-orm-6.1.6.jar:6.1.6]
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:420) ~[spring-orm-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:531) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:617) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:386) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720) ~[spring-aop-6.1.6.jar:6.1.6]
+	at com.spcms.services.UserService$$SpringCGLIB$$1.getUserByUsername(<generated>) ~[classes/:na]
+	at com.spcms.config.GlobalModelAttributes.unacknowledgedAlerts(GlobalModelAttributes.java:29) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.annotation.ModelFactory.invokeModelAttributeMethods(ModelFactory.java:143) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.annotation.ModelFactory.initModel(ModelFactory.java:112) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:910) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230) ~[spring-security-config-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-03-31T16:50:44.093+02:00 DEBUG 13288 --- [io-8081-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:50:44.101+02:00 DEBUG 13288 --- [io-8081-exec-10] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+================== ERROR OCCURRED ==================
+URL: http://localhost:8081/spcms/alerts/stream
+Exception Type: org.springframework.web.context.request.async.AsyncRequestTimeoutException
+Message: null
+Full Stack Trace:
+org.springframework.web.context.request.async.AsyncRequestTimeoutException
+	at org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor.handleTimeout(TimeoutDeferredResultProcessingInterceptor.java:42)
+	at org.springframework.web.context.request.async.DeferredResultInterceptorChain.triggerAfterTimeout(DeferredResultInterceptorChain.java:81)
+	at org.springframework.web.context.request.async.WebAsyncManager.lambda$startDeferredResultProcessing$5(WebAsyncManager.java:439)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.springframework.web.context.request.async.StandardServletAsyncWebRequest.onTimeout(StandardServletAsyncWebRequest.java:184)
+	at org.apache.catalina.core.AsyncListenerWrapper.fireOnTimeout(AsyncListenerWrapper.java:44)
+	at org.apache.catalina.core.AsyncContextImpl.timeout(AsyncContextImpl.java:136)
+	at org.apache.catalina.connector.CoyoteAdapter.asyncDispatch(CoyoteAdapter.java:135)
+	at org.apache.coyote.AbstractProcessor.dispatch(AbstractProcessor.java:243)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:57)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+===================================================
+2026-03-31T16:50:44.122+02:00  INFO 13288 --- [io-8081-exec-10] com.zaxxer.hikari.pool.ProxyLeakTask     : Previously reported leaked connection com.mysql.cj.jdbc.ConnectionImpl@67f798d0 on thread http-nio-8081-exec-4 was returned to the pool (unleaked)
+2026-03-31T16:54:19.093+02:00 DEBUG 13288 --- [nio-8081-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:54:19.102+02:00 DEBUG 13288 --- [nio-8081-exec-1] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+================== ERROR OCCURRED ==================
+URL: http://localhost:8081/spcms/alerts/stream
+Exception Type: org.springframework.web.context.request.async.AsyncRequestTimeoutException
+Message: null
+Full Stack Trace:
+org.springframework.web.context.request.async.AsyncRequestTimeoutException
+	at org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor.handleTimeout(TimeoutDeferredResultProcessingInterceptor.java:42)
+	at org.springframework.web.context.request.async.DeferredResultInterceptorChain.triggerAfterTimeout(DeferredResultInterceptorChain.java:81)
+	at org.springframework.web.context.request.async.WebAsyncManager.lambda$startDeferredResultProcessing$5(WebAsyncManager.java:439)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.springframework.web.context.request.async.StandardServletAsyncWebRequest.onTimeout(StandardServletAsyncWebRequest.java:184)
+	at org.apache.catalina.core.AsyncListenerWrapper.fireOnTimeout(AsyncListenerWrapper.java:44)
+	at org.apache.catalina.core.AsyncContextImpl.timeout(AsyncContextImpl.java:136)
+	at org.apache.catalina.connector.CoyoteAdapter.asyncDispatch(CoyoteAdapter.java:135)
+	at org.apache.coyote.AbstractProcessor.dispatch(AbstractProcessor.java:243)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:57)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+===================================================
+2026-03-31T16:54:19.112+02:00  INFO 13288 --- [nio-8081-exec-1] com.zaxxer.hikari.pool.ProxyLeakTask     : Previously reported leaked connection com.mysql.cj.jdbc.ConnectionImpl@3755d15b on thread http-nio-8081-exec-2 was returned to the pool (unleaked)
+2026-03-31T16:54:48.092+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:54:48.092+02:00 DEBUG 13288 --- [nio-8081-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:54:48.109+02:00 DEBUG 13288 --- [nio-8081-exec-2] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:54:48.109+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:54:48.124+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        a1_0.alert_id,
+        a1_0.acknowledged_at,
+        a1_0.acknowledged_by_user_id,
+        a1_0.actual_value,
+        a1_0.alert_type,
+        a1_0.created_at,
+        a1_0.equipment_id,
+        a1_0.equipment_type,
+        a1_0.is_acknowledged,
+        a1_0.is_sent,
+        a1_0.message,
+        a1_0.threshold_value,
+        a1_0.updated_at 
+    from
+        alerts a1_0 
+    where
+        a1_0.alert_id>? 
+    order by
+        a1_0.alert_id desc 
+    limit
+        ?
+Hibernate: 
+    select
+        a1_0.alert_id,
+        a1_0.acknowledged_at,
+        a1_0.acknowledged_by_user_id,
+        a1_0.actual_value,
+        a1_0.alert_type,
+        a1_0.created_at,
+        a1_0.equipment_id,
+        a1_0.equipment_type,
+        a1_0.is_acknowledged,
+        a1_0.is_sent,
+        a1_0.message,
+        a1_0.threshold_value,
+        a1_0.updated_at 
+    from
+        alerts a1_0 
+    where
+        a1_0.alert_id>? 
+    order by
+        a1_0.alert_id desc 
+    limit
+        ?
+2026-03-31T16:54:48.127+02:00 DEBUG 13288 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T16:55:09.084+02:00 DEBUG 13288 --- [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:55:09.096+02:00 DEBUG 13288 --- [nio-8081-exec-4] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+================== ERROR OCCURRED ==================
+URL: http://localhost:8081/spcms/alerts/stream
+Exception Type: org.springframework.web.context.request.async.AsyncRequestTimeoutException
+Message: null
+Full Stack Trace:
+org.springframework.web.context.request.async.AsyncRequestTimeoutException
+	at org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor.handleTimeout(TimeoutDeferredResultProcessingInterceptor.java:42)
+	at org.springframework.web.context.request.async.DeferredResultInterceptorChain.triggerAfterTimeout(DeferredResultInterceptorChain.java:81)
+	at org.springframework.web.context.request.async.WebAsyncManager.lambda$startDeferredResultProcessing$5(WebAsyncManager.java:439)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.springframework.web.context.request.async.StandardServletAsyncWebRequest.onTimeout(StandardServletAsyncWebRequest.java:184)
+	at org.apache.catalina.core.AsyncListenerWrapper.fireOnTimeout(AsyncListenerWrapper.java:44)
+	at org.apache.catalina.core.AsyncContextImpl.timeout(AsyncContextImpl.java:136)
+	at org.apache.catalina.connector.CoyoteAdapter.asyncDispatch(CoyoteAdapter.java:135)
+	at org.apache.coyote.AbstractProcessor.dispatch(AbstractProcessor.java:243)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:57)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+===================================================
+2026-03-31T16:55:09.106+02:00  INFO 13288 --- [nio-8081-exec-4] com.zaxxer.hikari.pool.ProxyLeakTask     : Previously reported leaked connection com.mysql.cj.jdbc.ConnectionImpl@1faa77ce on thread http-nio-8081-exec-8 was returned to the pool (unleaked)
+2026-03-31T16:55:18.095+02:00  WARN 13288 --- [l-1 housekeeper] com.zaxxer.hikari.pool.ProxyLeakTask     : Connection leak detection triggered for com.mysql.cj.jdbc.ConnectionImpl@1f878045 on thread http-nio-8081-exec-2, stack trace follows
+
+java.lang.Exception: Apparent connection leak detected
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:128) ~[HikariCP-5.0.1.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:46) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:113) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:143) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getConnectionForTransactionManagement(LogicalConnectionManagedImpl.java:273) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:281) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:232) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:83) ~[hibernate-core-6.4.4.Final.jar:6.4.4.Final]
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:176) ~[spring-orm-6.1.6.jar:6.1.6]
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:420) ~[spring-orm-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:531) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:617) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:386) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768) ~[spring-aop-6.1.6.jar:6.1.6]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720) ~[spring-aop-6.1.6.jar:6.1.6]
+	at com.spcms.services.UserService$$SpringCGLIB$$1.getUserByUsername(<generated>) ~[classes/:na]
+	at com.spcms.config.GlobalModelAttributes.unacknowledgedAlerts(GlobalModelAttributes.java:29) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.annotation.ModelFactory.invokeModelAttributeMethods(ModelFactory.java:143) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.annotation.ModelFactory.initModel(ModelFactory.java:112) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:910) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230) ~[spring-security-config-6.2.4.jar:6.2.4]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-03-31T16:59:48.211+02:00 DEBUG 13288 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:59:48.218+02:00 DEBUG 13288 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+================== ERROR OCCURRED ==================
+URL: http://localhost:8081/spcms/alerts/stream
+Exception Type: org.springframework.web.context.request.async.AsyncRequestTimeoutException
+Message: null
+Full Stack Trace:
+org.springframework.web.context.request.async.AsyncRequestTimeoutException
+	at org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor.handleTimeout(TimeoutDeferredResultProcessingInterceptor.java:42)
+	at org.springframework.web.context.request.async.DeferredResultInterceptorChain.triggerAfterTimeout(DeferredResultInterceptorChain.java:81)
+	at org.springframework.web.context.request.async.WebAsyncManager.lambda$startDeferredResultProcessing$5(WebAsyncManager.java:439)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.springframework.web.context.request.async.StandardServletAsyncWebRequest.onTimeout(StandardServletAsyncWebRequest.java:184)
+	at org.apache.catalina.core.AsyncListenerWrapper.fireOnTimeout(AsyncListenerWrapper.java:44)
+	at org.apache.catalina.core.AsyncContextImpl.timeout(AsyncContextImpl.java:136)
+	at org.apache.catalina.connector.CoyoteAdapter.asyncDispatch(CoyoteAdapter.java:135)
+	at org.apache.coyote.AbstractProcessor.dispatch(AbstractProcessor.java:243)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:57)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+===================================================
+2026-03-31T16:59:48.229+02:00  INFO 13288 --- [nio-8081-exec-6] com.zaxxer.hikari.pool.ProxyLeakTask     : Previously reported leaked connection com.mysql.cj.jdbc.ConnectionImpl@1f878045 on thread http-nio-8081-exec-2 was returned to the pool (unleaked)
+2026-03-31T17:00:00.082+02:00 DEBUG 13288 --- [   scheduling-1] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.role=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.role=?
+2026-03-31T17:00:00.253+02:00 DEBUG 13288 --- [   scheduling-1] org.hibernate.SQL                        : 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date=?
+Hibernate: 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date=?
+2026-03-31T17:00:01.206+02:00 DEBUG 13288 --- [   scheduling-1] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T17:00:01.233+02:00 DEBUG 13288 --- [   scheduling-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        report_logs
+        (error_message, file_format, file_path, filters_used, generated_at, generated_by, report_type, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        report_logs
+        (error_message, file_format, file_path, filters_used, generated_at, generated_by, report_type, status) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
