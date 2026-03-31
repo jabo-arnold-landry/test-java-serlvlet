@@ -74,11 +74,6 @@ public class MonitoringLog {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "reading_time")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime readingTime;
-
-
     @Column(name = "input_voltage", precision = 10, scale = 2)
     private BigDecimal inputVoltage;
 
@@ -90,9 +85,6 @@ public class MonitoringLog {
 
     @Column(name = "runtime_remaining")
     private Integer runtimeRemaining;
-
-    @Column(columnDefinition = "TEXT")
-    private String notes;
 
     public enum EquipmentType {
         UPS, COOLING
