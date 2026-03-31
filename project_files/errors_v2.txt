@@ -1,0 +1,18 @@
+﻿JNDI Lookup failed. Make sure context.xml is configured properly.
+javax.naming.NoInitialContextException: Need to specify class name in environment or system property, or in an application resource file: java.naming.factory.initial
+2026-03-31T20:48:48.886+02:00  WARN 27112 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'upsReportController': Unsatisfied dependency expressed through field 'upsReportService': Error creating bean with name 'upsReportService': Lookup method resolution failed
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-03-31T20:48:48.960+02:00 ERROR 27112 --- [           main] o.s.boot.SpringApplication               : Application run failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'upsReportController': Unsatisfied dependency expressed through field 'upsReportService': Error creating bean with name 'upsReportService': Lookup method resolution failed
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'upsReportService': Lookup method resolution failed
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.spcms.services.UpsReportService] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@70dea4e]
+Caused by: java.lang.NoClassDefFoundError: com/spcms/models/UpsReport$ReportPeriod
+Caused by: java.lang.ClassNotFoundException: com.spcms.models.UpsReport$ReportPeriod
+[INFO] BUILD FAILURE
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.2.5:run (default-cli) on project spcms: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

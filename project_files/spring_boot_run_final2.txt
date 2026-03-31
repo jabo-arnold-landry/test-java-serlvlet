@@ -1,0 +1,1095 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.spcms:spcms >---------------------------
+[INFO] Building SmartPower & Cooling Management System 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.2.5:run (default-cli) > test-compile @ spcms >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ spcms ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ spcms ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ spcms ---
+[INFO] skip non existing resourceDirectory C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ spcms ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 3 source files with javac [debug release 17] to target\test-classes
+[INFO] 
+[INFO] <<< spring-boot:3.2.5:run (default-cli) < test-compile @ spcms <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.2.5:run (default-cli) @ spcms ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2026-03-31T20:45:37.453+02:00  INFO 28300 --- [           main] com.spcms.SpcmsApplication               : Starting SpcmsApplication using Java 21.0.8 with PID 28300 (C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files\target\classes started by user in C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files)
+2026-03-31T20:45:37.458+02:00 DEBUG 28300 --- [           main] com.spcms.SpcmsApplication               : Running with Spring Boot v3.2.5, Spring v6.1.6
+2026-03-31T20:45:37.459+02:00  INFO 28300 --- [           main] com.spcms.SpcmsApplication               : No active profile set, falling back to 1 default profile: "default"
+2026-03-31T20:45:39.412+02:00  INFO 28300 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-31T20:45:39.739+02:00  INFO 28300 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 310 ms. Found 24 JPA repository interfaces.
+2026-03-31T20:45:40.730+02:00  INFO 28300 --- [           main] c.s.config.EmbeddedTomcatDocRootConfig   : Using embedded Tomcat document root: C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files\src\main\webapp
+2026-03-31T20:45:41.035+02:00  INFO 28300 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-03-31T20:45:41.066+02:00  INFO 28300 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-31T20:45:41.066+02:00  INFO 28300 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+2026-03-31T20:45:41.735+02:00  INFO 28300 --- [           main] org.apache.jasper.servlet.TldScanner     : At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2026-03-31T20:45:41.759+02:00  INFO 28300 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/spcms]  : Initializing Spring embedded WebApplicationContext
+2026-03-31T20:45:41.761+02:00  INFO 28300 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4199 ms
+2026-03-31T20:45:42.092+02:00  INFO 28300 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-31T20:45:42.222+02:00  INFO 28300 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-03-31T20:45:42.308+02:00  INFO 28300 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-31T20:45:42.773+02:00  INFO 28300 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-31T20:45:42.826+02:00  INFO 28300 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-31T20:45:43.142+02:00  INFO 28300 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@175f859e
+2026-03-31T20:45:43.143+02:00  INFO 28300 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-31T20:45:43.195+02:00  WARN 28300 --- [           main] org.hibernate.dialect.Dialect            : HHH000511: The 5.5.0 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2026-03-31T20:45:43.202+02:00  WARN 28300 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-31T20:45:46.474+02:00  INFO 28300 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-31T20:45:47.162+02:00  INFO 28300 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-31T20:45:47.748+02:00  INFO 28300 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+JNDI Lookup failed. Make sure context.xml is configured properly.
+javax.naming.NoInitialContextException: Need to specify class name in environment or system property, or in an application resource file: java.naming.factory.initial
+	at java.naming/javax.naming.spi.NamingManager.getInitialContext(NamingManager.java:492)
+	at java.naming/javax.naming.InitialContext.getDefaultInitCtx(InitialContext.java:305)
+	at java.naming/javax.naming.InitialContext.getURLOrDefaultInitCtx(InitialContext.java:342)
+	at java.naming/javax.naming.InitialContext.lookup(InitialContext.java:409)
+	at com.spcms.util.DBConnection.<clinit>(DBConnection.java:16)
+	at com.spcms.config.DBConnectionDataSourceBridge.<init>(DBConnectionDataSourceBridge.java:16)
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:208)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:111)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:315)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:306)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1355)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1192)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:326)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:962)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:334)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343)
+	at com.spcms.SpcmsApplication.main(SpcmsApplication.java:50)
+2026-03-31T20:45:50.564+02:00  WARN 28300 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-31T20:45:51.187+02:00  INFO 28300 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@133b3a95, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@33f24b0, org.springframework.security.web.context.SecurityContextHolderFilter@24614fbb, org.springframework.security.web.header.HeaderWriterFilter@4fd5db1d, org.springframework.web.filter.CorsFilter@3bb8d847, org.springframework.security.web.authentication.logout.LogoutFilter@725de69c, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@7c808f75, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7bf4fa70, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2d1c376b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@17f141eb, org.springframework.security.web.access.ExceptionTranslationFilter@4ff95435, org.springframework.security.web.access.intercept.AuthorizationFilter@7e74ee89]
+2026-03-31T20:45:51.590+02:00  INFO 28300 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/spcms'
+2026-03-31T20:45:51.611+02:00  INFO 28300 --- [           main] com.spcms.SpcmsApplication               : Started SpcmsApplication in 14.87 seconds (process running for 15.574)
+2026-03-31T20:45:51.797+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.role=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.role=?
+Initiating cleanup for 1 deprecated VIEWER accounts...
+2026-03-31T20:45:51.872+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        v1_0.visitor_id,
+        v1_0.arrival_time,
+        v1_0.company,
+        v1_0.created_at,
+        v1_0.department_to_visit,
+        v1_0.equipment_carried,
+        v1_0.expected_duration_hours,
+        v1_0.full_name,
+        v1_0.host_employee_id,
+        v1_0.id_copy_path,
+        v1_0.national_id_passport,
+        v1_0.pass_number,
+        v1_0.phone,
+        v1_0.photo_path,
+        v1_0.purpose_of_visit,
+        v1_0.requested_by,
+        v1_0.visit_date,
+        v1_0.visitor_email 
+    from
+        visitors v1_0 
+    left join
+        users rb1_0 
+            on rb1_0.user_id=v1_0.requested_by 
+    where
+        rb1_0.user_id=?
+Hibernate: 
+    select
+        v1_0.visitor_id,
+        v1_0.arrival_time,
+        v1_0.company,
+        v1_0.created_at,
+        v1_0.department_to_visit,
+        v1_0.equipment_carried,
+        v1_0.expected_duration_hours,
+        v1_0.full_name,
+        v1_0.host_employee_id,
+        v1_0.id_copy_path,
+        v1_0.national_id_passport,
+        v1_0.pass_number,
+        v1_0.phone,
+        v1_0.photo_path,
+        v1_0.purpose_of_visit,
+        v1_0.requested_by,
+        v1_0.visit_date,
+        v1_0.visitor_email 
+    from
+        visitors v1_0 
+    left join
+        users rb1_0 
+            on rb1_0.user_id=v1_0.requested_by 
+    where
+        rb1_0.user_id=?
+2026-03-31T20:45:51.905+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T20:45:51.964+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    delete 
+    from
+        users 
+    where
+        user_id=?
+Hibernate: 
+    delete 
+    from
+        users 
+    where
+        user_id=?
+2026-03-31T20:45:52.029+02:00  WARN 28300 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1451, SQLState: 23000
+2026-03-31T20:45:52.030+02:00 ERROR 28300 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Cannot delete or update a parent row: a foreign key constraint fails (`spcms_db`.`activity_logs`, CONSTRAINT `FK5bm1lt4f4eevt8lv2517soakd` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`))
+CRITICAL: Failed to cleanup deprecated viewers: could not execute statement [Cannot delete or update a parent row: a foreign key constraint fails (`spcms_db`.`activity_logs`, CONSTRAINT `FK5bm1lt4f4eevt8lv2517soakd` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`))] [delete from users where user_id=?]; SQL [delete from users where user_id=?]; constraint [null]
+2026-03-31T20:45:52.049+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T20:45:52.056+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T20:45:52.061+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T20:45:52.076+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        cooling_unit cu1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        cooling_unit cu1_0
+2026-03-31T20:45:52.088+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        cu1_0.cooling_id,
+        cu1_0.airflow_status,
+        cu1_0.asset_tag,
+        cu1_0.brand,
+        cu1_0.compressor_status,
+        cu1_0.cooling_capacity_kw,
+        cu1_0.cooling_mode,
+        cu1_0.created_at,
+        cu1_0.current_amps,
+        cu1_0.drain_status,
+        cu1_0.fan_speed,
+        cu1_0.filter_status,
+        cu1_0.humidity_percent,
+        cu1_0.input_voltage,
+        cu1_0.installation_date,
+        cu1_0.location_room,
+        cu1_0.location_zone,
+        cu1_0.model,
+        cu1_0.power_consumption,
+        cu1_0.refrigerant_pressure,
+        cu1_0.refrigerant_type,
+        cu1_0.return_air_temp,
+        cu1_0.room_temperature,
+        cu1_0.serial_number,
+        cu1_0.set_humidity,
+        cu1_0.set_temperature,
+        cu1_0.status,
+        cu1_0.supply_air_temp,
+        cu1_0.unit_name,
+        cu1_0.updated_at 
+    from
+        cooling_unit cu1_0
+Hibernate: 
+    select
+        cu1_0.cooling_id,
+        cu1_0.airflow_status,
+        cu1_0.asset_tag,
+        cu1_0.brand,
+        cu1_0.compressor_status,
+        cu1_0.cooling_capacity_kw,
+        cu1_0.cooling_mode,
+        cu1_0.created_at,
+        cu1_0.current_amps,
+        cu1_0.drain_status,
+        cu1_0.fan_speed,
+        cu1_0.filter_status,
+        cu1_0.humidity_percent,
+        cu1_0.input_voltage,
+        cu1_0.installation_date,
+        cu1_0.location_room,
+        cu1_0.location_zone,
+        cu1_0.model,
+        cu1_0.power_consumption,
+        cu1_0.refrigerant_pressure,
+        cu1_0.refrigerant_type,
+        cu1_0.return_air_temp,
+        cu1_0.room_temperature,
+        cu1_0.serial_number,
+        cu1_0.set_humidity,
+        cu1_0.set_temperature,
+        cu1_0.status,
+        cu1_0.supply_air_temp,
+        cu1_0.unit_name,
+        cu1_0.updated_at 
+    from
+        cooling_unit cu1_0
+2026-03-31T20:45:52.138+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T20:45:52.145+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T20:45:52.150+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T20:45:52.157+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.162+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.167+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.171+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.176+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.180+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.190+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.198+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.201+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.207+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.216+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.223+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.227+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.231+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.236+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.241+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.245+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.250+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.254+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.258+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.262+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.267+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.271+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.275+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.280+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.284+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.288+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.295+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.298+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.302+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T20:45:52.309+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        incidents i1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        incidents i1_0
+2026-03-31T20:45:52.319+02:00 DEBUG 28300 --- [           main] org.hibernate.SQL                        : 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date=?
+Hibernate: 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date=?
+2026-03-31T20:45:52.328+02:00  INFO 28300 --- [           main] c.spcms.services.DailyReportScheduler    : Startup auto-generation check completed for 2026-03-30
