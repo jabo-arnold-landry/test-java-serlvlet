@@ -54,11 +54,13 @@
         <sec:authorize access="hasAnyRole('VIEWER', 'TECHNICIAN', 'MANAGER', 'ADMIN')">
             <div class="nav-section-label">Reports</div>
             <a href="${pageContext.request.contextPath}/reports" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Daily Report</a>
+            <a href="${pageContext.request.contextPath}/reports/sla-compliance" class="nav-link"><i class="bi bi-shield-check text-success"></i> SLA Compliance</a>
             <a href="${pageContext.request.contextPath}/incidents/report" class="nav-link"><i class="bi bi-shield-exclamation text-danger"></i> Incident Report</a>
             <a href="${pageContext.request.contextPath}/reports/equipment-health" class="nav-link"><i class="bi bi-hdd-rack"></i> Equipment Health</a>
             <a href="${pageContext.request.contextPath}/reports/cost-of-maintenance" class="nav-link"><i class="bi bi-calculator"></i> Maintenance Costs</a>
             <a href="${pageContext.request.contextPath}/reports/downtime-analysis" class="nav-link"><i class="bi bi-graph-up"></i> Downtime Analysis</a>
             <a href="${pageContext.request.contextPath}/reports/monthly-quarterly" class="nav-link"><i class="bi bi-calendar-month"></i> Monthly/Quarterly</a>
+            <a href="${pageContext.request.contextPath}/reports/project" class="nav-link"><i class="bi bi-file-earmark-medical"></i> Technical Ops Report</a>
             <a href="${pageContext.request.contextPath}/reports/maintenance-history" class="nav-link"><i class="bi bi-clock-history"></i> Maintenance History</a>
             <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
                 <a href="${pageContext.request.contextPath}/decisions/report" class="nav-link"><i class="bi bi-clipboard-data"></i> Decision Report</a>

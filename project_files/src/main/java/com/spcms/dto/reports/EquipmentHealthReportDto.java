@@ -1,14 +1,11 @@
 package com.spcms.dto.reports;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class EquipmentHealthReportDto {
     private String equipmentType;
     private Long equipmentId;

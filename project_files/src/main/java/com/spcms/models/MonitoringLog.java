@@ -72,9 +72,6 @@ public class MonitoringLog {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime readingTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recorded_by_user_id")
-    private User recordedBy;
 
     @Column(name = "input_voltage", precision = 10, scale = 2)
     private BigDecimal inputVoltage;
@@ -239,13 +236,7 @@ public class MonitoringLog {
         this.readingTime = readingTime;
     }
 
-    public User getRecordedBy() {
-        return recordedBy;
-    }
 
-    public void setRecordedBy(User recordedBy) {
-        this.recordedBy = recordedBy;
-    }
 
     public BigDecimal getInputVoltage() {
         return inputVoltage;

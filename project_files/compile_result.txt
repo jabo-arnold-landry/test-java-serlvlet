@@ -1,0 +1,611 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.spcms:spcms >---------------------------
+[INFO] Building SmartPower & Cooling Management System 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ spcms ---
+[INFO] Deleting C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ spcms ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ spcms ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 124 source files with javac [debug release 17] to target\classes
+[INFO] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ReportService.java: Some input files use or override a deprecated API.
+[INFO] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ReportService.java: Recompile with -Xlint:deprecation for details.
+[INFO] Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportExportService.java:[4,29] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ReportLogService.java:[3,29] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[43,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[43,30] cannot find symbol
+  symbol:   class EquipmentHealthReportDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[57,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[57,30] cannot find symbol
+  symbol:   class MaintenanceHistoryReportDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[70,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[70,30] cannot find symbol
+  symbol:   class IncidentDowntimeReportDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[82,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[82,30] cannot find symbol
+  symbol:   class ShiftTechnicianReportDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[94,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[94,30] cannot find symbol
+  symbol:   class DailyConsolidatedReportDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[104,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[104,30] cannot find symbol
+  symbol:   class ComplianceReportDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[190,13] cannot find symbol
+  symbol:   class ReportFilterDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ReportLogService.java:[55,36] cannot find symbol
+  symbol:   class ReportLogFilterDto
+  location: class com.spcms.services.ReportLogService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportExportService.java:[43,33] cannot find symbol
+  symbol:   class ReportFilterDto
+  location: class com.spcms.services.ComplianceReportExportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[26,81] cannot find symbol
+  symbol:   class ReportFilterDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[26,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[26,30] cannot find symbol
+  symbol:   class EquipmentHealthReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[131,87] cannot find symbol
+  symbol:   class ReportFilterDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[131,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[131,30] cannot find symbol
+  symbol:   class MaintenanceHistoryReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[211,83] cannot find symbol
+  symbol:   class ReportFilterDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[211,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[211,30] cannot find symbol
+  symbol:   class IncidentDowntimeReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[268,95] cannot find symbol
+  symbol:   class ReportFilterDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[268,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[268,30] cannot find symbol
+  symbol:   class ShiftTechnicianReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[324,85] cannot find symbol
+  symbol:   class ReportFilterDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[324,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[324,30] cannot find symbol
+  symbol:   class DailyConsolidatedReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[384,71] cannot find symbol
+  symbol:   class ReportFilterDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[384,12] cannot find symbol
+  symbol:   class ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[384,30] cannot find symbol
+  symbol:   class ComplianceReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[489,46] cannot find symbol
+  symbol:   class ReportFilterDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/models/MonitoringLog.java:[77,18] variable recordedBy is already defined in class com.spcms.models.MonitoringLog
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/models/MonitoringLog.java:[242,17] method getRecordedBy() is already defined in class com.spcms.models.MonitoringLog
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/models/MonitoringLog.java:[246,17] method setRecordedBy(com.spcms.models.User) is already defined in class com.spcms.models.MonitoringLog
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[3,1] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[3,1] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportPageController.java:[3,29] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/DailyReportEmailScheduler.java:[3,29] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[62,17] cannot find symbol
+  symbol:   method setAssignedTo(com.spcms.models.User)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[63,17] cannot find symbol
+  symbol:   method setStatus(com.spcms.models.Incident.IncidentStatus)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[72,21] cannot find symbol
+  symbol:   method setStatus(com.spcms.models.Incident.IncidentStatus)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[74,21] cannot find symbol
+  symbol:   method setStatus(com.spcms.models.Incident.IncidentStatus)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[77,17] cannot find symbol
+  symbol:   method setRootCause(java.lang.String)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[78,17] cannot find symbol
+  symbol:   method setActionTaken(java.lang.String)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[81,21] cannot find symbol
+  symbol:   method setDowntimeStart(java.time.LocalDateTime)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[84,21] cannot find symbol
+  symbol:   method getStatus()
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[84,81] cannot find symbol
+  symbol:   method getStatus()
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[85,25] cannot find symbol
+  symbol:   method getDowntimeEnd()
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[86,25] cannot find symbol
+  symbol:   method setDowntimeEnd(java.time.LocalDateTime)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[93,21] cannot find symbol
+  symbol:   method setResolvedBy(com.spcms.models.User)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[97,21] cannot find symbol
+  symbol:   method getDowntimeStart()
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[97,60] cannot find symbol
+  symbol:   method getDowntimeEnd()
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[98,63] cannot find symbol
+  symbol:   method getDowntimeStart()
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[98,92] cannot find symbol
+  symbol:   method getDowntimeEnd()
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[99,21] cannot find symbol
+  symbol:   method setDowntimeMinutes(int)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[108,17] cannot find symbol
+  symbol:   method setStatus(com.spcms.models.Incident.IncidentStatus)
+  location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/MaintenanceService.java:[173,16] cannot find symbol
+  symbol:   method setCoolingId(java.lang.Long)
+  location: variable cooling of type com.spcms.models.CoolingUnit
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/AlertService.java:[238,42] invalid method reference
+  cannot find symbol
+    symbol:   method getAcknowledgedAt()
+    location: class com.spcms.models.AlertAcknowledgment
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/AlertService.java:[240,18] invalid method reference
+  cannot find symbol
+    symbol:   method getAlert()
+    location: class com.spcms.models.AlertAcknowledgment
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/AlertService.java:[287,22] invalid method reference
+  cannot find symbol
+    symbol:   method getAcknowledgedAt()
+    location: class com.spcms.models.AlertAcknowledgment
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/AlertService.java:[307,25] invalid method reference
+  cannot find symbol
+    symbol:   method getAcknowledgedAt()
+    location: class com.spcms.models.AlertAcknowledgment
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/AlertService.java:[427,69] cannot find symbol
+  symbol:   method builder()
+  location: class com.spcms.models.AlertAcknowledgment
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/UserService.java:[140,38] cannot find symbol
+  symbol:   method builder()
+  location: class com.spcms.models.ActivityLog
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[123,9] cannot find symbol
+  symbol:   class ReportLogFilterDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[123,37] cannot find symbol
+  symbol:   variable ReportLogFilterDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[156,9] cannot find symbol
+  symbol:   class ReportFilterDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[199,16] cannot find symbol
+  symbol:   variable ReportFilterDto
+  location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[96,14] cannot find symbol
+  symbol:   class EquipmentHealthReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[97,17] cannot find symbol
+  symbol:   variable EquipmentHealthReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[122,35] cannot find symbol
+  symbol:   class EquipmentHealthReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[122,16] cannot find symbol
+  symbol:   variable ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[180,14] cannot find symbol
+  symbol:   class MaintenanceHistoryReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[181,17] cannot find symbol
+  symbol:   variable MaintenanceHistoryReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[202,35] cannot find symbol
+  symbol:   class MaintenanceHistoryReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[202,16] cannot find symbol
+  symbol:   variable ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[237,14] cannot find symbol
+  symbol:   class IncidentDowntimeReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[238,17] cannot find symbol
+  symbol:   variable IncidentDowntimeReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[255,63] cannot find symbol
+  symbol:   variable IncidentDowntimeReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[259,35] cannot find symbol
+  symbol:   class IncidentDowntimeReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[259,16] cannot find symbol
+  symbol:   variable ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[295,14] cannot find symbol
+  symbol:   class ShiftTechnicianReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[296,17] cannot find symbol
+  symbol:   variable ShiftTechnicianReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[312,64] cannot find symbol
+  symbol:   variable ShiftTechnicianReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[313,63] cannot find symbol
+  symbol:   variable ShiftTechnicianReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[315,35] cannot find symbol
+  symbol:   class ShiftTechnicianReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[315,16] cannot find symbol
+  symbol:   variable ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[355,14] cannot find symbol
+  symbol:   class DailyConsolidatedReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[356,17] cannot find symbol
+  symbol:   variable DailyConsolidatedReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[372,63] cannot find symbol
+  symbol:   variable DailyConsolidatedReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[373,50] cannot find symbol
+  symbol:   variable DailyConsolidatedReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[375,35] cannot find symbol
+  symbol:   class DailyConsolidatedReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[375,16] cannot find symbol
+  symbol:   variable ReportResponseDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[461,14] cannot find symbol
+  symbol:   class ComplianceReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[462,17] cannot find symbol
+  symbol:   variable ComplianceReportDto
+  location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[480,35] cannot find symbol
+  symbol:   class ComplianceReportDto
+  location: class com.spcms.services.ComplianceReportService
+[INFO] 100 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  12.522 s
+[INFO] Finished at: 2026-03-31T14:59:05+02:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile (default-compile) on project spcms: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportExportService.java:[4,29] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ReportLogService.java:[3,29] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[43,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[43,30] cannot find symbol
+[ERROR]   symbol:   class EquipmentHealthReportDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[57,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[57,30] cannot find symbol
+[ERROR]   symbol:   class MaintenanceHistoryReportDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[70,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[70,30] cannot find symbol
+[ERROR]   symbol:   class IncidentDowntimeReportDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[82,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[82,30] cannot find symbol
+[ERROR]   symbol:   class ShiftTechnicianReportDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[94,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[94,30] cannot find symbol
+[ERROR]   symbol:   class DailyConsolidatedReportDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[104,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[104,30] cannot find symbol
+[ERROR]   symbol:   class ComplianceReportDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[190,13] cannot find symbol
+[ERROR]   symbol:   class ReportFilterDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ReportLogService.java:[55,36] cannot find symbol
+[ERROR]   symbol:   class ReportLogFilterDto
+[ERROR]   location: class com.spcms.services.ReportLogService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportExportService.java:[43,33] cannot find symbol
+[ERROR]   symbol:   class ReportFilterDto
+[ERROR]   location: class com.spcms.services.ComplianceReportExportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[26,81] cannot find symbol
+[ERROR]   symbol:   class ReportFilterDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[26,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[26,30] cannot find symbol
+[ERROR]   symbol:   class EquipmentHealthReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[131,87] cannot find symbol
+[ERROR]   symbol:   class ReportFilterDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[131,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[131,30] cannot find symbol
+[ERROR]   symbol:   class MaintenanceHistoryReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[211,83] cannot find symbol
+[ERROR]   symbol:   class ReportFilterDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[211,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[211,30] cannot find symbol
+[ERROR]   symbol:   class IncidentDowntimeReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[268,95] cannot find symbol
+[ERROR]   symbol:   class ReportFilterDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[268,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[268,30] cannot find symbol
+[ERROR]   symbol:   class ShiftTechnicianReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[324,85] cannot find symbol
+[ERROR]   symbol:   class ReportFilterDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[324,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[324,30] cannot find symbol
+[ERROR]   symbol:   class DailyConsolidatedReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[384,71] cannot find symbol
+[ERROR]   symbol:   class ReportFilterDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[384,12] cannot find symbol
+[ERROR]   symbol:   class ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[384,30] cannot find symbol
+[ERROR]   symbol:   class ComplianceReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[489,46] cannot find symbol
+[ERROR]   symbol:   class ReportFilterDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/models/MonitoringLog.java:[77,18] variable recordedBy is already defined in class com.spcms.models.MonitoringLog
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/models/MonitoringLog.java:[242,17] method getRecordedBy() is already defined in class com.spcms.models.MonitoringLog
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/models/MonitoringLog.java:[246,17] method setRecordedBy(com.spcms.models.User) is already defined in class com.spcms.models.MonitoringLog
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[3,1] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[3,1] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportPageController.java:[3,29] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/DailyReportEmailScheduler.java:[3,29] package com.spcms.dto.reports does not exist
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[62,17] cannot find symbol
+[ERROR]   symbol:   method setAssignedTo(com.spcms.models.User)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[63,17] cannot find symbol
+[ERROR]   symbol:   method setStatus(com.spcms.models.Incident.IncidentStatus)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[72,21] cannot find symbol
+[ERROR]   symbol:   method setStatus(com.spcms.models.Incident.IncidentStatus)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[74,21] cannot find symbol
+[ERROR]   symbol:   method setStatus(com.spcms.models.Incident.IncidentStatus)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[77,17] cannot find symbol
+[ERROR]   symbol:   method setRootCause(java.lang.String)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[78,17] cannot find symbol
+[ERROR]   symbol:   method setActionTaken(java.lang.String)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[81,21] cannot find symbol
+[ERROR]   symbol:   method setDowntimeStart(java.time.LocalDateTime)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[84,21] cannot find symbol
+[ERROR]   symbol:   method getStatus()
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[84,81] cannot find symbol
+[ERROR]   symbol:   method getStatus()
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[85,25] cannot find symbol
+[ERROR]   symbol:   method getDowntimeEnd()
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[86,25] cannot find symbol
+[ERROR]   symbol:   method setDowntimeEnd(java.time.LocalDateTime)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[93,21] cannot find symbol
+[ERROR]   symbol:   method setResolvedBy(com.spcms.models.User)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[97,21] cannot find symbol
+[ERROR]   symbol:   method getDowntimeStart()
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[97,60] cannot find symbol
+[ERROR]   symbol:   method getDowntimeEnd()
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[98,63] cannot find symbol
+[ERROR]   symbol:   method getDowntimeStart()
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[98,92] cannot find symbol
+[ERROR]   symbol:   method getDowntimeEnd()
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[99,21] cannot find symbol
+[ERROR]   symbol:   method setDowntimeMinutes(int)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/IncidentService.java:[108,17] cannot find symbol
+[ERROR]   symbol:   method setStatus(com.spcms.models.Incident.IncidentStatus)
+[ERROR]   location: variable incident of type com.spcms.models.Incident
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/MaintenanceService.java:[173,16] cannot find symbol
+[ERROR]   symbol:   method setCoolingId(java.lang.Long)
+[ERROR]   location: variable cooling of type com.spcms.models.CoolingUnit
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/AlertService.java:[238,42] invalid method reference
+[ERROR]   cannot find symbol
+[ERROR]     symbol:   method getAcknowledgedAt()
+[ERROR]     location: class com.spcms.models.AlertAcknowledgment
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/AlertService.java:[240,18] invalid method reference
+[ERROR]   cannot find symbol
+[ERROR]     symbol:   method getAlert()
+[ERROR]     location: class com.spcms.models.AlertAcknowledgment
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/AlertService.java:[287,22] invalid method reference
+[ERROR]   cannot find symbol
+[ERROR]     symbol:   method getAcknowledgedAt()
+[ERROR]     location: class com.spcms.models.AlertAcknowledgment
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/AlertService.java:[307,25] invalid method reference
+[ERROR]   cannot find symbol
+[ERROR]     symbol:   method getAcknowledgedAt()
+[ERROR]     location: class com.spcms.models.AlertAcknowledgment
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/AlertService.java:[427,69] cannot find symbol
+[ERROR]   symbol:   method builder()
+[ERROR]   location: class com.spcms.models.AlertAcknowledgment
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/UserService.java:[140,38] cannot find symbol
+[ERROR]   symbol:   method builder()
+[ERROR]   location: class com.spcms.models.ActivityLog
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[123,9] cannot find symbol
+[ERROR]   symbol:   class ReportLogFilterDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[123,37] cannot find symbol
+[ERROR]   symbol:   variable ReportLogFilterDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[156,9] cannot find symbol
+[ERROR]   symbol:   class ReportFilterDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/controllers/ComplianceReportApiController.java:[199,16] cannot find symbol
+[ERROR]   symbol:   variable ReportFilterDto
+[ERROR]   location: class com.spcms.controllers.ComplianceReportApiController
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[96,14] cannot find symbol
+[ERROR]   symbol:   class EquipmentHealthReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[97,17] cannot find symbol
+[ERROR]   symbol:   variable EquipmentHealthReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[122,35] cannot find symbol
+[ERROR]   symbol:   class EquipmentHealthReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[122,16] cannot find symbol
+[ERROR]   symbol:   variable ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[180,14] cannot find symbol
+[ERROR]   symbol:   class MaintenanceHistoryReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[181,17] cannot find symbol
+[ERROR]   symbol:   variable MaintenanceHistoryReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[202,35] cannot find symbol
+[ERROR]   symbol:   class MaintenanceHistoryReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[202,16] cannot find symbol
+[ERROR]   symbol:   variable ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[237,14] cannot find symbol
+[ERROR]   symbol:   class IncidentDowntimeReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[238,17] cannot find symbol
+[ERROR]   symbol:   variable IncidentDowntimeReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[255,63] cannot find symbol
+[ERROR]   symbol:   variable IncidentDowntimeReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[259,35] cannot find symbol
+[ERROR]   symbol:   class IncidentDowntimeReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[259,16] cannot find symbol
+[ERROR]   symbol:   variable ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[295,14] cannot find symbol
+[ERROR]   symbol:   class ShiftTechnicianReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[296,17] cannot find symbol
+[ERROR]   symbol:   variable ShiftTechnicianReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[312,64] cannot find symbol
+[ERROR]   symbol:   variable ShiftTechnicianReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[313,63] cannot find symbol
+[ERROR]   symbol:   variable ShiftTechnicianReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[315,35] cannot find symbol
+[ERROR]   symbol:   class ShiftTechnicianReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[315,16] cannot find symbol
+[ERROR]   symbol:   variable ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[355,14] cannot find symbol
+[ERROR]   symbol:   class DailyConsolidatedReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[356,17] cannot find symbol
+[ERROR]   symbol:   variable DailyConsolidatedReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[372,63] cannot find symbol
+[ERROR]   symbol:   variable DailyConsolidatedReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[373,50] cannot find symbol
+[ERROR]   symbol:   variable DailyConsolidatedReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[375,35] cannot find symbol
+[ERROR]   symbol:   class DailyConsolidatedReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[375,16] cannot find symbol
+[ERROR]   symbol:   variable ReportResponseDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[461,14] cannot find symbol
+[ERROR]   symbol:   class ComplianceReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[462,17] cannot find symbol
+[ERROR]   symbol:   variable ComplianceReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] /C:/Users/user/Downloads/ClassProj/test-java-serlvlet/project_files/src/main/java/com/spcms/services/ComplianceReportService.java:[480,35] cannot find symbol
+[ERROR]   symbol:   class ComplianceReportDto
+[ERROR]   location: class com.spcms.services.ComplianceReportService
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

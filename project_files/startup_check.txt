@@ -1,0 +1,7 @@
+﻿2026-03-31T15:22:43.927+02:00  INFO 22184 --- [           main] com.spcms.SpcmsApplication               : Starting SpcmsApplication using Java 21.0.8 with PID 22184 (C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files\target\classes started by user in C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files)
+        error_message TEXT,
+        error_message TEXT,
+2026-03-31T15:23:01.395+02:00  INFO 22184 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/spcms'
+2026-03-31T15:23:01.426+02:00  INFO 22184 --- [           main] com.spcms.SpcmsApplication               : Started SpcmsApplication in 18.241 seconds (process running for 19.062)
+2026-03-31T15:23:01.873+02:00  WARN 22184 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1451, SQLState: 23000
+2026-03-31T15:23:01.873+02:00 ERROR 22184 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Cannot delete or update a parent row: a foreign key constraint fails (`spcms_db`.`activity_logs`, CONSTRAINT `FK5bm1lt4f4eevt8lv2517soakd` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`))

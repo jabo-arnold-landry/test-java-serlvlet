@@ -1,16 +1,12 @@
 package com.spcms.dto.reports;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.time.LocalDate;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ReportLogFilterDto {
     private LocalDate startDate;
     private LocalDate endDate;

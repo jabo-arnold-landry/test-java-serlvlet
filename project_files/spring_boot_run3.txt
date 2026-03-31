@@ -1,0 +1,2571 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.spcms:spcms >---------------------------
+[INFO] Building SmartPower & Cooling Management System 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.2.5:run (default-cli) > test-compile @ spcms >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ spcms ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ spcms ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ spcms ---
+[INFO] skip non existing resourceDirectory C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ spcms ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] <<< spring-boot:3.2.5:run (default-cli) < test-compile @ spcms <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.2.5:run (default-cli) @ spcms ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2026-03-31T16:02:28.523+02:00  INFO 31544 --- [           main] com.spcms.SpcmsApplication               : Starting SpcmsApplication using Java 21.0.8 with PID 31544 (C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files\target\classes started by user in C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files)
+2026-03-31T16:02:28.527+02:00 DEBUG 31544 --- [           main] com.spcms.SpcmsApplication               : Running with Spring Boot v3.2.5, Spring v6.1.6
+2026-03-31T16:02:28.528+02:00  INFO 31544 --- [           main] com.spcms.SpcmsApplication               : No active profile set, falling back to 1 default profile: "default"
+2026-03-31T16:02:30.463+02:00  INFO 31544 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-31T16:02:33.382+02:00  INFO 31544 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 2903 ms. Found 24 JPA repository interfaces.
+2026-03-31T16:02:34.083+02:00  INFO 31544 --- [           main] c.s.config.EmbeddedTomcatDocRootConfig   : Using embedded Tomcat document root: C:\Users\user\Downloads\ClassProj\test-java-serlvlet\project_files\src\main\webapp
+2026-03-31T16:02:34.320+02:00  INFO 31544 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-03-31T16:02:34.341+02:00  INFO 31544 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-31T16:02:34.341+02:00  INFO 31544 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+2026-03-31T16:02:34.849+02:00  INFO 31544 --- [           main] org.apache.jasper.servlet.TldScanner     : At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2026-03-31T16:02:34.865+02:00  INFO 31544 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/spcms]  : Initializing Spring embedded WebApplicationContext
+2026-03-31T16:02:34.867+02:00  INFO 31544 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 6260 ms
+2026-03-31T16:02:35.171+02:00  INFO 31544 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-31T16:02:35.281+02:00  INFO 31544 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-03-31T16:02:35.346+02:00  INFO 31544 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-31T16:02:35.820+02:00  INFO 31544 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-31T16:02:35.868+02:00  INFO 31544 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-31T16:02:36.187+02:00  INFO 31544 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@779228dc
+2026-03-31T16:02:36.189+02:00  INFO 31544 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-31T16:02:36.237+02:00  WARN 31544 --- [           main] org.hibernate.dialect.Dialect            : HHH000511: The 5.5.0 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2026-03-31T16:02:36.241+02:00  WARN 31544 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-31T16:02:39.107+02:00  INFO 31544 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-31T16:02:40.079+02:00  INFO 31544 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-31T16:02:40.593+02:00  INFO 31544 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+JNDI Lookup failed. Make sure context.xml is configured properly.
+javax.naming.NoInitialContextException: Need to specify class name in environment or system property, or in an application resource file: java.naming.factory.initial
+	at java.naming/javax.naming.spi.NamingManager.getInitialContext(NamingManager.java:492)
+	at java.naming/javax.naming.InitialContext.getDefaultInitCtx(InitialContext.java:305)
+	at java.naming/javax.naming.InitialContext.getURLOrDefaultInitCtx(InitialContext.java:342)
+	at java.naming/javax.naming.InitialContext.lookup(InitialContext.java:409)
+	at com.spcms.util.DBConnection.<clinit>(DBConnection.java:16)
+	at com.spcms.config.DBConnectionDataSourceBridge.<init>(DBConnectionDataSourceBridge.java:16)
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:208)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:111)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:315)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:306)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1355)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1192)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:326)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:962)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:334)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343)
+	at com.spcms.SpcmsApplication.main(SpcmsApplication.java:19)
+2026-03-31T16:02:43.255+02:00  WARN 31544 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-31T16:02:43.779+02:00  INFO 31544 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@47d0e949, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3b886b0f, org.springframework.security.web.context.SecurityContextHolderFilter@3d352fb4, org.springframework.security.web.header.HeaderWriterFilter@3aea9e4, org.springframework.web.filter.CorsFilter@38e27eb9, org.springframework.security.web.authentication.logout.LogoutFilter@415efec4, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@17f141eb, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4b8eeca7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4d9a46fc, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7abc1835, org.springframework.security.web.access.ExceptionTranslationFilter@7bf4fa70, org.springframework.security.web.access.intercept.AuthorizationFilter@3bb8d847]
+2026-03-31T16:02:44.174+02:00  INFO 31544 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/spcms'
+2026-03-31T16:02:44.193+02:00  INFO 31544 --- [           main] com.spcms.SpcmsApplication               : Started SpcmsApplication in 16.309 seconds (process running for 16.99)
+2026-03-31T16:02:44.587+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.role=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.role=?
+Initiating cleanup for 1 deprecated VIEWER accounts...
+2026-03-31T16:02:44.615+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        v1_0.visitor_id,
+        v1_0.arrival_time,
+        v1_0.company,
+        v1_0.created_at,
+        v1_0.department_to_visit,
+        v1_0.equipment_carried,
+        v1_0.expected_duration_hours,
+        v1_0.full_name,
+        v1_0.host_employee_id,
+        v1_0.id_copy_path,
+        v1_0.national_id_passport,
+        v1_0.pass_number,
+        v1_0.phone,
+        v1_0.photo_path,
+        v1_0.purpose_of_visit,
+        v1_0.requested_by,
+        v1_0.visit_date,
+        v1_0.visitor_email 
+    from
+        visitors v1_0 
+    left join
+        users rb1_0 
+            on rb1_0.user_id=v1_0.requested_by 
+    where
+        rb1_0.user_id=?
+Hibernate: 
+    select
+        v1_0.visitor_id,
+        v1_0.arrival_time,
+        v1_0.company,
+        v1_0.created_at,
+        v1_0.department_to_visit,
+        v1_0.equipment_carried,
+        v1_0.expected_duration_hours,
+        v1_0.full_name,
+        v1_0.host_employee_id,
+        v1_0.id_copy_path,
+        v1_0.national_id_passport,
+        v1_0.pass_number,
+        v1_0.phone,
+        v1_0.photo_path,
+        v1_0.purpose_of_visit,
+        v1_0.requested_by,
+        v1_0.visit_date,
+        v1_0.visitor_email 
+    from
+        visitors v1_0 
+    left join
+        users rb1_0 
+            on rb1_0.user_id=v1_0.requested_by 
+    where
+        rb1_0.user_id=?
+2026-03-31T16:02:45.695+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T16:02:46.517+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    delete 
+    from
+        users 
+    where
+        user_id=?
+Hibernate: 
+    delete 
+    from
+        users 
+    where
+        user_id=?
+2026-03-31T16:02:46.585+02:00  WARN 31544 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1451, SQLState: 23000
+2026-03-31T16:02:46.586+02:00 ERROR 31544 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Cannot delete or update a parent row: a foreign key constraint fails (`spcms_db`.`activity_logs`, CONSTRAINT `FK5bm1lt4f4eevt8lv2517soakd` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`))
+CRITICAL: Failed to cleanup deprecated viewers: could not execute statement [Cannot delete or update a parent row: a foreign key constraint fails (`spcms_db`.`activity_logs`, CONSTRAINT `FK5bm1lt4f4eevt8lv2517soakd` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`))] [delete from users where user_id=?]; SQL [delete from users where user_id=?]; constraint [null]
+2026-03-31T16:02:46.611+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:02:46.618+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:02:46.628+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:02:46.658+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        cooling_unit cu1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        cooling_unit cu1_0
+2026-03-31T16:02:46.687+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        cu1_0.cooling_id,
+        cu1_0.airflow_status,
+        cu1_0.asset_tag,
+        cu1_0.brand,
+        cu1_0.compressor_status,
+        cu1_0.cooling_capacity_kw,
+        cu1_0.cooling_mode,
+        cu1_0.created_at,
+        cu1_0.current_amps,
+        cu1_0.drain_status,
+        cu1_0.fan_speed,
+        cu1_0.filter_status,
+        cu1_0.humidity_percent,
+        cu1_0.input_voltage,
+        cu1_0.installation_date,
+        cu1_0.location_room,
+        cu1_0.location_zone,
+        cu1_0.model,
+        cu1_0.power_consumption,
+        cu1_0.refrigerant_pressure,
+        cu1_0.refrigerant_type,
+        cu1_0.return_air_temp,
+        cu1_0.room_temperature,
+        cu1_0.serial_number,
+        cu1_0.set_humidity,
+        cu1_0.set_temperature,
+        cu1_0.status,
+        cu1_0.supply_air_temp,
+        cu1_0.unit_name,
+        cu1_0.updated_at 
+    from
+        cooling_unit cu1_0
+Hibernate: 
+    select
+        cu1_0.cooling_id,
+        cu1_0.airflow_status,
+        cu1_0.asset_tag,
+        cu1_0.brand,
+        cu1_0.compressor_status,
+        cu1_0.cooling_capacity_kw,
+        cu1_0.cooling_mode,
+        cu1_0.created_at,
+        cu1_0.current_amps,
+        cu1_0.drain_status,
+        cu1_0.fan_speed,
+        cu1_0.filter_status,
+        cu1_0.humidity_percent,
+        cu1_0.input_voltage,
+        cu1_0.installation_date,
+        cu1_0.location_room,
+        cu1_0.location_zone,
+        cu1_0.model,
+        cu1_0.power_consumption,
+        cu1_0.refrigerant_pressure,
+        cu1_0.refrigerant_type,
+        cu1_0.return_air_temp,
+        cu1_0.room_temperature,
+        cu1_0.serial_number,
+        cu1_0.set_humidity,
+        cu1_0.set_temperature,
+        cu1_0.status,
+        cu1_0.supply_air_temp,
+        cu1_0.unit_name,
+        cu1_0.updated_at 
+    from
+        cooling_unit cu1_0
+2026-03-31T16:02:46.738+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:02:46.744+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:02:46.751+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:02:46.758+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.765+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.770+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.774+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.778+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.782+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.786+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.790+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.794+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.797+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.802+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.805+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.810+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.815+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.876+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.881+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:46.890+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.571+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.581+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.637+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.700+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.759+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.802+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.831+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.885+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.926+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.943+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.966+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.976+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:47.986+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+Hibernate: 
+    select
+        count(ml1_0.log_id) 
+    from
+        monitoring_log ml1_0 
+    where
+        ml1_0.equipment_type=? 
+        and ml1_0.equipment_id=?
+2026-03-31T16:02:48.003+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        incidents i1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        incidents i1_0
+2026-03-31T16:02:48.036+02:00 DEBUG 31544 --- [           main] org.hibernate.SQL                        : 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date=?
+Hibernate: 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date=?
+2026-03-31T16:02:48.059+02:00  INFO 31544 --- [           main] c.spcms.services.DailyReportScheduler    : Startup auto-generation check completed for 2026-03-30
+2026-03-31T16:05:51.881+02:00  INFO 31544 --- [nio-8081-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/spcms]  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-31T16:05:51.882+02:00  INFO 31544 --- [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-31T16:05:51.889+02:00  INFO 31544 --- [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
+2026-03-31T16:05:59.742+02:00 DEBUG 31544 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:06:00.092+02:00 DEBUG 31544 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:06:00.110+02:00 DEBUG 31544 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T16:06:00.149+02:00 DEBUG 31544 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    insert 
+    into
+        activity_logs
+        (action, details, entity_id, entity_type, ip_address, timestamp, user_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        activity_logs
+        (action, details, entity_id, entity_type, ip_address, timestamp, user_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-03-31T16:06:00.295+02:00 DEBUG 31544 --- [nio-8081-exec-3] org.hibernate.SQL                        : 
+    update
+        users 
+    set
+        branch=?,
+        department=?,
+        email=?,
+        full_name=?,
+        is_active=?,
+        last_login=?,
+        password=?,
+        phone=?,
+        role=?,
+        updated_at=?,
+        username=? 
+    where
+        user_id=?
+Hibernate: 
+    update
+        users 
+    set
+        branch=?,
+        department=?,
+        email=?,
+        full_name=?,
+        is_active=?,
+        last_login=?,
+        password=?,
+        phone=?,
+        role=?,
+        updated_at=?,
+        username=? 
+    where
+        user_id=?
+2026-03-31T16:06:00.341+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:06:00.383+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:06:00.396+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:06:00.416+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.ups_id,
+        u1_0.asset_tag,
+        u1_0.battery_current,
+        u1_0.battery_health_percentage,
+        u1_0.battery_voltage,
+        u1_0.brand,
+        u1_0.bypass_status,
+        u1_0.capacity_kva,
+        u1_0.created_at,
+        u1_0.current_load_kw,
+        u1_0.frequency_hz,
+        u1_0.generator_mode,
+        u1_0.input_voltage,
+        u1_0.installation_date,
+        u1_0.load_percentage,
+        u1_0.location_rack,
+        u1_0.location_room,
+        u1_0.location_zone,
+        u1_0.model,
+        u1_0.output_voltage,
+        u1_0.phase,
+        u1_0.power_factor,
+        u1_0.serial_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.ups_name 
+    from
+        ups u1_0
+Hibernate: 
+    select
+        u1_0.ups_id,
+        u1_0.asset_tag,
+        u1_0.battery_current,
+        u1_0.battery_health_percentage,
+        u1_0.battery_voltage,
+        u1_0.brand,
+        u1_0.bypass_status,
+        u1_0.capacity_kva,
+        u1_0.created_at,
+        u1_0.current_load_kw,
+        u1_0.frequency_hz,
+        u1_0.generator_mode,
+        u1_0.input_voltage,
+        u1_0.installation_date,
+        u1_0.load_percentage,
+        u1_0.location_rack,
+        u1_0.location_room,
+        u1_0.location_zone,
+        u1_0.model,
+        u1_0.output_voltage,
+        u1_0.phase,
+        u1_0.power_factor,
+        u1_0.serial_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.ups_name 
+    from
+        ups u1_0
+2026-03-31T16:06:00.458+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.ups_id,
+        u1_0.asset_tag,
+        u1_0.battery_current,
+        u1_0.battery_health_percentage,
+        u1_0.battery_voltage,
+        u1_0.brand,
+        u1_0.bypass_status,
+        u1_0.capacity_kva,
+        u1_0.created_at,
+        u1_0.current_load_kw,
+        u1_0.frequency_hz,
+        u1_0.generator_mode,
+        u1_0.input_voltage,
+        u1_0.installation_date,
+        u1_0.load_percentage,
+        u1_0.location_rack,
+        u1_0.location_room,
+        u1_0.location_zone,
+        u1_0.model,
+        u1_0.output_voltage,
+        u1_0.phase,
+        u1_0.power_factor,
+        u1_0.serial_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.ups_name 
+    from
+        ups u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        u1_0.ups_id,
+        u1_0.asset_tag,
+        u1_0.battery_current,
+        u1_0.battery_health_percentage,
+        u1_0.battery_voltage,
+        u1_0.brand,
+        u1_0.bypass_status,
+        u1_0.capacity_kva,
+        u1_0.created_at,
+        u1_0.current_load_kw,
+        u1_0.frequency_hz,
+        u1_0.generator_mode,
+        u1_0.input_voltage,
+        u1_0.installation_date,
+        u1_0.load_percentage,
+        u1_0.location_rack,
+        u1_0.location_room,
+        u1_0.location_zone,
+        u1_0.model,
+        u1_0.output_voltage,
+        u1_0.phase,
+        u1_0.power_factor,
+        u1_0.serial_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.ups_name 
+    from
+        ups u1_0 
+    where
+        u1_0.status=?
+2026-03-31T16:06:00.479+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.ups_id,
+        u1_0.asset_tag,
+        u1_0.battery_current,
+        u1_0.battery_health_percentage,
+        u1_0.battery_voltage,
+        u1_0.brand,
+        u1_0.bypass_status,
+        u1_0.capacity_kva,
+        u1_0.created_at,
+        u1_0.current_load_kw,
+        u1_0.frequency_hz,
+        u1_0.generator_mode,
+        u1_0.input_voltage,
+        u1_0.installation_date,
+        u1_0.load_percentage,
+        u1_0.location_rack,
+        u1_0.location_room,
+        u1_0.location_zone,
+        u1_0.model,
+        u1_0.output_voltage,
+        u1_0.phase,
+        u1_0.power_factor,
+        u1_0.serial_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.ups_name 
+    from
+        ups u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        u1_0.ups_id,
+        u1_0.asset_tag,
+        u1_0.battery_current,
+        u1_0.battery_health_percentage,
+        u1_0.battery_voltage,
+        u1_0.brand,
+        u1_0.bypass_status,
+        u1_0.capacity_kva,
+        u1_0.created_at,
+        u1_0.current_load_kw,
+        u1_0.frequency_hz,
+        u1_0.generator_mode,
+        u1_0.input_voltage,
+        u1_0.installation_date,
+        u1_0.load_percentage,
+        u1_0.location_rack,
+        u1_0.location_room,
+        u1_0.location_zone,
+        u1_0.model,
+        u1_0.output_voltage,
+        u1_0.phase,
+        u1_0.power_factor,
+        u1_0.serial_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.ups_name 
+    from
+        ups u1_0 
+    where
+        u1_0.status=?
+2026-03-31T16:06:00.498+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        cu1_0.cooling_id,
+        cu1_0.airflow_status,
+        cu1_0.asset_tag,
+        cu1_0.brand,
+        cu1_0.compressor_status,
+        cu1_0.cooling_capacity_kw,
+        cu1_0.cooling_mode,
+        cu1_0.created_at,
+        cu1_0.current_amps,
+        cu1_0.drain_status,
+        cu1_0.fan_speed,
+        cu1_0.filter_status,
+        cu1_0.humidity_percent,
+        cu1_0.input_voltage,
+        cu1_0.installation_date,
+        cu1_0.location_room,
+        cu1_0.location_zone,
+        cu1_0.model,
+        cu1_0.power_consumption,
+        cu1_0.refrigerant_pressure,
+        cu1_0.refrigerant_type,
+        cu1_0.return_air_temp,
+        cu1_0.room_temperature,
+        cu1_0.serial_number,
+        cu1_0.set_humidity,
+        cu1_0.set_temperature,
+        cu1_0.status,
+        cu1_0.supply_air_temp,
+        cu1_0.unit_name,
+        cu1_0.updated_at 
+    from
+        cooling_unit cu1_0
+Hibernate: 
+    select
+        cu1_0.cooling_id,
+        cu1_0.airflow_status,
+        cu1_0.asset_tag,
+        cu1_0.brand,
+        cu1_0.compressor_status,
+        cu1_0.cooling_capacity_kw,
+        cu1_0.cooling_mode,
+        cu1_0.created_at,
+        cu1_0.current_amps,
+        cu1_0.drain_status,
+        cu1_0.fan_speed,
+        cu1_0.filter_status,
+        cu1_0.humidity_percent,
+        cu1_0.input_voltage,
+        cu1_0.installation_date,
+        cu1_0.location_room,
+        cu1_0.location_zone,
+        cu1_0.model,
+        cu1_0.power_consumption,
+        cu1_0.refrigerant_pressure,
+        cu1_0.refrigerant_type,
+        cu1_0.return_air_temp,
+        cu1_0.room_temperature,
+        cu1_0.serial_number,
+        cu1_0.set_humidity,
+        cu1_0.set_temperature,
+        cu1_0.status,
+        cu1_0.supply_air_temp,
+        cu1_0.unit_name,
+        cu1_0.updated_at 
+    from
+        cooling_unit cu1_0
+2026-03-31T16:06:00.557+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        cu1_0.cooling_id,
+        cu1_0.airflow_status,
+        cu1_0.asset_tag,
+        cu1_0.brand,
+        cu1_0.compressor_status,
+        cu1_0.cooling_capacity_kw,
+        cu1_0.cooling_mode,
+        cu1_0.created_at,
+        cu1_0.current_amps,
+        cu1_0.drain_status,
+        cu1_0.fan_speed,
+        cu1_0.filter_status,
+        cu1_0.humidity_percent,
+        cu1_0.input_voltage,
+        cu1_0.installation_date,
+        cu1_0.location_room,
+        cu1_0.location_zone,
+        cu1_0.model,
+        cu1_0.power_consumption,
+        cu1_0.refrigerant_pressure,
+        cu1_0.refrigerant_type,
+        cu1_0.return_air_temp,
+        cu1_0.room_temperature,
+        cu1_0.serial_number,
+        cu1_0.set_humidity,
+        cu1_0.set_temperature,
+        cu1_0.status,
+        cu1_0.supply_air_temp,
+        cu1_0.unit_name,
+        cu1_0.updated_at 
+    from
+        cooling_unit cu1_0 
+    where
+        cu1_0.status=?
+Hibernate: 
+    select
+        cu1_0.cooling_id,
+        cu1_0.airflow_status,
+        cu1_0.asset_tag,
+        cu1_0.brand,
+        cu1_0.compressor_status,
+        cu1_0.cooling_capacity_kw,
+        cu1_0.cooling_mode,
+        cu1_0.created_at,
+        cu1_0.current_amps,
+        cu1_0.drain_status,
+        cu1_0.fan_speed,
+        cu1_0.filter_status,
+        cu1_0.humidity_percent,
+        cu1_0.input_voltage,
+        cu1_0.installation_date,
+        cu1_0.location_room,
+        cu1_0.location_zone,
+        cu1_0.model,
+        cu1_0.power_consumption,
+        cu1_0.refrigerant_pressure,
+        cu1_0.refrigerant_type,
+        cu1_0.return_air_temp,
+        cu1_0.room_temperature,
+        cu1_0.serial_number,
+        cu1_0.set_humidity,
+        cu1_0.set_temperature,
+        cu1_0.status,
+        cu1_0.supply_air_temp,
+        cu1_0.unit_name,
+        cu1_0.updated_at 
+    from
+        cooling_unit cu1_0 
+    where
+        cu1_0.status=?
+2026-03-31T16:06:00.632+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        i1_0.incident_id,
+        i1_0.action_taken,
+        i1_0.assigned_to,
+        i1_0.attachment_path,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.downtime_end,
+        i1_0.downtime_minutes,
+        i1_0.downtime_start,
+        i1_0.equipment_id,
+        i1_0.equipment_type,
+        i1_0.repair_cost,
+        i1_0.reported_by,
+        i1_0.resolved_at,
+        i1_0.resolved_by,
+        i1_0.root_cause,
+        i1_0.severity,
+        i1_0.status,
+        i1_0.title,
+        i1_0.updated_at,
+        i1_0.visitor_id 
+    from
+        incidents i1_0 
+    where
+        i1_0.status=? 
+    order by
+        i1_0.created_at desc
+Hibernate: 
+    select
+        i1_0.incident_id,
+        i1_0.action_taken,
+        i1_0.assigned_to,
+        i1_0.attachment_path,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.downtime_end,
+        i1_0.downtime_minutes,
+        i1_0.downtime_start,
+        i1_0.equipment_id,
+        i1_0.equipment_type,
+        i1_0.repair_cost,
+        i1_0.reported_by,
+        i1_0.resolved_at,
+        i1_0.resolved_by,
+        i1_0.root_cause,
+        i1_0.severity,
+        i1_0.status,
+        i1_0.title,
+        i1_0.updated_at,
+        i1_0.visitor_id 
+    from
+        incidents i1_0 
+    where
+        i1_0.status=? 
+    order by
+        i1_0.created_at desc
+2026-03-31T16:06:00.643+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T16:06:00.649+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T16:06:00.657+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2026-03-31T16:06:00.717+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        i1_0.incident_id,
+        i1_0.action_taken,
+        i1_0.assigned_to,
+        i1_0.attachment_path,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.downtime_end,
+        i1_0.downtime_minutes,
+        i1_0.downtime_start,
+        i1_0.equipment_id,
+        i1_0.equipment_type,
+        i1_0.repair_cost,
+        i1_0.reported_by,
+        i1_0.resolved_at,
+        i1_0.resolved_by,
+        i1_0.root_cause,
+        i1_0.severity,
+        i1_0.status,
+        i1_0.title,
+        i1_0.updated_at,
+        i1_0.visitor_id 
+    from
+        incidents i1_0 
+    where
+        i1_0.severity=? 
+    order by
+        i1_0.created_at desc
+Hibernate: 
+    select
+        i1_0.incident_id,
+        i1_0.action_taken,
+        i1_0.assigned_to,
+        i1_0.attachment_path,
+        i1_0.created_at,
+        i1_0.description,
+        i1_0.downtime_end,
+        i1_0.downtime_minutes,
+        i1_0.downtime_start,
+        i1_0.equipment_id,
+        i1_0.equipment_type,
+        i1_0.repair_cost,
+        i1_0.reported_by,
+        i1_0.resolved_at,
+        i1_0.resolved_by,
+        i1_0.root_cause,
+        i1_0.severity,
+        i1_0.status,
+        i1_0.title,
+        i1_0.updated_at,
+        i1_0.visitor_id 
+    from
+        incidents i1_0 
+    where
+        i1_0.severity=? 
+    order by
+        i1_0.created_at desc
+2026-03-31T16:06:00.749+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        a1_0.alert_id,
+        a1_0.acknowledged_at,
+        a1_0.acknowledged_by_user_id,
+        a1_0.actual_value,
+        a1_0.alert_type,
+        a1_0.created_at,
+        a1_0.equipment_id,
+        a1_0.equipment_type,
+        a1_0.is_acknowledged,
+        a1_0.is_sent,
+        a1_0.message,
+        a1_0.threshold_value,
+        a1_0.updated_at 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        a1_0.alert_id,
+        a1_0.acknowledged_at,
+        a1_0.acknowledged_by_user_id,
+        a1_0.actual_value,
+        a1_0.alert_type,
+        a1_0.created_at,
+        a1_0.equipment_id,
+        a1_0.equipment_type,
+        a1_0.is_acknowledged,
+        a1_0.is_sent,
+        a1_0.message,
+        a1_0.threshold_value,
+        a1_0.updated_at 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:06:00.786+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        a1_0.alert_id,
+        a1_0.acknowledged_at,
+        a1_0.acknowledged_by_user_id,
+        a1_0.actual_value,
+        a1_0.alert_type,
+        a1_0.created_at,
+        a1_0.equipment_id,
+        a1_0.equipment_type,
+        a1_0.is_acknowledged,
+        a1_0.is_sent,
+        a1_0.message,
+        a1_0.threshold_value,
+        a1_0.updated_at 
+    from
+        alerts a1_0 
+    order by
+        a1_0.alert_id desc 
+    limit
+        ?
+Hibernate: 
+    select
+        a1_0.alert_id,
+        a1_0.acknowledged_at,
+        a1_0.acknowledged_by_user_id,
+        a1_0.actual_value,
+        a1_0.alert_type,
+        a1_0.created_at,
+        a1_0.equipment_id,
+        a1_0.equipment_type,
+        a1_0.is_acknowledged,
+        a1_0.is_sent,
+        a1_0.message,
+        a1_0.threshold_value,
+        a1_0.updated_at 
+    from
+        alerts a1_0 
+    order by
+        a1_0.alert_id desc 
+    limit
+        ?
+2026-03-31T16:06:00.831+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        vcio1_0.check_id,
+        vcio1_0.badge_returned,
+        vcio1_0.check_in_time,
+        vcio1_0.check_out_time,
+        vcio1_0.equipment_confirmed_out,
+        vcio1_0.escort_id,
+        vcio1_0.remarks,
+        vcio1_0.temporary_badge,
+        vcio1_0.visit_closed,
+        vcio1_0.visitor_id 
+    from
+        visitor_check_in_out vcio1_0 
+    where
+        vcio1_0.visit_closed=0
+Hibernate: 
+    select
+        vcio1_0.check_id,
+        vcio1_0.badge_returned,
+        vcio1_0.check_in_time,
+        vcio1_0.check_out_time,
+        vcio1_0.equipment_confirmed_out,
+        vcio1_0.escort_id,
+        vcio1_0.remarks,
+        vcio1_0.temporary_badge,
+        vcio1_0.visit_closed,
+        vcio1_0.visitor_id 
+    from
+        visitor_check_in_out vcio1_0 
+    where
+        vcio1_0.visit_closed=0
+2026-03-31T16:06:00.879+02:00 DEBUG 31544 --- [nio-8081-exec-6] org.hibernate.SQL                        : 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date=?
+Hibernate: 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date=?
+2026-03-31T16:06:39.802+02:00 DEBUG 31544 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:06:39.830+02:00 DEBUG 31544 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:06:39.911+02:00 DEBUG 31544 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        um1_0.maintenance_id,
+        um1_0.created_at,
+        um1_0.labor_cost,
+        um1_0.maintenance_cost,
+        um1_0.maintenance_date,
+        um1_0.maintenance_type,
+        um1_0.next_due_date,
+        um1_0.parts_cost,
+        um1_0.remarks,
+        um1_0.service_report_path,
+        um1_0.spare_parts_used,
+        um1_0.technician,
+        um1_0.ups_id,
+        um1_0.vendor 
+    from
+        ups_maintenance um1_0
+Hibernate: 
+    select
+        um1_0.maintenance_id,
+        um1_0.created_at,
+        um1_0.labor_cost,
+        um1_0.maintenance_cost,
+        um1_0.maintenance_date,
+        um1_0.maintenance_type,
+        um1_0.next_due_date,
+        um1_0.parts_cost,
+        um1_0.remarks,
+        um1_0.service_report_path,
+        um1_0.spare_parts_used,
+        um1_0.technician,
+        um1_0.ups_id,
+        um1_0.vendor 
+    from
+        ups_maintenance um1_0
+2026-03-31T16:06:39.943+02:00 DEBUG 31544 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.ups_id,
+        u1_0.asset_tag,
+        u1_0.battery_current,
+        u1_0.battery_health_percentage,
+        u1_0.battery_voltage,
+        u1_0.brand,
+        u1_0.bypass_status,
+        u1_0.capacity_kva,
+        u1_0.created_at,
+        u1_0.current_load_kw,
+        u1_0.frequency_hz,
+        u1_0.generator_mode,
+        u1_0.input_voltage,
+        u1_0.installation_date,
+        u1_0.load_percentage,
+        u1_0.location_rack,
+        u1_0.location_room,
+        u1_0.location_zone,
+        u1_0.model,
+        u1_0.output_voltage,
+        u1_0.phase,
+        u1_0.power_factor,
+        u1_0.serial_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.ups_name 
+    from
+        ups u1_0 
+    where
+        u1_0.ups_id=?
+Hibernate: 
+    select
+        u1_0.ups_id,
+        u1_0.asset_tag,
+        u1_0.battery_current,
+        u1_0.battery_health_percentage,
+        u1_0.battery_voltage,
+        u1_0.brand,
+        u1_0.bypass_status,
+        u1_0.capacity_kva,
+        u1_0.created_at,
+        u1_0.current_load_kw,
+        u1_0.frequency_hz,
+        u1_0.generator_mode,
+        u1_0.input_voltage,
+        u1_0.installation_date,
+        u1_0.load_percentage,
+        u1_0.location_rack,
+        u1_0.location_room,
+        u1_0.location_zone,
+        u1_0.model,
+        u1_0.output_voltage,
+        u1_0.phase,
+        u1_0.power_factor,
+        u1_0.serial_number,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.ups_name 
+    from
+        ups u1_0 
+    where
+        u1_0.ups_id=?
+2026-03-31T16:06:39.965+02:00 DEBUG 31544 --- [nio-8081-exec-5] org.hibernate.SQL                        : 
+    select
+        cm1_0.maintenance_id,
+        cm1_0.cooling_id,
+        cm1_0.created_at,
+        cm1_0.filter_cleaning_date,
+        cm1_0.gas_refill_date,
+        cm1_0.labor_cost,
+        cm1_0.maintenance_cost,
+        cm1_0.maintenance_date,
+        cm1_0.maintenance_type,
+        cm1_0.next_maintenance_date,
+        cm1_0.parts_cost,
+        cm1_0.remarks,
+        cm1_0.service_report_path,
+        cm1_0.technician,
+        cm1_0.vendor 
+    from
+        cooling_maintenance cm1_0
+Hibernate: 
+    select
+        cm1_0.maintenance_id,
+        cm1_0.cooling_id,
+        cm1_0.created_at,
+        cm1_0.filter_cleaning_date,
+        cm1_0.gas_refill_date,
+        cm1_0.labor_cost,
+        cm1_0.maintenance_cost,
+        cm1_0.maintenance_date,
+        cm1_0.maintenance_type,
+        cm1_0.next_maintenance_date,
+        cm1_0.parts_cost,
+        cm1_0.remarks,
+        cm1_0.service_report_path,
+        cm1_0.technician,
+        cm1_0.vendor 
+    from
+        cooling_maintenance cm1_0
+2026-03-31T16:08:24.432+02:00 DEBUG 31544 --- [nio-8081-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:08:24.452+02:00 DEBUG 31544 --- [nio-8081-exec-8] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:08:24.486+02:00 DEBUG 31544 --- [nio-8081-exec-8] org.hibernate.SQL                        : 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date between ? and ? 
+    order by
+        dcr1_0.report_date desc
+Hibernate: 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date between ? and ? 
+    order by
+        dcr1_0.report_date desc
+2026-03-31T16:08:28.886+02:00 DEBUG 31544 --- [io-8081-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.branch,
+        u1_0.created_at,
+        u1_0.department,
+        u1_0.email,
+        u1_0.full_name,
+        u1_0.is_active,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.role,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.username=?
+2026-03-31T16:08:28.901+02:00 DEBUG 31544 --- [io-8081-exec-10] org.hibernate.SQL                        : 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+Hibernate: 
+    select
+        count(a1_0.alert_id) 
+    from
+        alerts a1_0 
+    where
+        not exists(select
+            1 
+        from
+            alert_acknowledgments aa1_0 
+        where
+            aa1_0.alert_id=a1_0.alert_id 
+            and aa1_0.user_id=?)
+2026-03-31T16:08:28.918+02:00 DEBUG 31544 --- [io-8081-exec-10] org.hibernate.SQL                        : 
+    select
+        sum(i1_0.downtime_minutes) 
+    from
+        incidents i1_0 
+    where
+        i1_0.created_at between ? and ?
+Hibernate: 
+    select
+        sum(i1_0.downtime_minutes) 
+    from
+        incidents i1_0 
+    where
+        i1_0.created_at between ? and ?
+2026-03-31T16:08:28.924+02:00 DEBUG 31544 --- [io-8081-exec-10] org.hibernate.SQL                        : 
+    select
+        sum(i1_0.downtime_minutes) 
+    from
+        incidents i1_0 
+    where
+        i1_0.created_at between ? and ?
+Hibernate: 
+    select
+        sum(i1_0.downtime_minutes) 
+    from
+        incidents i1_0 
+    where
+        i1_0.created_at between ? and ?
+2026-03-31T16:08:28.944+02:00 DEBUG 31544 --- [io-8081-exec-10] org.hibernate.SQL                        : 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date between ? and ? 
+    order by
+        dcr1_0.report_date desc
+Hibernate: 
+    select
+        dcr1_0.report_id,
+        dcr1_0.avg_daily_load,
+        dcr1_0.avg_room_temperature,
+        dcr1_0.battery_status_summary,
+        dcr1_0.cooling_failure,
+        dcr1_0.critical_incidents,
+        dcr1_0.failover_to_generator,
+        dcr1_0.generated_at,
+        dcr1_0.high_risk_visits,
+        dcr1_0.highest_temp_recorded,
+        dcr1_0.humidity_stability,
+        dcr1_0.maintenance_performed,
+        dcr1_0.mtbf_hours,
+        dcr1_0.mttr_minutes,
+        dcr1_0.overdue_maintenance,
+        dcr1_0.overstayed_visitors,
+        dcr1_0.report_date,
+        dcr1_0.total_downtime_min,
+        dcr1_0.total_incidents,
+        dcr1_0.total_ups_alarms,
+        dcr1_0.total_visitors 
+    from
+        daily_consolidated_reports dcr1_0 
+    where
+        dcr1_0.report_date between ? and ? 
+    order by
+        dcr1_0.report_date desc
