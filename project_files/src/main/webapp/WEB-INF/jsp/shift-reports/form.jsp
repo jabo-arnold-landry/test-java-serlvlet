@@ -76,7 +76,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                 </div>
                 <div class="col-md-3">
                   <label class="form-label text-muted small fw-bold">SHIFT DATE</label>
-                  <input type="date" class="form-control" name="shiftDate" value="${shiftReport.shiftDate}" required />
+                  <input type="date" class="form-control" id="shiftDate" name="shiftDate" value="${shiftReport.shiftDate}" onchange="fetchDailySummary()" required />
                 </div>
                 <div class="col-md-3">
                   <label class="form-label text-muted small fw-bold">LOGIN TIME</label>
@@ -180,27 +180,27 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                 <div class="col-md-3">
                   <label class="form-label small fw-bold text-muted">HIGHEST TEMP</label>
                   <div class="input-group">
-                    <input type="number" step="0.1" class="form-control" name="highestTempRecorded">
+                    <input type="number" step="0.1" class="form-control bg-light" id="highestTempRecorded" name="highestTempRecorded" readonly>
                     <span class="input-group-text">°C</span>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <label class="form-label small fw-bold text-muted">LOWEST TEMP</label>
                   <div class="input-group">
-                    <input type="number" step="0.1" class="form-control" name="lowestTempRecorded">
+                    <input type="number" step="0.1" class="form-control bg-light" id="lowestTempRecorded" name="lowestTempRecorded" readonly>
                     <span class="input-group-text">°C</span>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <label class="form-label small fw-bold text-muted">AVG HUMIDITY</label>
                   <div class="input-group">
-                    <input type="number" step="0.1" class="form-control" name="avgHumidity">
+                    <input type="number" step="0.1" class="form-control bg-light" id="avgHumidity" name="avgHumidity" readonly>
                     <span class="input-group-text">%</span>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <label class="form-label small fw-bold text-muted">COMPRESSOR</label>
-                  <input type="text" class="form-control" name="compressorStatus" placeholder="Status desc.">
+                  <input type="text" class="form-control bg-light" id="compressorStatus" name="compressorStatus" placeholder="Auto-calculated" readonly>
                 </div>
                 <div class="col-md-12 mt-3">
                   <div class="d-flex gap-4">
@@ -232,15 +232,15 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
               <div class="row g-3 mb-3">
                 <div class="col-md-4">
                   <label class="form-label small fw-bold text-muted">TOTAL INCIDENTS</label>
-                  <input type="number" class="form-control" name="numIncidents" value="0">
+                  <input type="number" class="form-control bg-light" id="numIncidents" name="numIncidents" value="0" readonly>
                 </div>
                 <div class="col-md-4">
                   <label class="form-label small fw-bold text-muted">CRITICAL FAULTS</label>
-                  <input type="number" class="form-control" name="criticalIncidents" value="0">
+                  <input type="number" class="form-control bg-light" id="criticalIncidents" name="criticalIncidents" value="0" readonly>
                 </div>
                 <div class="col-md-4">
                   <label class="form-label small fw-bold text-muted">DOWNTIME (MIN)</label>
-                  <input type="number" class="form-control" name="downtimeDurationMin" value="0">
+                  <input type="number" class="form-control bg-light" id="downtimeDurationMin" name="downtimeDurationMin" value="0" readonly>
                 </div>
               </div>
               <div class="row g-3">
@@ -256,7 +256,62 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
             </div>
           </div>
 
-          <!-- Section 5: Visitor Log -->
+          <!-- Section 5: Maintenance Activities -->
+          <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                  <i class="bi bi-tools text-primary fs-5"></i>
+                </div>
+                <h6 class="fw-bold mb-0">Maintenance Activities</h6>
+              </div>
+            </div>
+            <div class="card-body pt-0">
+              <div class="row g-3 mb-3">
+                <div class="col-md-12">
+                  <label class="form-label small fw-bold text-muted">SELECT MAINTENANCE TYPE</label>
+                  <div class="d-flex gap-4 mt-1">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="checkPreventive" onchange="toggleMaintInput('preventive')">
+                      <label class="form-check-label" for="checkPreventive">Preventive Maintenance</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="checkCorrective" onchange="toggleMaintInput('corrective')">
+                      <label class="form-check-label" for="checkCorrective">Corrective Maintenance</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6" id="preventiveSection" style="display:none;">
+                  <label class="form-label small fw-bold text-muted">PREVENTIVE TASKS SUMMARY</label>
+                  <textarea class="form-control" name="preventiveMaintDone" rows="3" placeholder="List preventive tasks done..."></textarea>
+                </div>
+                <div class="col-md-6" id="correctiveSection" style="display:none;">
+                  <label class="form-label small fw-bold text-muted">CORRECTIVE TASKS SUMMARY</label>
+                  <textarea class="form-control" name="correctiveMaintDone" rows="3" placeholder="List corrective tasks done..."></textarea>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label small fw-bold text-muted">SPARE PARTS USED</label>
+                  <textarea class="form-control" name="sparePartsUsed" rows="2" placeholder="Document any spare parts used during this shift..."></textarea>
+                </div>
+              </div>
+              <script>
+                function toggleMaintInput(type) {
+                    const check = document.getElementById('check' + type.charAt(0).toUpperCase() + type.slice(1));
+                    const section = document.getElementById(type + 'Section');
+                    if (check.checked) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                        section.querySelector('textarea').value = '';
+                    }
+                }
+              </script>
+            </div>
+          </div>
+
+          <!-- Section 6: Visitor Log -->
           <div class="card mb-4 border-0 shadow-sm">
             <div class="card-header bg-white border-0 py-3">
               <div class="d-flex align-items-center">
@@ -267,18 +322,48 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
               </div>
             </div>
             <div class="card-body pt-0">
+              <table class="table table-bordered mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col" style="font-size:12px;" class="text-muted fw-bold">NUMBER OF VISITORS</th>
+                    <th scope="col" style="font-size:12px;" class="text-muted fw-bold">APPROVED BY</th>
+                    <th scope="col" style="font-size:12px;" class="text-muted fw-bold">ESCORT / TECHNICIAN NAME</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="number" class="form-control border-0" name="numVisitors" value="0"></td>
+                    <td><input type="text" class="form-control border-0" name="visitorApprovedBy" placeholder="Approver Name"></td>
+                    <td><input type="text" class="form-control border-0" name="escortName" placeholder="Full Name"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section 7: Mandatory Handover Notes -->
+          <div class="card mb-4 border-0 shadow-sm border-start border-warning border-4">
+            <div class="card-header bg-white border-0 py-3">
+              <div class="d-flex align-items-center">
+                <div class="bg-warning bg-opacity-10 p-2 rounded-3 me-3">
+                  <i class="bi bi-journal-text text-warning fs-5"></i>
+                </div>
+                <h6 class="fw-bold mb-0">Mandatory Shift Handover Notes</h6>
+              </div>
+            </div>
+            <div class="card-body pt-0">
               <div class="row g-3">
-                <div class="col-md-3">
-                  <label class="form-label small fw-bold text-muted">VISITOR COUNT</label>
-                  <input type="number" class="form-control" name="numVisitors" value="0">
+                <div class="col-md-12">
+                  <label class="form-label small fw-bold text-muted">SYSTEM STATUS SUMMARY <span class="text-danger">*</span></label>
+                  <textarea class="form-control" name="handoverSystemStatus" rows="2" placeholder="Overall status of the systems at the end of shift..." required></textarea>
                 </div>
-                <div class="col-md-4">
-                  <label class="form-label small fw-bold text-muted">APPROVED BY</label>
-                  <input type="text" class="form-control" name="visitorApprovedBy" placeholder="Approver Name">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-muted">PENDING ISSUES (REMAINING TASKS)</label>
+                  <textarea class="form-control" name="handoverPendingIssues" rows="3" placeholder="Tasks or issues passing to the next shift..."></textarea>
                 </div>
-                <div class="col-md-5">
-                  <label class="form-label small fw-bold text-muted">ESCORT / TECHNICIAN NAME</label>
-                  <input type="text" class="form-control" name="escortName" placeholder="Full Name">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold text-muted">RECOMMENDATIONS <span class="text-danger">*</span></label>
+                  <textarea class="form-control" name="handoverRecommendations" rows="3" placeholder="Recommendations for next shift..." required></textarea>
                 </div>
               </div>
             </div>
@@ -297,5 +382,36 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function fetchDailySummary() {
+        const shiftDate = document.getElementById('shiftDate').value;
+        if (!shiftDate) return;
+
+        // Visual feedback
+        document.getElementById('highestTempRecorded').placeholder = "Loading...";
+        document.getElementById('numIncidents').placeholder = "Loading...";
+
+        fetch(`${pageContext.request.contextPath}/shift-reports/api/daily-summary?date=` + shiftDate)
+          .then(res => res.json())
+          .then(data => {
+            document.getElementById('highestTempRecorded').value = data.highestTemp || 0;
+            document.getElementById('lowestTempRecorded').value = data.lowestTemp || 0;
+            document.getElementById('avgHumidity').value = data.avgHumidity || 0;
+            document.getElementById('compressorStatus').value = data.compressorStatus || 'OK';
+            
+            document.getElementById('numIncidents').value = data.totalIncidents || 0;
+            document.getElementById('criticalIncidents').value = data.criticalFaults || 0;
+            document.getElementById('downtimeDurationMin').value = data.totalDowntime || 0;
+          })
+          .catch(err => {
+            console.error('Failed to fetch daily summary', err);
+          });
+      }
+
+      // Initial load
+      document.addEventListener('DOMContentLoaded', function() {
+        fetchDailySummary();
+      });
+    </script>
   </body>
 </html>

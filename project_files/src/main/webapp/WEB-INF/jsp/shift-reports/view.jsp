@@ -106,6 +106,26 @@
                     </table>
                 </div>
             </div>
+        <div class="row g-3 mb-4">
+            <div class="col-md-12">
+                <div class="stat-card">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-tools"></i> Shift Report Content (Tasks)</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <p style="font-size:14px; margin-bottom: 4px;" class="fw-bold text-muted">Preventive Maintenance Done</p>
+                            <p style="font-size:14px;">${report.preventiveMaintDone != null && not empty report.preventiveMaintDone ? report.preventiveMaintDone : 'None'}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p style="font-size:14px; margin-bottom: 4px;" class="fw-bold text-muted">Corrective Maintenance Done</p>
+                            <p style="font-size:14px;">${report.correctiveMaintDone != null && not empty report.correctiveMaintDone ? report.correctiveMaintDone : 'None'}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p style="font-size:14px; margin-bottom: 4px;" class="fw-bold text-muted">Spare Parts Used</p>
+                            <p style="font-size:14px;">${report.sparePartsUsed != null && not empty report.sparePartsUsed ? report.sparePartsUsed : 'None'}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="stat-card mb-4">
